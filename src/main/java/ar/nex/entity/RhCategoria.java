@@ -1,0 +1,112 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package ar.nex.entity;
+
+import java.io.Serializable;
+import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+/**
+ *
+ * @author Renzo
+ */
+@Entity
+@Table(name = "rh_categoria")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "RhCategoria.findAll", query = "SELECT r FROM RhCategoria r"),
+    @NamedQuery(name = "RhCategoria.findByIdCategoria", query = "SELECT r FROM RhCategoria r WHERE r.idCategoria = :idCategoria"),
+    @NamedQuery(name = "RhCategoria.findByNombre", query = "SELECT r FROM RhCategoria r WHERE r.nombre = :nombre"),
+    @NamedQuery(name = "RhCategoria.findByInfo", query = "SELECT r FROM RhCategoria r WHERE r.info = :info")})
+public class RhCategoria implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @Column(name = "id_categoria")
+    private Long idCategoria;
+    @Column(name = "nombre")
+    private String nombre;
+    @Column(name = "info")
+    private String info;
+    @OneToMany(mappedBy = "categoria")
+    private List<Empleado> empleadoList;
+
+    public RhCategoria() {
+    }
+
+    public RhCategoria(Long idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public Long getIdCategoria() {
+        return idCategoria;
+    }
+
+    public void setIdCategoria(Long idCategoria) {
+        this.idCategoria = idCategoria;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    @XmlTransient
+    public List<Empleado> getEmpleadoList() {
+        return empleadoList;
+    }
+
+    public void setEmpleadoList(List<Empleado> empleadoList) {
+        this.empleadoList = empleadoList;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idCategoria != null ? idCategoria.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof RhCategoria)) {
+            return false;
+        }
+        RhCategoria other = (RhCategoria) object;
+        if ((this.idCategoria == null && other.idCategoria != null) || (this.idCategoria != null && !this.idCategoria.equals(other.idCategoria))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ar.nex.entity.RhCategoria[ idCategoria=" + idCategoria + " ]";
+    }
+    
+}
