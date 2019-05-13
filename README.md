@@ -1,2 +1,2 @@
 # sae-entiy
-Entity para SAE App
+Entity y JPA Class para SAE App
