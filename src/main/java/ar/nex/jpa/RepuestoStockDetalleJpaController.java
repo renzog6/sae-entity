@@ -14,7 +14,6 @@ import ar.nex.entity.Equipo;
 import ar.nex.entity.Repuesto;
 import ar.nex.entity.RepuestoStockDetalle;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
-import ar.nex.jpa.exceptions.PreexistingEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -34,7 +33,7 @@ public class RepuestoStockDetalleJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(RepuestoStockDetalle repuestoStockDetalle) throws PreexistingEntityException, Exception {
+    public void create(RepuestoStockDetalle repuestoStockDetalle) {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -59,11 +58,6 @@ public class RepuestoStockDetalleJpaController implements Serializable {
                 repuesto = em.merge(repuesto);
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findRepuestoStockDetalle(repuestoStockDetalle.getIdStock()) != null) {
-                throw new PreexistingEntityException("RepuestoStockDetalle " + repuestoStockDetalle + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

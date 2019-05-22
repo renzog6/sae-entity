@@ -12,11 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -25,16 +22,6 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "eq_equipo")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Equipo.findAll", query = "SELECT e FROM Equipo e"),
-    @NamedQuery(name = "Equipo.findByIdEquipo", query = "SELECT e FROM Equipo e WHERE e.idEquipo = :idEquipo"),
-    @NamedQuery(name = "Equipo.findByAnio", query = "SELECT e FROM Equipo e WHERE e.anio = :anio"),
-    @NamedQuery(name = "Equipo.findByChasis", query = "SELECT e FROM Equipo e WHERE e.chasis = :chasis"),
-    @NamedQuery(name = "Equipo.findByMotor", query = "SELECT e FROM Equipo e WHERE e.motor = :motor"),
-    @NamedQuery(name = "Equipo.findByPatente", query = "SELECT e FROM Equipo e WHERE e.patente = :patente"),
-    @NamedQuery(name = "Equipo.findByColor", query = "SELECT e FROM Equipo e WHERE e.color = :color"),
-    @NamedQuery(name = "Equipo.findByOtro", query = "SELECT e FROM Equipo e WHERE e.otro = :otro")})
 public class Equipo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,6 +30,7 @@ public class Equipo implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_equipo")
     private Long idEquipo;
+    
     @Column(name = "anio")
     private String anio;
     @Column(name = "chasis")
@@ -53,15 +41,20 @@ public class Equipo implements Serializable {
     private String patente;
     @Column(name = "color")
     private String color;
+    @Column(name = "nombre")
+    private String nombre;
     @Column(name = "otro")
     private String otro;
+    
     @JoinTable(name = "ped_repuesto_equipo", joinColumns = {
         @JoinColumn(name = "id_equipo", referencedColumnName = "id_equipo")}, inverseJoinColumns = {
         @JoinColumn(name = "id_repuesto", referencedColumnName = "id_repuesto")})
     @ManyToMany
     private List<Repuesto> repuestoList;
+    
     @OneToMany(mappedBy = "equipo")
     private List<RepuestoStockDetalle> repuestoStockDetalleList;
+    
     @JoinColumn(name = "categoria", referencedColumnName = "id_categoria")
     @ManyToOne
     private EquipoCategoria categoria;
@@ -134,6 +127,14 @@ public class Equipo implements Serializable {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public String getOtro() {

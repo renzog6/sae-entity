@@ -53,6 +53,10 @@ public class Marca implements Serializable {
     public Marca() {
     }
 
+    public Marca(String s) {
+        this.nombre = s;
+    }
+
     public Marca(Long idMarca) {
         this.idMarca = idMarca;
     }
@@ -123,5 +127,5 @@ public class Marca implements Serializable {
     public String toString() {
         return this.nombre;
     }
-    
+
 }

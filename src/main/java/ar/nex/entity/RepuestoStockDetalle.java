@@ -1,4 +1,3 @@
-
 package ar.nex.entity;
 
 import java.io.Serializable;
@@ -7,6 +6,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -26,28 +27,33 @@ public class RepuestoStockDetalle implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_stock")
     private Long idStock;
+    
     @Column(name = "fecha")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
+    
     @Column(name = "detalle")
     private String detalle;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "cantidad")
     private Double cantidad;
-    @Column(name = "usuario")
-    private BigInteger usuario;
+    @Column(name = "usuario")    
+    private Long usuario;
+    
     @Column(name = "info")
     private String info;
+    
     @Column(name = "estado")
     private Integer estado;
-    
+
     @JoinColumn(name = "equipo", referencedColumnName = "id_equipo")
     @ManyToOne
     private Equipo equipo;
-    
+
     @JoinColumn(name = "repuesto", referencedColumnName = "id_repuesto")
     @ManyToOne
     private Repuesto repuesto;
@@ -91,11 +97,11 @@ public class RepuestoStockDetalle implements Serializable {
         this.cantidad = cantidad;
     }
 
-    public BigInteger getUsuario() {
+    public Long getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(BigInteger usuario) {
+    public void setUsuario(Long usuario) {
         this.usuario = usuario;
     }
 
@@ -155,5 +161,5 @@ public class RepuestoStockDetalle implements Serializable {
     public String toString() {
         return "ar.nex.entity.RepuestoStockDetalle[ idStock=" + idStock + " ]";
     }
-    
+
 }

@@ -40,21 +40,25 @@ public class EquipoModelo implements Serializable {
     private Integer anio;
     @Column(name = "info")
     private String info;
-    
+
     @JoinTable(name = "ped_repuesto_eq_modelo", joinColumns = {
         @JoinColumn(name = "id_modelo", referencedColumnName = "id_modelo")}, inverseJoinColumns = {
         @JoinColumn(name = "id_repuesto", referencedColumnName = "id_repuesto")})
     @ManyToMany
     private List<Repuesto> repuestoList;
-    
+
     @OneToMany(mappedBy = "modelo")
     private List<Equipo> equipoList;
-    
+
     @JoinColumn(name = "id_tipo", referencedColumnName = "id_tipo")
     @ManyToOne
     private EquipoTipo tipo;
 
     public EquipoModelo() {
+    }
+
+    public EquipoModelo(String s) {
+        this.nombre = s;
     }
 
     public EquipoModelo(Long idModelo) {
