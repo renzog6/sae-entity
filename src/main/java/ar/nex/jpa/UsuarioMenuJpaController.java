@@ -5,13 +5,13 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.UsrMenu;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ar.nex.entity.Usuario;
+import ar.nex.entity.UsuarioMenu;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Renzo
  */
-public class UsrMenuJpaController implements Serializable {
+public class UsuarioMenuJpaController implements Serializable {
 
-    public UsrMenuJpaController(EntityManagerFactory emf) {
+    public UsuarioMenuJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -33,23 +33,23 @@ public class UsrMenuJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(UsrMenu usrMenu) {
-        if (usrMenu.getUsuarioList() == null) {
-            usrMenu.setUsuarioList(new ArrayList<Usuario>());
+    public void create(UsuarioMenu usuarioMenu) {
+        if (usuarioMenu.getUsuarioList() == null) {
+            usuarioMenu.setUsuarioList(new ArrayList<Usuario>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             List<Usuario> attachedUsuarioList = new ArrayList<Usuario>();
-            for (Usuario usuarioListUsuarioToAttach : usrMenu.getUsuarioList()) {
+            for (Usuario usuarioListUsuarioToAttach : usuarioMenu.getUsuarioList()) {
                 usuarioListUsuarioToAttach = em.getReference(usuarioListUsuarioToAttach.getClass(), usuarioListUsuarioToAttach.getIdUsuario());
                 attachedUsuarioList.add(usuarioListUsuarioToAttach);
             }
-            usrMenu.setUsuarioList(attachedUsuarioList);
-            em.persist(usrMenu);
-            for (Usuario usuarioListUsuario : usrMenu.getUsuarioList()) {
-                usuarioListUsuario.getUsrMenuList().add(usrMenu);
+            usuarioMenu.setUsuarioList(attachedUsuarioList);
+            em.persist(usuarioMenu);
+            for (Usuario usuarioListUsuario : usuarioMenu.getUsuarioList()) {
+                usuarioListUsuario.getUsrMenuList().add(usuarioMenu);
                 usuarioListUsuario = em.merge(usuarioListUsuario);
             }
             em.getTransaction().commit();
@@ -60,31 +60,31 @@ public class UsrMenuJpaController implements Serializable {
         }
     }
 
-    public void edit(UsrMenu usrMenu) throws NonexistentEntityException, Exception {
+    public void edit(UsuarioMenu usuarioMenu) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UsrMenu persistentUsrMenu = em.find(UsrMenu.class, usrMenu.getIdMenu());
-            List<Usuario> usuarioListOld = persistentUsrMenu.getUsuarioList();
-            List<Usuario> usuarioListNew = usrMenu.getUsuarioList();
+            UsuarioMenu persistentUsuarioMenu = em.find(UsuarioMenu.class, usuarioMenu.getIdMenu());
+            List<Usuario> usuarioListOld = persistentUsuarioMenu.getUsuarioList();
+            List<Usuario> usuarioListNew = usuarioMenu.getUsuarioList();
             List<Usuario> attachedUsuarioListNew = new ArrayList<Usuario>();
             for (Usuario usuarioListNewUsuarioToAttach : usuarioListNew) {
                 usuarioListNewUsuarioToAttach = em.getReference(usuarioListNewUsuarioToAttach.getClass(), usuarioListNewUsuarioToAttach.getIdUsuario());
                 attachedUsuarioListNew.add(usuarioListNewUsuarioToAttach);
             }
             usuarioListNew = attachedUsuarioListNew;
-            usrMenu.setUsuarioList(usuarioListNew);
-            usrMenu = em.merge(usrMenu);
+            usuarioMenu.setUsuarioList(usuarioListNew);
+            usuarioMenu = em.merge(usuarioMenu);
             for (Usuario usuarioListOldUsuario : usuarioListOld) {
                 if (!usuarioListNew.contains(usuarioListOldUsuario)) {
-                    usuarioListOldUsuario.getUsrMenuList().remove(usrMenu);
+                    usuarioListOldUsuario.getUsrMenuList().remove(usuarioMenu);
                     usuarioListOldUsuario = em.merge(usuarioListOldUsuario);
                 }
             }
             for (Usuario usuarioListNewUsuario : usuarioListNew) {
                 if (!usuarioListOld.contains(usuarioListNewUsuario)) {
-                    usuarioListNewUsuario.getUsrMenuList().add(usrMenu);
+                    usuarioListNewUsuario.getUsrMenuList().add(usuarioMenu);
                     usuarioListNewUsuario = em.merge(usuarioListNewUsuario);
                 }
             }
@@ -92,9 +92,9 @@ public class UsrMenuJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = usrMenu.getIdMenu();
-                if (findUsrMenu(id) == null) {
-                    throw new NonexistentEntityException("The usrMenu with id " + id + " no longer exists.");
+                Long id = usuarioMenu.getIdMenu();
+                if (findUsuarioMenu(id) == null) {
+                    throw new NonexistentEntityException("The usuarioMenu with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -110,19 +110,19 @@ public class UsrMenuJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UsrMenu usrMenu;
+            UsuarioMenu usuarioMenu;
             try {
-                usrMenu = em.getReference(UsrMenu.class, id);
-                usrMenu.getIdMenu();
+                usuarioMenu = em.getReference(UsuarioMenu.class, id);
+                usuarioMenu.getIdMenu();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The usrMenu with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The usuarioMenu with id " + id + " no longer exists.", enfe);
             }
-            List<Usuario> usuarioList = usrMenu.getUsuarioList();
+            List<Usuario> usuarioList = usuarioMenu.getUsuarioList();
             for (Usuario usuarioListUsuario : usuarioList) {
-                usuarioListUsuario.getUsrMenuList().remove(usrMenu);
+                usuarioListUsuario.getUsrMenuList().remove(usuarioMenu);
                 usuarioListUsuario = em.merge(usuarioListUsuario);
             }
-            em.remove(usrMenu);
+            em.remove(usuarioMenu);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -131,19 +131,19 @@ public class UsrMenuJpaController implements Serializable {
         }
     }
 
-    public List<UsrMenu> findUsrMenuEntities() {
-        return findUsrMenuEntities(true, -1, -1);
+    public List<UsuarioMenu> findUsuarioMenuEntities() {
+        return findUsuarioMenuEntities(true, -1, -1);
     }
 
-    public List<UsrMenu> findUsrMenuEntities(int maxResults, int firstResult) {
-        return findUsrMenuEntities(false, maxResults, firstResult);
+    public List<UsuarioMenu> findUsuarioMenuEntities(int maxResults, int firstResult) {
+        return findUsuarioMenuEntities(false, maxResults, firstResult);
     }
 
-    private List<UsrMenu> findUsrMenuEntities(boolean all, int maxResults, int firstResult) {
+    private List<UsuarioMenu> findUsuarioMenuEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(UsrMenu.class));
+            cq.select(cq.from(UsuarioMenu.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -155,20 +155,20 @@ public class UsrMenuJpaController implements Serializable {
         }
     }
 
-    public UsrMenu findUsrMenu(Long id) {
+    public UsuarioMenu findUsuarioMenu(Long id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(UsrMenu.class, id);
+            return em.find(UsuarioMenu.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getUsrMenuCount() {
+    public int getUsuarioMenuCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<UsrMenu> rt = cq.from(UsrMenu.class);
+            Root<UsuarioMenu> rt = cq.from(UsuarioMenu.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

@@ -3,6 +3,7 @@ package ar.nex.service;
 import ar.nex.jpa.EmpresaJpaController;
 import ar.nex.jpa.PedidoJpaController;
 import ar.nex.jpa.RepuestoJpaController;
+import ar.nex.jpa.UsuarioJpaController;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -46,4 +47,10 @@ public final class JpaService {
         return new RepuestoJpaController(factory);
     }
 
+       public UsuarioJpaController getUsuario() {
+        if (factory == null) {
+            getFactory();
+        }
+        return new UsuarioJpaController(factory);
+    }
 }

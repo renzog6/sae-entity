@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ar.nex.entity;
 
 import java.io.Serializable;
@@ -15,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,13 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "usr_historial")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "UsrHistorial.findAll", query = "SELECT u FROM UsrHistorial u"),
-    @NamedQuery(name = "UsrHistorial.findByIdHistorial", query = "SELECT u FROM UsrHistorial u WHERE u.idHistorial = :idHistorial"),
-    @NamedQuery(name = "UsrHistorial.findByFecha", query = "SELECT u FROM UsrHistorial u WHERE u.fecha = :fecha"),
-    @NamedQuery(name = "UsrHistorial.findByDetalle", query = "SELECT u FROM UsrHistorial u WHERE u.detalle = :detalle"),
-    @NamedQuery(name = "UsrHistorial.findByInfo", query = "SELECT u FROM UsrHistorial u WHERE u.info = :info")})
-public class UsrHistorial implements Serializable {
+public class UsuarioHistorial implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -53,19 +40,19 @@ public class UsrHistorial implements Serializable {
     private String info;
     @JoinColumn(name = "evento", referencedColumnName = "id_evento")
     @ManyToOne
-    private UsrEvento evento;
+    private UsuarioEvento evento;
     @JoinColumn(name = "usuario", referencedColumnName = "id_usuario")
     @ManyToOne
     private Usuario usuario;
 
-    public UsrHistorial() {
+    public UsuarioHistorial() {
     }
 
-    public UsrHistorial(Long idHistorial) {
+    public UsuarioHistorial(Long idHistorial) {
         this.idHistorial = idHistorial;
     }
 
-    public UsrHistorial(Long idHistorial, Date fecha) {
+    public UsuarioHistorial(Long idHistorial, Date fecha) {
         this.idHistorial = idHistorial;
         this.fecha = fecha;
     }
@@ -102,11 +89,11 @@ public class UsrHistorial implements Serializable {
         this.info = info;
     }
 
-    public UsrEvento getEvento() {
+    public UsuarioEvento getEvento() {
         return evento;
     }
 
-    public void setEvento(UsrEvento evento) {
+    public void setEvento(UsuarioEvento evento) {
         this.evento = evento;
     }
 
@@ -128,10 +115,10 @@ public class UsrHistorial implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof UsrHistorial)) {
+        if (!(object instanceof UsuarioHistorial)) {
             return false;
         }
-        UsrHistorial other = (UsrHistorial) object;
+        UsuarioHistorial other = (UsuarioHistorial) object;
         if ((this.idHistorial == null && other.idHistorial != null) || (this.idHistorial != null && !this.idHistorial.equals(other.idHistorial))) {
             return false;
         }

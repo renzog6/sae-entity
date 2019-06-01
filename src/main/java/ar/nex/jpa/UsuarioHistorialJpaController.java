@@ -10,9 +10,9 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.UsrEvento;
-import ar.nex.entity.UsrHistorial;
+import ar.nex.entity.UsuarioEvento;
 import ar.nex.entity.Usuario;
+import ar.nex.entity.UsuarioHistorial;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -22,9 +22,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Renzo
  */
-public class UsrHistorialJpaController implements Serializable {
+public class UsuarioHistorialJpaController implements Serializable {
 
-    public UsrHistorialJpaController(EntityManagerFactory emf) {
+    public UsuarioHistorialJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -33,28 +33,28 @@ public class UsrHistorialJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(UsrHistorial usrHistorial) {
+    public void create(UsuarioHistorial usuarioHistorial) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UsrEvento evento = usrHistorial.getEvento();
+            UsuarioEvento evento = usuarioHistorial.getEvento();
             if (evento != null) {
                 evento = em.getReference(evento.getClass(), evento.getIdEvento());
-                usrHistorial.setEvento(evento);
+                usuarioHistorial.setEvento(evento);
             }
-            Usuario usuario = usrHistorial.getUsuario();
+            Usuario usuario = usuarioHistorial.getUsuario();
             if (usuario != null) {
                 usuario = em.getReference(usuario.getClass(), usuario.getIdUsuario());
-                usrHistorial.setUsuario(usuario);
+                usuarioHistorial.setUsuario(usuario);
             }
-            em.persist(usrHistorial);
+            em.persist(usuarioHistorial);
             if (evento != null) {
-                evento.getUsrHistorialList().add(usrHistorial);
+                evento.getUsrHistorialList().add(usuarioHistorial);
                 evento = em.merge(evento);
             }
             if (usuario != null) {
-                usuario.getUsrHistorialList().add(usrHistorial);
+                usuario.getUsuarioHistorialList().add(usuarioHistorial);
                 usuario = em.merge(usuario);
             }
             em.getTransaction().commit();
@@ -65,48 +65,48 @@ public class UsrHistorialJpaController implements Serializable {
         }
     }
 
-    public void edit(UsrHistorial usrHistorial) throws NonexistentEntityException, Exception {
+    public void edit(UsuarioHistorial usuarioHistorial) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UsrHistorial persistentUsrHistorial = em.find(UsrHistorial.class, usrHistorial.getIdHistorial());
-            UsrEvento eventoOld = persistentUsrHistorial.getEvento();
-            UsrEvento eventoNew = usrHistorial.getEvento();
-            Usuario usuarioOld = persistentUsrHistorial.getUsuario();
-            Usuario usuarioNew = usrHistorial.getUsuario();
+            UsuarioHistorial persistentUsuarioHistorial = em.find(UsuarioHistorial.class, usuarioHistorial.getIdHistorial());
+            UsuarioEvento eventoOld = persistentUsuarioHistorial.getEvento();
+            UsuarioEvento eventoNew = usuarioHistorial.getEvento();
+            Usuario usuarioOld = persistentUsuarioHistorial.getUsuario();
+            Usuario usuarioNew = usuarioHistorial.getUsuario();
             if (eventoNew != null) {
                 eventoNew = em.getReference(eventoNew.getClass(), eventoNew.getIdEvento());
-                usrHistorial.setEvento(eventoNew);
+                usuarioHistorial.setEvento(eventoNew);
             }
             if (usuarioNew != null) {
                 usuarioNew = em.getReference(usuarioNew.getClass(), usuarioNew.getIdUsuario());
-                usrHistorial.setUsuario(usuarioNew);
+                usuarioHistorial.setUsuario(usuarioNew);
             }
-            usrHistorial = em.merge(usrHistorial);
+            usuarioHistorial = em.merge(usuarioHistorial);
             if (eventoOld != null && !eventoOld.equals(eventoNew)) {
-                eventoOld.getUsrHistorialList().remove(usrHistorial);
+                eventoOld.getUsrHistorialList().remove(usuarioHistorial);
                 eventoOld = em.merge(eventoOld);
             }
             if (eventoNew != null && !eventoNew.equals(eventoOld)) {
-                eventoNew.getUsrHistorialList().add(usrHistorial);
+                eventoNew.getUsrHistorialList().add(usuarioHistorial);
                 eventoNew = em.merge(eventoNew);
             }
             if (usuarioOld != null && !usuarioOld.equals(usuarioNew)) {
-                usuarioOld.getUsrHistorialList().remove(usrHistorial);
+                usuarioOld.getUsuarioHistorialList().remove(usuarioHistorial);
                 usuarioOld = em.merge(usuarioOld);
             }
             if (usuarioNew != null && !usuarioNew.equals(usuarioOld)) {
-                usuarioNew.getUsrHistorialList().add(usrHistorial);
+                usuarioNew.getUsuarioHistorialList().add(usuarioHistorial);
                 usuarioNew = em.merge(usuarioNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = usrHistorial.getIdHistorial();
-                if (findUsrHistorial(id) == null) {
-                    throw new NonexistentEntityException("The usrHistorial with id " + id + " no longer exists.");
+                Long id = usuarioHistorial.getIdHistorial();
+                if (findUsuarioHistorial(id) == null) {
+                    throw new NonexistentEntityException("The usuarioHistorial with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -122,24 +122,24 @@ public class UsrHistorialJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UsrHistorial usrHistorial;
+            UsuarioHistorial usuarioHistorial;
             try {
-                usrHistorial = em.getReference(UsrHistorial.class, id);
-                usrHistorial.getIdHistorial();
+                usuarioHistorial = em.getReference(UsuarioHistorial.class, id);
+                usuarioHistorial.getIdHistorial();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The usrHistorial with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The usuarioHistorial with id " + id + " no longer exists.", enfe);
             }
-            UsrEvento evento = usrHistorial.getEvento();
+            UsuarioEvento evento = usuarioHistorial.getEvento();
             if (evento != null) {
-                evento.getUsrHistorialList().remove(usrHistorial);
+                evento.getUsrHistorialList().remove(usuarioHistorial);
                 evento = em.merge(evento);
             }
-            Usuario usuario = usrHistorial.getUsuario();
+            Usuario usuario = usuarioHistorial.getUsuario();
             if (usuario != null) {
-                usuario.getUsrHistorialList().remove(usrHistorial);
+                usuario.getUsuarioHistorialList().remove(usuarioHistorial);
                 usuario = em.merge(usuario);
             }
-            em.remove(usrHistorial);
+            em.remove(usuarioHistorial);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -148,19 +148,19 @@ public class UsrHistorialJpaController implements Serializable {
         }
     }
 
-    public List<UsrHistorial> findUsrHistorialEntities() {
-        return findUsrHistorialEntities(true, -1, -1);
+    public List<UsuarioHistorial> findUsuarioHistorialEntities() {
+        return findUsuarioHistorialEntities(true, -1, -1);
     }
 
-    public List<UsrHistorial> findUsrHistorialEntities(int maxResults, int firstResult) {
-        return findUsrHistorialEntities(false, maxResults, firstResult);
+    public List<UsuarioHistorial> findUsuarioHistorialEntities(int maxResults, int firstResult) {
+        return findUsuarioHistorialEntities(false, maxResults, firstResult);
     }
 
-    private List<UsrHistorial> findUsrHistorialEntities(boolean all, int maxResults, int firstResult) {
+    private List<UsuarioHistorial> findUsuarioHistorialEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(UsrHistorial.class));
+            cq.select(cq.from(UsuarioHistorial.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -172,20 +172,20 @@ public class UsrHistorialJpaController implements Serializable {
         }
     }
 
-    public UsrHistorial findUsrHistorial(Long id) {
+    public UsuarioHistorial findUsuarioHistorial(Long id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(UsrHistorial.class, id);
+            return em.find(UsuarioHistorial.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getUsrHistorialCount() {
+    public int getUsuarioHistorialCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<UsrHistorial> rt = cq.from(UsrHistorial.class);
+            Root<UsuarioHistorial> rt = cq.from(UsuarioHistorial.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

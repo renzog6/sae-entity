@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ar.nex.entity;
 
 import java.io.Serializable;
@@ -13,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,13 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "usr_grupo")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "UsrGrupo.findAll", query = "SELECT u FROM UsrGrupo u"),
-    @NamedQuery(name = "UsrGrupo.findByIdGrupo", query = "SELECT u FROM UsrGrupo u WHERE u.idGrupo = :idGrupo"),
-    @NamedQuery(name = "UsrGrupo.findByNombre", query = "SELECT u FROM UsrGrupo u WHERE u.nombre = :nombre"),
-    @NamedQuery(name = "UsrGrupo.findByCode", query = "SELECT u FROM UsrGrupo u WHERE u.code = :code"),
-    @NamedQuery(name = "UsrGrupo.findByInfo", query = "SELECT u FROM UsrGrupo u WHERE u.info = :info")})
-public class UsrGrupo implements Serializable {
+public class UsuarioGrupo implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -50,10 +37,10 @@ public class UsrGrupo implements Serializable {
     @OneToMany(mappedBy = "grupo")
     private List<Usuario> usuarioList;
 
-    public UsrGrupo() {
+    public UsuarioGrupo() {
     }
 
-    public UsrGrupo(Long idGrupo) {
+    public UsuarioGrupo(Long idGrupo) {
         this.idGrupo = idGrupo;
     }
 
@@ -108,10 +95,10 @@ public class UsrGrupo implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof UsrGrupo)) {
+        if (!(object instanceof UsuarioGrupo)) {
             return false;
         }
-        UsrGrupo other = (UsrGrupo) object;
+        UsuarioGrupo other = (UsuarioGrupo) object;
         if ((this.idGrupo == null && other.idGrupo != null) || (this.idGrupo != null && !this.idGrupo.equals(other.idGrupo))) {
             return false;
         }

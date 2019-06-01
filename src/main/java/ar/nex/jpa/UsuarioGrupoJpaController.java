@@ -5,13 +5,13 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.UsrGrupo;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ar.nex.entity.Usuario;
+import ar.nex.entity.UsuarioGrupo;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +22,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Renzo
  */
-public class UsrGrupoJpaController implements Serializable {
+public class UsuarioGrupoJpaController implements Serializable {
 
-    public UsrGrupoJpaController(EntityManagerFactory emf) {
+    public UsuarioGrupoJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -33,24 +33,24 @@ public class UsrGrupoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(UsrGrupo usrGrupo) {
-        if (usrGrupo.getUsuarioList() == null) {
-            usrGrupo.setUsuarioList(new ArrayList<Usuario>());
+    public void create(UsuarioGrupo usuarioGrupo) {
+        if (usuarioGrupo.getUsuarioList() == null) {
+            usuarioGrupo.setUsuarioList(new ArrayList<Usuario>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             List<Usuario> attachedUsuarioList = new ArrayList<Usuario>();
-            for (Usuario usuarioListUsuarioToAttach : usrGrupo.getUsuarioList()) {
+            for (Usuario usuarioListUsuarioToAttach : usuarioGrupo.getUsuarioList()) {
                 usuarioListUsuarioToAttach = em.getReference(usuarioListUsuarioToAttach.getClass(), usuarioListUsuarioToAttach.getIdUsuario());
                 attachedUsuarioList.add(usuarioListUsuarioToAttach);
             }
-            usrGrupo.setUsuarioList(attachedUsuarioList);
-            em.persist(usrGrupo);
-            for (Usuario usuarioListUsuario : usrGrupo.getUsuarioList()) {
-                UsrGrupo oldGrupoOfUsuarioListUsuario = usuarioListUsuario.getGrupo();
-                usuarioListUsuario.setGrupo(usrGrupo);
+            usuarioGrupo.setUsuarioList(attachedUsuarioList);
+            em.persist(usuarioGrupo);
+            for (Usuario usuarioListUsuario : usuarioGrupo.getUsuarioList()) {
+                UsuarioGrupo oldGrupoOfUsuarioListUsuario = usuarioListUsuario.getGrupo();
+                usuarioListUsuario.setGrupo(usuarioGrupo);
                 usuarioListUsuario = em.merge(usuarioListUsuario);
                 if (oldGrupoOfUsuarioListUsuario != null) {
                     oldGrupoOfUsuarioListUsuario.getUsuarioList().remove(usuarioListUsuario);
@@ -65,22 +65,22 @@ public class UsrGrupoJpaController implements Serializable {
         }
     }
 
-    public void edit(UsrGrupo usrGrupo) throws NonexistentEntityException, Exception {
+    public void edit(UsuarioGrupo usuarioGrupo) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UsrGrupo persistentUsrGrupo = em.find(UsrGrupo.class, usrGrupo.getIdGrupo());
-            List<Usuario> usuarioListOld = persistentUsrGrupo.getUsuarioList();
-            List<Usuario> usuarioListNew = usrGrupo.getUsuarioList();
+            UsuarioGrupo persistentUsuarioGrupo = em.find(UsuarioGrupo.class, usuarioGrupo.getIdGrupo());
+            List<Usuario> usuarioListOld = persistentUsuarioGrupo.getUsuarioList();
+            List<Usuario> usuarioListNew = usuarioGrupo.getUsuarioList();
             List<Usuario> attachedUsuarioListNew = new ArrayList<Usuario>();
             for (Usuario usuarioListNewUsuarioToAttach : usuarioListNew) {
                 usuarioListNewUsuarioToAttach = em.getReference(usuarioListNewUsuarioToAttach.getClass(), usuarioListNewUsuarioToAttach.getIdUsuario());
                 attachedUsuarioListNew.add(usuarioListNewUsuarioToAttach);
             }
             usuarioListNew = attachedUsuarioListNew;
-            usrGrupo.setUsuarioList(usuarioListNew);
-            usrGrupo = em.merge(usrGrupo);
+            usuarioGrupo.setUsuarioList(usuarioListNew);
+            usuarioGrupo = em.merge(usuarioGrupo);
             for (Usuario usuarioListOldUsuario : usuarioListOld) {
                 if (!usuarioListNew.contains(usuarioListOldUsuario)) {
                     usuarioListOldUsuario.setGrupo(null);
@@ -89,10 +89,10 @@ public class UsrGrupoJpaController implements Serializable {
             }
             for (Usuario usuarioListNewUsuario : usuarioListNew) {
                 if (!usuarioListOld.contains(usuarioListNewUsuario)) {
-                    UsrGrupo oldGrupoOfUsuarioListNewUsuario = usuarioListNewUsuario.getGrupo();
-                    usuarioListNewUsuario.setGrupo(usrGrupo);
+                    UsuarioGrupo oldGrupoOfUsuarioListNewUsuario = usuarioListNewUsuario.getGrupo();
+                    usuarioListNewUsuario.setGrupo(usuarioGrupo);
                     usuarioListNewUsuario = em.merge(usuarioListNewUsuario);
-                    if (oldGrupoOfUsuarioListNewUsuario != null && !oldGrupoOfUsuarioListNewUsuario.equals(usrGrupo)) {
+                    if (oldGrupoOfUsuarioListNewUsuario != null && !oldGrupoOfUsuarioListNewUsuario.equals(usuarioGrupo)) {
                         oldGrupoOfUsuarioListNewUsuario.getUsuarioList().remove(usuarioListNewUsuario);
                         oldGrupoOfUsuarioListNewUsuario = em.merge(oldGrupoOfUsuarioListNewUsuario);
                     }
@@ -102,9 +102,9 @@ public class UsrGrupoJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = usrGrupo.getIdGrupo();
-                if (findUsrGrupo(id) == null) {
-                    throw new NonexistentEntityException("The usrGrupo with id " + id + " no longer exists.");
+                Long id = usuarioGrupo.getIdGrupo();
+                if (findUsuarioGrupo(id) == null) {
+                    throw new NonexistentEntityException("The usuarioGrupo with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -120,19 +120,19 @@ public class UsrGrupoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UsrGrupo usrGrupo;
+            UsuarioGrupo usuarioGrupo;
             try {
-                usrGrupo = em.getReference(UsrGrupo.class, id);
-                usrGrupo.getIdGrupo();
+                usuarioGrupo = em.getReference(UsuarioGrupo.class, id);
+                usuarioGrupo.getIdGrupo();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The usrGrupo with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The usuarioGrupo with id " + id + " no longer exists.", enfe);
             }
-            List<Usuario> usuarioList = usrGrupo.getUsuarioList();
+            List<Usuario> usuarioList = usuarioGrupo.getUsuarioList();
             for (Usuario usuarioListUsuario : usuarioList) {
                 usuarioListUsuario.setGrupo(null);
                 usuarioListUsuario = em.merge(usuarioListUsuario);
             }
-            em.remove(usrGrupo);
+            em.remove(usuarioGrupo);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -141,19 +141,19 @@ public class UsrGrupoJpaController implements Serializable {
         }
     }
 
-    public List<UsrGrupo> findUsrGrupoEntities() {
-        return findUsrGrupoEntities(true, -1, -1);
+    public List<UsuarioGrupo> findUsuarioGrupoEntities() {
+        return findUsuarioGrupoEntities(true, -1, -1);
     }
 
-    public List<UsrGrupo> findUsrGrupoEntities(int maxResults, int firstResult) {
-        return findUsrGrupoEntities(false, maxResults, firstResult);
+    public List<UsuarioGrupo> findUsuarioGrupoEntities(int maxResults, int firstResult) {
+        return findUsuarioGrupoEntities(false, maxResults, firstResult);
     }
 
-    private List<UsrGrupo> findUsrGrupoEntities(boolean all, int maxResults, int firstResult) {
+    private List<UsuarioGrupo> findUsuarioGrupoEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(UsrGrupo.class));
+            cq.select(cq.from(UsuarioGrupo.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -165,20 +165,20 @@ public class UsrGrupoJpaController implements Serializable {
         }
     }
 
-    public UsrGrupo findUsrGrupo(Long id) {
+    public UsuarioGrupo findUsuarioGrupo(Long id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(UsrGrupo.class, id);
+            return em.find(UsuarioGrupo.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getUsrGrupoCount() {
+    public int getUsuarioGrupoCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<UsrGrupo> rt = cq.from(UsrGrupo.class);
+            Root<UsuarioGrupo> rt = cq.from(UsuarioGrupo.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

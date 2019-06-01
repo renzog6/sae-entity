@@ -10,13 +10,13 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.UsrGrupo;
+import ar.nex.entity.UsuarioGrupo;
 import ar.nex.entity.Persona;
-import ar.nex.entity.UsrMenu;
+import ar.nex.entity.Usuario;
+import ar.nex.entity.UsuarioMenu;
 import java.util.ArrayList;
 import java.util.List;
-import ar.nex.entity.UsrHistorial;
-import ar.nex.entity.Usuario;
+import ar.nex.entity.UsuarioHistorial;
 import ar.nex.jpa.exceptions.IllegalOrphanException;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import javax.persistence.EntityManager;
@@ -39,10 +39,10 @@ public class UsuarioJpaController implements Serializable {
 
     public void create(Usuario usuario) throws IllegalOrphanException {
         if (usuario.getUsrMenuList() == null) {
-            usuario.setUsrMenuList(new ArrayList<UsrMenu>());
+            usuario.setUsrMenuList(new ArrayList<UsuarioMenu>());
         }
-        if (usuario.getUsrHistorialList() == null) {
-            usuario.setUsrHistorialList(new ArrayList<UsrHistorial>());
+        if (usuario.getUsuarioHistorialList() == null) {
+            usuario.setUsuarioHistorialList(new ArrayList<UsuarioHistorial>());
         }
         List<String> illegalOrphanMessages = null;
         Persona personaOrphanCheck = usuario.getPersona();
@@ -62,7 +62,7 @@ public class UsuarioJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            UsrGrupo grupo = usuario.getGrupo();
+            UsuarioGrupo grupo = usuario.getGrupo();
             if (grupo != null) {
                 grupo = em.getReference(grupo.getClass(), grupo.getIdGrupo());
                 usuario.setGrupo(grupo);
@@ -72,18 +72,18 @@ public class UsuarioJpaController implements Serializable {
                 persona = em.getReference(persona.getClass(), persona.getIdPersona());
                 usuario.setPersona(persona);
             }
-            List<UsrMenu> attachedUsrMenuList = new ArrayList<UsrMenu>();
-            for (UsrMenu usrMenuListUsrMenuToAttach : usuario.getUsrMenuList()) {
-                usrMenuListUsrMenuToAttach = em.getReference(usrMenuListUsrMenuToAttach.getClass(), usrMenuListUsrMenuToAttach.getIdMenu());
-                attachedUsrMenuList.add(usrMenuListUsrMenuToAttach);
+            List<UsuarioMenu> attachedUsrMenuList = new ArrayList<UsuarioMenu>();
+            for (UsuarioMenu usrMenuListUsuarioMenuToAttach : usuario.getUsrMenuList()) {
+                usrMenuListUsuarioMenuToAttach = em.getReference(usrMenuListUsuarioMenuToAttach.getClass(), usrMenuListUsuarioMenuToAttach.getIdMenu());
+                attachedUsrMenuList.add(usrMenuListUsuarioMenuToAttach);
             }
             usuario.setUsrMenuList(attachedUsrMenuList);
-            List<UsrHistorial> attachedUsrHistorialList = new ArrayList<UsrHistorial>();
-            for (UsrHistorial usrHistorialListUsrHistorialToAttach : usuario.getUsrHistorialList()) {
-                usrHistorialListUsrHistorialToAttach = em.getReference(usrHistorialListUsrHistorialToAttach.getClass(), usrHistorialListUsrHistorialToAttach.getIdHistorial());
-                attachedUsrHistorialList.add(usrHistorialListUsrHistorialToAttach);
+            List<UsuarioHistorial> attachedUsuarioHistorialList = new ArrayList<UsuarioHistorial>();
+            for (UsuarioHistorial usuarioHistorialListUsuarioHistorialToAttach : usuario.getUsuarioHistorialList()) {
+                usuarioHistorialListUsuarioHistorialToAttach = em.getReference(usuarioHistorialListUsuarioHistorialToAttach.getClass(), usuarioHistorialListUsuarioHistorialToAttach.getIdHistorial());
+                attachedUsuarioHistorialList.add(usuarioHistorialListUsuarioHistorialToAttach);
             }
-            usuario.setUsrHistorialList(attachedUsrHistorialList);
+            usuario.setUsuarioHistorialList(attachedUsuarioHistorialList);
             em.persist(usuario);
             if (grupo != null) {
                 grupo.getUsuarioList().add(usuario);
@@ -93,17 +93,17 @@ public class UsuarioJpaController implements Serializable {
                 persona.setUsuario(usuario);
                 persona = em.merge(persona);
             }
-            for (UsrMenu usrMenuListUsrMenu : usuario.getUsrMenuList()) {
-                usrMenuListUsrMenu.getUsuarioList().add(usuario);
-                usrMenuListUsrMenu = em.merge(usrMenuListUsrMenu);
+            for (UsuarioMenu usrMenuListUsuarioMenu : usuario.getUsrMenuList()) {
+                usrMenuListUsuarioMenu.getUsuarioList().add(usuario);
+                usrMenuListUsuarioMenu = em.merge(usrMenuListUsuarioMenu);
             }
-            for (UsrHistorial usrHistorialListUsrHistorial : usuario.getUsrHistorialList()) {
-                Usuario oldUsuarioOfUsrHistorialListUsrHistorial = usrHistorialListUsrHistorial.getUsuario();
-                usrHistorialListUsrHistorial.setUsuario(usuario);
-                usrHistorialListUsrHistorial = em.merge(usrHistorialListUsrHistorial);
-                if (oldUsuarioOfUsrHistorialListUsrHistorial != null) {
-                    oldUsuarioOfUsrHistorialListUsrHistorial.getUsrHistorialList().remove(usrHistorialListUsrHistorial);
-                    oldUsuarioOfUsrHistorialListUsrHistorial = em.merge(oldUsuarioOfUsrHistorialListUsrHistorial);
+            for (UsuarioHistorial usuarioHistorialListUsuarioHistorial : usuario.getUsuarioHistorialList()) {
+                Usuario oldUsuarioOfUsuarioHistorialListUsuarioHistorial = usuarioHistorialListUsuarioHistorial.getUsuario();
+                usuarioHistorialListUsuarioHistorial.setUsuario(usuario);
+                usuarioHistorialListUsuarioHistorial = em.merge(usuarioHistorialListUsuarioHistorial);
+                if (oldUsuarioOfUsuarioHistorialListUsuarioHistorial != null) {
+                    oldUsuarioOfUsuarioHistorialListUsuarioHistorial.getUsuarioHistorialList().remove(usuarioHistorialListUsuarioHistorial);
+                    oldUsuarioOfUsuarioHistorialListUsuarioHistorial = em.merge(oldUsuarioOfUsuarioHistorialListUsuarioHistorial);
                 }
             }
             em.getTransaction().commit();
@@ -120,14 +120,14 @@ public class UsuarioJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Usuario persistentUsuario = em.find(Usuario.class, usuario.getIdUsuario());
-            UsrGrupo grupoOld = persistentUsuario.getGrupo();
-            UsrGrupo grupoNew = usuario.getGrupo();
+            UsuarioGrupo grupoOld = persistentUsuario.getGrupo();
+            UsuarioGrupo grupoNew = usuario.getGrupo();
             Persona personaOld = persistentUsuario.getPersona();
             Persona personaNew = usuario.getPersona();
-            List<UsrMenu> usrMenuListOld = persistentUsuario.getUsrMenuList();
-            List<UsrMenu> usrMenuListNew = usuario.getUsrMenuList();
-            List<UsrHistorial> usrHistorialListOld = persistentUsuario.getUsrHistorialList();
-            List<UsrHistorial> usrHistorialListNew = usuario.getUsrHistorialList();
+            List<UsuarioMenu> usrMenuListOld = persistentUsuario.getUsrMenuList();
+            List<UsuarioMenu> usrMenuListNew = usuario.getUsrMenuList();
+            List<UsuarioHistorial> usuarioHistorialListOld = persistentUsuario.getUsuarioHistorialList();
+            List<UsuarioHistorial> usuarioHistorialListNew = usuario.getUsuarioHistorialList();
             List<String> illegalOrphanMessages = null;
             if (personaNew != null && !personaNew.equals(personaOld)) {
                 Usuario oldUsuarioOfPersona = personaNew.getUsuario();
@@ -149,20 +149,20 @@ public class UsuarioJpaController implements Serializable {
                 personaNew = em.getReference(personaNew.getClass(), personaNew.getIdPersona());
                 usuario.setPersona(personaNew);
             }
-            List<UsrMenu> attachedUsrMenuListNew = new ArrayList<UsrMenu>();
-            for (UsrMenu usrMenuListNewUsrMenuToAttach : usrMenuListNew) {
-                usrMenuListNewUsrMenuToAttach = em.getReference(usrMenuListNewUsrMenuToAttach.getClass(), usrMenuListNewUsrMenuToAttach.getIdMenu());
-                attachedUsrMenuListNew.add(usrMenuListNewUsrMenuToAttach);
+            List<UsuarioMenu> attachedUsrMenuListNew = new ArrayList<UsuarioMenu>();
+            for (UsuarioMenu usrMenuListNewUsuarioMenuToAttach : usrMenuListNew) {
+                usrMenuListNewUsuarioMenuToAttach = em.getReference(usrMenuListNewUsuarioMenuToAttach.getClass(), usrMenuListNewUsuarioMenuToAttach.getIdMenu());
+                attachedUsrMenuListNew.add(usrMenuListNewUsuarioMenuToAttach);
             }
             usrMenuListNew = attachedUsrMenuListNew;
             usuario.setUsrMenuList(usrMenuListNew);
-            List<UsrHistorial> attachedUsrHistorialListNew = new ArrayList<UsrHistorial>();
-            for (UsrHistorial usrHistorialListNewUsrHistorialToAttach : usrHistorialListNew) {
-                usrHistorialListNewUsrHistorialToAttach = em.getReference(usrHistorialListNewUsrHistorialToAttach.getClass(), usrHistorialListNewUsrHistorialToAttach.getIdHistorial());
-                attachedUsrHistorialListNew.add(usrHistorialListNewUsrHistorialToAttach);
+            List<UsuarioHistorial> attachedUsuarioHistorialListNew = new ArrayList<UsuarioHistorial>();
+            for (UsuarioHistorial usuarioHistorialListNewUsuarioHistorialToAttach : usuarioHistorialListNew) {
+                usuarioHistorialListNewUsuarioHistorialToAttach = em.getReference(usuarioHistorialListNewUsuarioHistorialToAttach.getClass(), usuarioHistorialListNewUsuarioHistorialToAttach.getIdHistorial());
+                attachedUsuarioHistorialListNew.add(usuarioHistorialListNewUsuarioHistorialToAttach);
             }
-            usrHistorialListNew = attachedUsrHistorialListNew;
-            usuario.setUsrHistorialList(usrHistorialListNew);
+            usuarioHistorialListNew = attachedUsuarioHistorialListNew;
+            usuario.setUsuarioHistorialList(usuarioHistorialListNew);
             usuario = em.merge(usuario);
             if (grupoOld != null && !grupoOld.equals(grupoNew)) {
                 grupoOld.getUsuarioList().remove(usuario);
@@ -180,32 +180,32 @@ public class UsuarioJpaController implements Serializable {
                 personaNew.setUsuario(usuario);
                 personaNew = em.merge(personaNew);
             }
-            for (UsrMenu usrMenuListOldUsrMenu : usrMenuListOld) {
-                if (!usrMenuListNew.contains(usrMenuListOldUsrMenu)) {
-                    usrMenuListOldUsrMenu.getUsuarioList().remove(usuario);
-                    usrMenuListOldUsrMenu = em.merge(usrMenuListOldUsrMenu);
+            for (UsuarioMenu usrMenuListOldUsuarioMenu : usrMenuListOld) {
+                if (!usrMenuListNew.contains(usrMenuListOldUsuarioMenu)) {
+                    usrMenuListOldUsuarioMenu.getUsuarioList().remove(usuario);
+                    usrMenuListOldUsuarioMenu = em.merge(usrMenuListOldUsuarioMenu);
                 }
             }
-            for (UsrMenu usrMenuListNewUsrMenu : usrMenuListNew) {
-                if (!usrMenuListOld.contains(usrMenuListNewUsrMenu)) {
-                    usrMenuListNewUsrMenu.getUsuarioList().add(usuario);
-                    usrMenuListNewUsrMenu = em.merge(usrMenuListNewUsrMenu);
+            for (UsuarioMenu usrMenuListNewUsuarioMenu : usrMenuListNew) {
+                if (!usrMenuListOld.contains(usrMenuListNewUsuarioMenu)) {
+                    usrMenuListNewUsuarioMenu.getUsuarioList().add(usuario);
+                    usrMenuListNewUsuarioMenu = em.merge(usrMenuListNewUsuarioMenu);
                 }
             }
-            for (UsrHistorial usrHistorialListOldUsrHistorial : usrHistorialListOld) {
-                if (!usrHistorialListNew.contains(usrHistorialListOldUsrHistorial)) {
-                    usrHistorialListOldUsrHistorial.setUsuario(null);
-                    usrHistorialListOldUsrHistorial = em.merge(usrHistorialListOldUsrHistorial);
+            for (UsuarioHistorial usuarioHistorialListOldUsuarioHistorial : usuarioHistorialListOld) {
+                if (!usuarioHistorialListNew.contains(usuarioHistorialListOldUsuarioHistorial)) {
+                    usuarioHistorialListOldUsuarioHistorial.setUsuario(null);
+                    usuarioHistorialListOldUsuarioHistorial = em.merge(usuarioHistorialListOldUsuarioHistorial);
                 }
             }
-            for (UsrHistorial usrHistorialListNewUsrHistorial : usrHistorialListNew) {
-                if (!usrHistorialListOld.contains(usrHistorialListNewUsrHistorial)) {
-                    Usuario oldUsuarioOfUsrHistorialListNewUsrHistorial = usrHistorialListNewUsrHistorial.getUsuario();
-                    usrHistorialListNewUsrHistorial.setUsuario(usuario);
-                    usrHistorialListNewUsrHistorial = em.merge(usrHistorialListNewUsrHistorial);
-                    if (oldUsuarioOfUsrHistorialListNewUsrHistorial != null && !oldUsuarioOfUsrHistorialListNewUsrHistorial.equals(usuario)) {
-                        oldUsuarioOfUsrHistorialListNewUsrHistorial.getUsrHistorialList().remove(usrHistorialListNewUsrHistorial);
-                        oldUsuarioOfUsrHistorialListNewUsrHistorial = em.merge(oldUsuarioOfUsrHistorialListNewUsrHistorial);
+            for (UsuarioHistorial usuarioHistorialListNewUsuarioHistorial : usuarioHistorialListNew) {
+                if (!usuarioHistorialListOld.contains(usuarioHistorialListNewUsuarioHistorial)) {
+                    Usuario oldUsuarioOfUsuarioHistorialListNewUsuarioHistorial = usuarioHistorialListNewUsuarioHistorial.getUsuario();
+                    usuarioHistorialListNewUsuarioHistorial.setUsuario(usuario);
+                    usuarioHistorialListNewUsuarioHistorial = em.merge(usuarioHistorialListNewUsuarioHistorial);
+                    if (oldUsuarioOfUsuarioHistorialListNewUsuarioHistorial != null && !oldUsuarioOfUsuarioHistorialListNewUsuarioHistorial.equals(usuario)) {
+                        oldUsuarioOfUsuarioHistorialListNewUsuarioHistorial.getUsuarioHistorialList().remove(usuarioHistorialListNewUsuarioHistorial);
+                        oldUsuarioOfUsuarioHistorialListNewUsuarioHistorial = em.merge(oldUsuarioOfUsuarioHistorialListNewUsuarioHistorial);
                     }
                 }
             }
@@ -238,7 +238,7 @@ public class UsuarioJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The usuario with id " + id + " no longer exists.", enfe);
             }
-            UsrGrupo grupo = usuario.getGrupo();
+            UsuarioGrupo grupo = usuario.getGrupo();
             if (grupo != null) {
                 grupo.getUsuarioList().remove(usuario);
                 grupo = em.merge(grupo);
@@ -248,15 +248,15 @@ public class UsuarioJpaController implements Serializable {
                 persona.setUsuario(null);
                 persona = em.merge(persona);
             }
-            List<UsrMenu> usrMenuList = usuario.getUsrMenuList();
-            for (UsrMenu usrMenuListUsrMenu : usrMenuList) {
-                usrMenuListUsrMenu.getUsuarioList().remove(usuario);
-                usrMenuListUsrMenu = em.merge(usrMenuListUsrMenu);
+            List<UsuarioMenu> usrMenuList = usuario.getUsrMenuList();
+            for (UsuarioMenu usrMenuListUsuarioMenu : usrMenuList) {
+                usrMenuListUsuarioMenu.getUsuarioList().remove(usuario);
+                usrMenuListUsuarioMenu = em.merge(usrMenuListUsuarioMenu);
             }
-            List<UsrHistorial> usrHistorialList = usuario.getUsrHistorialList();
-            for (UsrHistorial usrHistorialListUsrHistorial : usrHistorialList) {
-                usrHistorialListUsrHistorial.setUsuario(null);
-                usrHistorialListUsrHistorial = em.merge(usrHistorialListUsrHistorial);
+            List<UsuarioHistorial> usuarioHistorialList = usuario.getUsuarioHistorialList();
+            for (UsuarioHistorial usuarioHistorialListUsuarioHistorial : usuarioHistorialList) {
+                usuarioHistorialListUsuarioHistorial.setUsuario(null);
+                usuarioHistorialListUsuarioHistorial = em.merge(usuarioHistorialListUsuarioHistorial);
             }
             em.remove(usuario);
             em.getTransaction().commit();

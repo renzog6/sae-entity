@@ -42,16 +42,20 @@ public class Usuario implements Serializable {
     private String info;
     @Column(name = "estado")
     private String estado;
+    
     @ManyToMany(mappedBy = "usuarioList")
-    private List<UsrMenu> usrMenuList;
+    private List<UsuarioMenu> usrMenuList;
+    
     @JoinColumn(name = "grupo", referencedColumnName = "id_grupo")
     @ManyToOne
-    private UsrGrupo grupo;
+    private UsuarioGrupo grupo;
+    
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_persona", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Persona persona;
+    
     @OneToMany(mappedBy = "usuario")
-    private List<UsrHistorial> usrHistorialList;
+    private List<UsuarioHistorial> usuarioHistorialList;
 
     public Usuario() {
     }
@@ -109,19 +113,19 @@ public class Usuario implements Serializable {
     }
 
     @XmlTransient
-    public List<UsrMenu> getUsrMenuList() {
+    public List<UsuarioMenu> getUsrMenuList() {
         return usrMenuList;
     }
 
-    public void setUsrMenuList(List<UsrMenu> usrMenuList) {
+    public void setUsrMenuList(List<UsuarioMenu> usrMenuList) {
         this.usrMenuList = usrMenuList;
     }
 
-    public UsrGrupo getGrupo() {
+    public UsuarioGrupo getGrupo() {
         return grupo;
     }
 
-    public void setGrupo(UsrGrupo grupo) {
+    public void setGrupo(UsuarioGrupo grupo) {
         this.grupo = grupo;
     }
 
@@ -134,12 +138,12 @@ public class Usuario implements Serializable {
     }
 
     @XmlTransient
-    public List<UsrHistorial> getUsrHistorialList() {
-        return usrHistorialList;
+    public List<UsuarioHistorial> getUsuarioHistorialList() {
+        return usuarioHistorialList;
     }
 
-    public void setUsrHistorialList(List<UsrHistorial> usrHistorialList) {
-        this.usrHistorialList = usrHistorialList;
+    public void setUsuarioHistorialList(List<UsuarioHistorial> usuarioHistorialList) {
+        this.usuarioHistorialList = usuarioHistorialList;
     }
 
     @Override

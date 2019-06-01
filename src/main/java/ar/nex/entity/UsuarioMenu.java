@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ar.nex.entity;
 
 import java.io.Serializable;
@@ -16,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -29,12 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "usr_menu")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "UsrMenu.findAll", query = "SELECT u FROM UsrMenu u"),
-    @NamedQuery(name = "UsrMenu.findByIdMenu", query = "SELECT u FROM UsrMenu u WHERE u.idMenu = :idMenu"),
-    @NamedQuery(name = "UsrMenu.findByNombre", query = "SELECT u FROM UsrMenu u WHERE u.nombre = :nombre"),
-    @NamedQuery(name = "UsrMenu.findByCode", query = "SELECT u FROM UsrMenu u WHERE u.code = :code")})
-public class UsrMenu implements Serializable {
+public class UsuarioMenu implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -52,10 +40,10 @@ public class UsrMenu implements Serializable {
     @ManyToMany
     private List<Usuario> usuarioList;
 
-    public UsrMenu() {
+    public UsuarioMenu() {
     }
 
-    public UsrMenu(Long idMenu) {
+    public UsuarioMenu(Long idMenu) {
         this.idMenu = idMenu;
     }
 
@@ -102,10 +90,10 @@ public class UsrMenu implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof UsrMenu)) {
+        if (!(object instanceof UsuarioMenu)) {
             return false;
         }
-        UsrMenu other = (UsrMenu) object;
+        UsuarioMenu other = (UsuarioMenu) object;
         if ((this.idMenu == null && other.idMenu != null) || (this.idMenu != null && !this.idMenu.equals(other.idMenu))) {
             return false;
         }
