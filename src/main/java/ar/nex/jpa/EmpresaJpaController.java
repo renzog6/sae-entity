@@ -10,7 +10,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.Direccion;
+import ar.nex.entity.ubicacion.Direccion;
 import ar.nex.entity.Rubro;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class EmpresaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Empresa empresa) throws IllegalOrphanException {
+    public void create(Empresa empresa) {
         if (empresa.getRubroList() == null) {
             empresa.setRubroList(new ArrayList<Rubro>());
         }
@@ -59,19 +59,8 @@ public class EmpresaJpaController implements Serializable {
         if (empresa.getEquipoList() == null) {
             empresa.setEquipoList(new ArrayList<Equipo>());
         }
-        List<String> illegalOrphanMessages = null;
-        Direccion domicilioOrphanCheck = empresa.getDomicilio();
-        if (domicilioOrphanCheck != null) {
-            Empresa oldEmpresaOfDomicilio = domicilioOrphanCheck.getEmpresa();
-            if (oldEmpresaOfDomicilio != null) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("The Direccion " + domicilioOrphanCheck + " already has an item of type Empresa whose domicilio column cannot be null. Please make another selection for the domicilio field.");
-            }
-        }
-        if (illegalOrphanMessages != null) {
-            throw new IllegalOrphanException(illegalOrphanMessages);
+        if (empresa.getDireccionList() == null) {
+            empresa.setDireccionList(new ArrayList<Direccion>());
         }
         EntityManager em = null;
         try {
@@ -118,9 +107,15 @@ public class EmpresaJpaController implements Serializable {
                 attachedEquipoList.add(equipoListEquipoToAttach);
             }
             empresa.setEquipoList(attachedEquipoList);
+            List<Direccion> attachedDireccionList = new ArrayList<Direccion>();
+            for (Direccion direccionListDireccionToAttach : empresa.getDireccionList()) {
+                direccionListDireccionToAttach = em.getReference(direccionListDireccionToAttach.getClass(), direccionListDireccionToAttach.getIdDireccion());
+                attachedDireccionList.add(direccionListDireccionToAttach);
+            }
+            empresa.setDireccionList(attachedDireccionList);
             em.persist(empresa);
             if (domicilio != null) {
-                domicilio.setEmpresa(empresa);
+                domicilio.getEmpresaList().add(empresa);
                 domicilio = em.merge(domicilio);
             }
             for (Rubro rubroListRubro : empresa.getRubroList()) {
@@ -162,6 +157,10 @@ public class EmpresaJpaController implements Serializable {
                     oldEmpresaOfEquipoListEquipo = em.merge(oldEmpresaOfEquipoListEquipo);
                 }
             }
+            for (Direccion direccionListDireccion : empresa.getDireccionList()) {
+                direccionListDireccion.getEmpresaList().add(empresa);
+                direccionListDireccion = em.merge(direccionListDireccion);
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -190,16 +189,9 @@ public class EmpresaJpaController implements Serializable {
             List<Pedido> pedidoListNew = empresa.getPedidoList();
             List<Equipo> equipoListOld = persistentEmpresa.getEquipoList();
             List<Equipo> equipoListNew = empresa.getEquipoList();
+            List<Direccion> direccionListOld = persistentEmpresa.getDireccionList();
+            List<Direccion> direccionListNew = empresa.getDireccionList();
             List<String> illegalOrphanMessages = null;
-            if (domicilioNew != null && !domicilioNew.equals(domicilioOld)) {
-                Empresa oldEmpresaOfDomicilio = domicilioNew.getEmpresa();
-                if (oldEmpresaOfDomicilio != null) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("The Direccion " + domicilioNew + " already has an item of type Empresa whose domicilio column cannot be null. Please make another selection for the domicilio field.");
-                }
-            }
             for (Equipo equipoListOldEquipo : equipoListOld) {
                 if (!equipoListNew.contains(equipoListOldEquipo)) {
                     if (illegalOrphanMessages == null) {
@@ -257,13 +249,20 @@ public class EmpresaJpaController implements Serializable {
             }
             equipoListNew = attachedEquipoListNew;
             empresa.setEquipoList(equipoListNew);
+            List<Direccion> attachedDireccionListNew = new ArrayList<Direccion>();
+            for (Direccion direccionListNewDireccionToAttach : direccionListNew) {
+                direccionListNewDireccionToAttach = em.getReference(direccionListNewDireccionToAttach.getClass(), direccionListNewDireccionToAttach.getIdDireccion());
+                attachedDireccionListNew.add(direccionListNewDireccionToAttach);
+            }
+            direccionListNew = attachedDireccionListNew;
+            empresa.setDireccionList(direccionListNew);
             empresa = em.merge(empresa);
             if (domicilioOld != null && !domicilioOld.equals(domicilioNew)) {
-                domicilioOld.setEmpresa(null);
+                domicilioOld.getEmpresaList().remove(empresa);
                 domicilioOld = em.merge(domicilioOld);
             }
             if (domicilioNew != null && !domicilioNew.equals(domicilioOld)) {
-                domicilioNew.setEmpresa(empresa);
+                domicilioNew.getEmpresaList().add(empresa);
                 domicilioNew = em.merge(domicilioNew);
             }
             for (Rubro rubroListOldRubro : rubroListOld) {
@@ -347,6 +346,18 @@ public class EmpresaJpaController implements Serializable {
                     }
                 }
             }
+            for (Direccion direccionListOldDireccion : direccionListOld) {
+                if (!direccionListNew.contains(direccionListOldDireccion)) {
+                    direccionListOldDireccion.getEmpresaList().remove(empresa);
+                    direccionListOldDireccion = em.merge(direccionListOldDireccion);
+                }
+            }
+            for (Direccion direccionListNewDireccion : direccionListNew) {
+                if (!direccionListOld.contains(direccionListNewDireccion)) {
+                    direccionListNewDireccion.getEmpresaList().add(empresa);
+                    direccionListNewDireccion = em.merge(direccionListNewDireccion);
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -389,7 +400,7 @@ public class EmpresaJpaController implements Serializable {
             }
             Direccion domicilio = empresa.getDomicilio();
             if (domicilio != null) {
-                domicilio.setEmpresa(null);
+                domicilio.getEmpresaList().remove(empresa);
                 domicilio = em.merge(domicilio);
             }
             List<Rubro> rubroList = empresa.getRubroList();
@@ -416,6 +427,11 @@ public class EmpresaJpaController implements Serializable {
             for (Pedido pedidoListPedido : pedidoList) {
                 pedidoListPedido.setEmpresa(null);
                 pedidoListPedido = em.merge(pedidoListPedido);
+            }
+            List<Direccion> direccionList = empresa.getDireccionList();
+            for (Direccion direccionListDireccion : direccionList) {
+                direccionListDireccion.getEmpresaList().remove(empresa);
+                direccionListDireccion = em.merge(direccionListDireccion);
             }
             em.remove(empresa);
             em.getTransaction().commit();

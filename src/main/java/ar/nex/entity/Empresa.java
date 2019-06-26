@@ -1,5 +1,6 @@
 package ar.nex.entity;
 
+import ar.nex.entity.ubicacion.Direccion;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -12,8 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -43,32 +42,40 @@ public class Empresa implements Serializable {
     private String observacion;
     @Column(name = "razon_social")
     private String razonSocial;
+    
     @JoinTable(name = "empresa_rubro", joinColumns = {
         @JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")}, inverseJoinColumns = {
         @JoinColumn(name = "id_rubro", referencedColumnName = "id_rubro")})
     @ManyToMany
     private List<Rubro> rubroList;
+    
     @ManyToMany(mappedBy = "empresaList")
     private List<Contacto> contactoList;
-    
+
     @JoinTable(name = "ped_repuesto_empresa", joinColumns = {
         @JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")}, inverseJoinColumns = {
         @JoinColumn(name = "id_repuesto", referencedColumnName = "id_repuesto")})
     @ManyToMany
     private List<Repuesto> repuestoList;
-    
+
     @OneToMany(mappedBy = "empresa")
     private List<Empleado> empleadoList;
-    
+
     @OneToMany(mappedBy = "empresa")
     private List<Pedido> pedidoList;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
     private List<Equipo> equipoList;
-    
+
     @JoinColumn(name = "domicilio", referencedColumnName = "id_direccion")
     @OneToOne(optional = false)
     private Direccion domicilio;
+
+    @JoinTable(name = "empresa_direccion", joinColumns = {
+        @JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")}, inverseJoinColumns = {
+        @JoinColumn(name = "id_direccion", referencedColumnName = "id_direccion")})
+    @ManyToMany
+    private List<Direccion> direccionList;
 
     public Empresa() {
     }
@@ -179,6 +186,15 @@ public class Empresa implements Serializable {
         this.domicilio = domicilio;
     }
 
+    @XmlTransient
+    public List<Direccion> getDireccionList() {
+        return direccionList;
+    }
+
+    public void setDireccionList(List<Direccion> direccionList) {
+        this.direccionList = direccionList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -203,5 +219,5 @@ public class Empresa implements Serializable {
     public String toString() {
         return this.nombre;
     }
-    
+
 }

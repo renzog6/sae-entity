@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ar.nex.entity;
 
 import java.io.Serializable;
@@ -29,13 +24,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "contacto")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Contacto.findAll", query = "SELECT c FROM Contacto c"),
-    @NamedQuery(name = "Contacto.findByIdContacto", query = "SELECT c FROM Contacto c WHERE c.idContacto = :idContacto"),
-    @NamedQuery(name = "Contacto.findByTipo", query = "SELECT c FROM Contacto c WHERE c.tipo = :tipo"),
-    @NamedQuery(name = "Contacto.findByDato", query = "SELECT c FROM Contacto c WHERE c.dato = :dato"),
-    @NamedQuery(name = "Contacto.findByNombre", query = "SELECT c FROM Contacto c WHERE c.nombre = :nombre"),
-    @NamedQuery(name = "Contacto.findByObservacion", query = "SELECT c FROM Contacto c WHERE c.observacion = :observacion")})
 public class Contacto implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -164,7 +152,7 @@ public class Contacto implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.nex.entity.Contacto[ idContacto=" + idContacto + " ]";
+        return nombre + " - " + tipo + " - " + dato + " (" + observacion + ")";
     }
-    
+
 }

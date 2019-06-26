@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ar.nex.entity;
+package ar.nex.entity.ubicacion;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,8 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,13 +20,8 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Renzo
  */
 @Entity
-@Table(name = "dir_localidad")
+@Table(name = "ubi_localidad")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Localidad.findAll", query = "SELECT l FROM Localidad l"),
-    @NamedQuery(name = "Localidad.findByIdLocalidad", query = "SELECT l FROM Localidad l WHERE l.idLocalidad = :idLocalidad"),
-    @NamedQuery(name = "Localidad.findByNombre", query = "SELECT l FROM Localidad l WHERE l.nombre = :nombre"),
-    @NamedQuery(name = "Localidad.findByCodigoPostal", query = "SELECT l FROM Localidad l WHERE l.codigoPostal = :codigoPostal")})
 public class Localidad implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -47,11 +35,12 @@ public class Localidad implements Serializable {
     @Basic(optional = false)
     @Column(name = "codigo_postal")
     private int codigoPostal;
-    @OneToMany(mappedBy = "localidad")
-    private List<Direccion> direccionList;
     @JoinColumn(name = "provincia", referencedColumnName = "id_provincia")
     @ManyToOne
     private Provincia provincia;
+    
+    @OneToMany(mappedBy = "localidad")
+    private List<Direccion> direccionList;
 
     public Localidad() {
     }
@@ -89,6 +78,14 @@ public class Localidad implements Serializable {
         this.codigoPostal = codigoPostal;
     }
 
+    public Provincia getProvincia() {
+        return provincia;
+    }
+
+    public void setProvincia(Provincia provincia) {
+        this.provincia = provincia;
+    }
+
     @XmlTransient
     public List<Direccion> getDireccionList() {
         return direccionList;
@@ -96,14 +93,6 @@ public class Localidad implements Serializable {
 
     public void setDireccionList(List<Direccion> direccionList) {
         this.direccionList = direccionList;
-    }
-
-    public Provincia getProvincia() {
-        return provincia;
-    }
-
-    public void setProvincia(Provincia provincia) {
-        this.provincia = provincia;
     }
 
     @Override
@@ -128,7 +117,7 @@ public class Localidad implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.nex.entity.Localidad[ idLocalidad=" + idLocalidad + " ]";
+        return nombre + " (" + codigoPostal + ")";
     }
-    
+
 }

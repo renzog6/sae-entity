@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ar.nex.entity;
+package ar.nex.entity.ubicacion;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,8 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,12 +18,8 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Renzo
  */
 @Entity
-@Table(name = "dir_provincia")
+@Table(name = "ubi_provincia")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Provincia.findAll", query = "SELECT p FROM Provincia p"),
-    @NamedQuery(name = "Provincia.findByIdProvincia", query = "SELECT p FROM Provincia p WHERE p.idProvincia = :idProvincia"),
-    @NamedQuery(name = "Provincia.findByNombre", query = "SELECT p FROM Provincia p WHERE p.nombre = :nombre")})
 public class Provincia implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,6 +30,8 @@ public class Provincia implements Serializable {
     private Long idProvincia;
     @Column(name = "nombre")
     private String nombre;
+    @Column(name = "codigo")
+    private String codigo;
     @OneToMany(mappedBy = "provincia")
     private List<Localidad> localidadList;
 
@@ -65,6 +56,14 @@ public class Provincia implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     @XmlTransient
@@ -98,7 +97,7 @@ public class Provincia implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.nex.entity.Provincia[ idProvincia=" + idProvincia + " ]";
+        return this.nombre;
     }
     
 }

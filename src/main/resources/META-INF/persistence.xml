@@ -7,19 +7,15 @@
     <class>ar.nex.entity.CerSilo</class>
     <class>ar.nex.entity.CerVariedad</class>
     <class>ar.nex.entity.Empleado</class>
-    <class>ar.nex.entity.Empresa</class>
-    <class>ar.nex.entity.Direccion</class>
     <class>ar.nex.entity.EquipoModelo</class>
     <class>ar.nex.entity.EquipoCategoria</class>
     <class>ar.nex.entity.EquipoTipo</class>
     <class>ar.nex.entity.Equipo</class>
     <class>ar.nex.entity.CerStock</class>
     <class>ar.nex.entity.FleDestino</class>
-    <class>ar.nex.entity.Localidad</class>
     <class>ar.nex.entity.FleTarifa</class>
     <class>ar.nex.entity.Marca</class>
     <class>ar.nex.entity.Persona</class>
-    <class>ar.nex.entity.Provincia</class>
     <class>ar.nex.entity.RepuestoStockDetalle</class>
     <class>ar.nex.entity.Pedido</class>
     <class>ar.nex.entity.Repuesto</class>
@@ -36,6 +32,13 @@
     <class>ar.nex.entity.UsuarioHistorial</class>
     <class>ar.nex.entity.UsuarioGrupo</class>
     <class>ar.nex.entity.UsuarioEvento</class>
+    <class>ar.nex.entity.Empresa</class>
+    
+    <class>ar.nex.entity.ubicacion.Coordenada</class>
+    <class>ar.nex.entity.ubicacion.Direccion</class>
+    <class>ar.nex.entity.ubicacion.Localidad</class>
+    <class>ar.nex.entity.ubicacion.Provincia</class>
+    
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/sae_app?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="saedb"/>

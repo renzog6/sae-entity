@@ -10,7 +10,6 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.Direccion;
 import ar.nex.entity.Empleado;
 import ar.nex.entity.Usuario;
 import ar.nex.entity.Contacto;
@@ -52,11 +51,6 @@ public class PersonaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Direccion domicilio = persona.getDomicilio();
-            if (domicilio != null) {
-                domicilio = em.getReference(domicilio.getClass(), domicilio.getIdDireccion());
-                persona.setDomicilio(domicilio);
-            }
             Empleado empleado = persona.getEmpleado();
             if (empleado != null) {
                 empleado = em.getReference(empleado.getClass(), empleado.getIdEmpleado());
@@ -86,10 +80,6 @@ public class PersonaJpaController implements Serializable {
             }
             persona.setFamiliaList1(attachedFamiliaList1);
             em.persist(persona);
-            if (domicilio != null) {
-                domicilio.getPersonaList().add(persona);
-                domicilio = em.merge(domicilio);
-            }
             if (empleado != null) {
                 Persona oldPersonaOfEmpleado = empleado.getPersona();
                 if (oldPersonaOfEmpleado != null) {
@@ -144,8 +134,6 @@ public class PersonaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Persona persistentPersona = em.find(Persona.class, persona.getIdPersona());
-            Direccion domicilioOld = persistentPersona.getDomicilio();
-            Direccion domicilioNew = persona.getDomicilio();
             Empleado empleadoOld = persistentPersona.getEmpleado();
             Empleado empleadoNew = persona.getEmpleado();
             Usuario usuarioOld = persistentPersona.getUsuario();
@@ -171,10 +159,6 @@ public class PersonaJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            if (domicilioNew != null) {
-                domicilioNew = em.getReference(domicilioNew.getClass(), domicilioNew.getIdDireccion());
-                persona.setDomicilio(domicilioNew);
             }
             if (empleadoNew != null) {
                 empleadoNew = em.getReference(empleadoNew.getClass(), empleadoNew.getIdEmpleado());
@@ -206,14 +190,6 @@ public class PersonaJpaController implements Serializable {
             familiaList1New = attachedFamiliaList1New;
             persona.setFamiliaList1(familiaList1New);
             persona = em.merge(persona);
-            if (domicilioOld != null && !domicilioOld.equals(domicilioNew)) {
-                domicilioOld.getPersonaList().remove(persona);
-                domicilioOld = em.merge(domicilioOld);
-            }
-            if (domicilioNew != null && !domicilioNew.equals(domicilioOld)) {
-                domicilioNew.getPersonaList().add(persona);
-                domicilioNew = em.merge(domicilioNew);
-            }
             if (empleadoNew != null && !empleadoNew.equals(empleadoOld)) {
                 Persona oldPersonaOfEmpleado = empleadoNew.getPersona();
                 if (oldPersonaOfEmpleado != null) {
@@ -324,11 +300,6 @@ public class PersonaJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Direccion domicilio = persona.getDomicilio();
-            if (domicilio != null) {
-                domicilio.getPersonaList().remove(persona);
-                domicilio = em.merge(domicilio);
             }
             List<Contacto> contactoList = persona.getContactoList();
             for (Contacto contactoListContacto : contactoList) {

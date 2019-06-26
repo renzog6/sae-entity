@@ -1,25 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ar.nex.entity;
+package ar.nex.entity.ubicacion;
 
+import ar.nex.entity.Empresa;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -29,13 +22,12 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Renzo
  */
 @Entity
-@Table(name = "dir_direccion")
+@Table(name = "ubi_direccion")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Direccion.findAll", query = "SELECT d FROM Direccion d"),
-    @NamedQuery(name = "Direccion.findByIdDireccion", query = "SELECT d FROM Direccion d WHERE d.idDireccion = :idDireccion"),
-    @NamedQuery(name = "Direccion.findByCalle", query = "SELECT d FROM Direccion d WHERE d.calle = :calle")})
 public class Direccion implements Serializable {
+
+    @OneToMany(mappedBy = "direccion")
+    private List<Coordenada> coordenadaList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -43,15 +35,19 @@ public class Direccion implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_direccion")
     private Long idDireccion;
+    @Column(name = "nombre")
+    private String nombre;
+    @Column(name = "numero")
+    private String numero;
     @Column(name = "calle")
     private String calle;
+   
+    @ManyToMany(mappedBy = "direccionList")
+    private List<Empresa> empresaList;
+
     @JoinColumn(name = "localidad", referencedColumnName = "id_localidad")
     @ManyToOne
     private Localidad localidad;
-    @OneToMany(mappedBy = "domicilio")
-    private List<Persona> personaList;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "domicilio")
-    private Empresa empresa;
 
     public Direccion() {
     }
@@ -68,6 +64,22 @@ public class Direccion implements Serializable {
         this.idDireccion = idDireccion;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
     public String getCalle() {
         return calle;
     }
@@ -76,29 +88,30 @@ public class Direccion implements Serializable {
         this.calle = calle;
     }
 
+    @XmlTransient
+    public List<Empresa> getEmpresaList() {
+        return empresaList;
+    }
+
+    public void setEmpresaList(List<Empresa> empresaList) {
+        this.empresaList = empresaList;
+    }
+
+    @XmlTransient
+    public List<Coordenada> getCoordenadaList() {
+        return coordenadaList;
+    }
+
+    public void setCoordenadaList(List<Coordenada> coordenadaList) {
+        this.coordenadaList = coordenadaList;
+    }
+
     public Localidad getLocalidad() {
         return localidad;
     }
 
     public void setLocalidad(Localidad localidad) {
         this.localidad = localidad;
-    }
-
-    @XmlTransient
-    public List<Persona> getPersonaList() {
-        return personaList;
-    }
-
-    public void setPersonaList(List<Persona> personaList) {
-        this.personaList = personaList;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
     }
 
     @Override
@@ -121,9 +134,9 @@ public class Direccion implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "ar.nex.entity.Direccion[ idDireccion=" + idDireccion + " ]";
+    @Override    
+    public String toString(){
+        return this.nombre + ": " + this.calle + "  " + this.numero + " - " + getLocalidad().getNombre() + " (" + getLocalidad().getCodigoPostal() + ") - " + getLocalidad().getProvincia();
     }
-    
+
 }
