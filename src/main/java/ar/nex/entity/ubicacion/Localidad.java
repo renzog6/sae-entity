@@ -2,6 +2,7 @@ package ar.nex.entity.ubicacion;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,11 +31,13 @@ public class Localidad implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_localidad")
     private Long idLocalidad;
+    
     @Column(name = "nombre")
     private String nombre;
-    @Basic(optional = false)
+       
     @Column(name = "codigo_postal")
-    private int codigoPostal;
+    private String codigoPostal;
+    
     @JoinColumn(name = "provincia", referencedColumnName = "id_provincia")
     @ManyToOne
     private Provincia provincia;
@@ -47,11 +50,6 @@ public class Localidad implements Serializable {
 
     public Localidad(Long idLocalidad) {
         this.idLocalidad = idLocalidad;
-    }
-
-    public Localidad(Long idLocalidad, int codigoPostal) {
-        this.idLocalidad = idLocalidad;
-        this.codigoPostal = codigoPostal;
     }
 
     public Long getIdLocalidad() {
@@ -70,11 +68,11 @@ public class Localidad implements Serializable {
         this.nombre = nombre;
     }
 
-    public int getCodigoPostal() {
+    public String getCodigoPostal() {
         return codigoPostal;
     }
 
-    public void setCodigoPostal(int codigoPostal) {
+    public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
 
@@ -97,19 +95,28 @@ public class Localidad implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (idLocalidad != null ? idLocalidad.hashCode() : 0);
+        int hash = 3;
+        hash = 13 * hash + Objects.hashCode(this.nombre);
+        hash = 13 * hash + Objects.hashCode(this.codigoPostal);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Localidad)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Localidad other = (Localidad) object;
-        if ((this.idLocalidad == null && other.idLocalidad != null) || (this.idLocalidad != null && !this.idLocalidad.equals(other.idLocalidad))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Localidad other = (Localidad) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        if (!Objects.equals(this.codigoPostal, other.codigoPostal)) {
             return false;
         }
         return true;
