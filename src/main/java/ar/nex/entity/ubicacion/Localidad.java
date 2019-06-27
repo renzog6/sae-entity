@@ -31,17 +31,17 @@ public class Localidad implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_localidad")
     private Long idLocalidad;
-    
+
     @Column(name = "nombre")
     private String nombre;
-       
+
     @Column(name = "codigo_postal")
     private String codigoPostal;
-    
+
     @JoinColumn(name = "provincia", referencedColumnName = "id_provincia")
     @ManyToOne
     private Provincia provincia;
-    
+
     @OneToMany(mappedBy = "localidad")
     private List<Direccion> direccionList;
 
@@ -124,7 +124,7 @@ public class Localidad implements Serializable {
 
     @Override
     public String toString() {
-        return nombre + " (" + codigoPostal + ")";
+        return nombre + " ( " + provincia.getCodigo() + codigoPostal + " ) " + provincia.getNombre();
     }
 
 }
