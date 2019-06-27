@@ -27,8 +27,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class Direccion implements Serializable {
 
-    
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +41,8 @@ public class Direccion implements Serializable {
     private String calle;
     @Column(name = "codigo")
     private String codigo;
-
+    @Column(name = "info")
+    private String info;
     @ManyToMany(mappedBy = "direccionList")
     private List<Empresa> empresaList;
 
@@ -53,7 +52,7 @@ public class Direccion implements Serializable {
 
     @OneToMany(mappedBy = "direccion")
     private List<Coordenada> coordenadaList;
-    
+
     public Direccion() {
     }
 
@@ -125,6 +124,14 @@ public class Direccion implements Serializable {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     @Override
