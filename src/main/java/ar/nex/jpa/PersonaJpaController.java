@@ -12,7 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ar.nex.entity.Empleado;
 import ar.nex.entity.Usuario;
-import ar.nex.entity.Contacto;
+import ar.nex.entity.ubicacion.Contacto;
 import java.util.ArrayList;
 import java.util.List;
 import ar.nex.entity.Familia;

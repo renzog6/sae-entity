@@ -1,5 +1,8 @@
-package ar.nex.entity;
+package ar.nex.entity.ubicacion;
 
+import ar.nex.entity.Empleado;
+import ar.nex.entity.empresa.Empresa;
+import ar.nex.entity.Persona;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -11,8 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -32,14 +33,17 @@ public class Contacto implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_contacto")
     private Long idContacto;
+    
     @Column(name = "tipo")
-    private Integer tipo;
+    private ContactoTipo tipo;
+    
     @Column(name = "dato")
     private String dato;
     @Column(name = "nombre")
     private String nombre;
-    @Column(name = "observacion")
-    private String observacion;
+    @Column(name = "info")
+    private String info;
+    
     @JoinTable(name = "rh_persona_contacto", joinColumns = {
         @JoinColumn(name = "id_contacto", referencedColumnName = "id_contacto")}, inverseJoinColumns = {
         @JoinColumn(name = "id_persona", referencedColumnName = "id_persona")})
@@ -71,11 +75,11 @@ public class Contacto implements Serializable {
         this.idContacto = idContacto;
     }
 
-    public Integer getTipo() {
+    public ContactoTipo getTipo() {
         return tipo;
     }
 
-    public void setTipo(Integer tipo) {
+    public void setTipo(ContactoTipo tipo) {
         this.tipo = tipo;
     }
 
@@ -95,12 +99,12 @@ public class Contacto implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getObservacion() {
-        return observacion;
+    public String getInfo() {
+        return info;
     }
 
-    public void setObservacion(String observacion) {
-        this.observacion = observacion;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     @XmlTransient
@@ -152,7 +156,7 @@ public class Contacto implements Serializable {
 
     @Override
     public String toString() {
-        return nombre + " - " + tipo + " - " + dato + " (" + observacion + ")";
+        return nombre + " - " + tipo + " - " + dato + " (" + info + ")";
     }
 
 }

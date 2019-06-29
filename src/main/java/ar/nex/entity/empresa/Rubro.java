@@ -1,21 +1,20 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ar.nex.entity;
+package ar.nex.entity.empresa;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -27,11 +26,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "rubro")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Rubro.findAll", query = "SELECT r FROM Rubro r"),
-    @NamedQuery(name = "Rubro.findByIdRubro", query = "SELECT r FROM Rubro r WHERE r.idRubro = :idRubro"),
-    @NamedQuery(name = "Rubro.findByNombre", query = "SELECT r FROM Rubro r WHERE r.nombre = :nombre"),
-    @NamedQuery(name = "Rubro.findByDescripcion", query = "SELECT r FROM Rubro r WHERE r.descripcion = :descripcion")})
 public class Rubro implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,8 +36,14 @@ public class Rubro implements Serializable {
     private Long idRubro;
     @Column(name = "nombre")
     private String nombre;
+    @Column(name = "codigo")
+    private Integer codigo;
     @Column(name = "descripcion")
     private String descripcion;
+  
+    @OneToMany(mappedBy = "rubro")
+    private List<SubRubro> subRubroList;
+    
     @ManyToMany(mappedBy = "rubroList")
     private List<Empresa> empresaList;
 
@@ -78,6 +78,23 @@ public class Rubro implements Serializable {
         this.descripcion = descripcion;
     }
 
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
+    }
+
+    @XmlTransient
+    public List<SubRubro> getSubRubroList() {
+        return subRubroList;
+    }
+
+    public void setSubRubroList(List<SubRubro> subRubroList) {
+        this.subRubroList = subRubroList;
+    }
+
     @XmlTransient
     public List<Empresa> getEmpresaList() {
         return empresaList;
@@ -89,19 +106,28 @@ public class Rubro implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (idRubro != null ? idRubro.hashCode() : 0);
+        int hash = 3;
+        hash = 73 * hash + Objects.hashCode(this.idRubro);
+        hash = 73 * hash + Objects.hashCode(this.codigo);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Rubro)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Rubro other = (Rubro) object;
-        if ((this.idRubro == null && other.idRubro != null) || (this.idRubro != null && !this.idRubro.equals(other.idRubro))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Rubro other = (Rubro) obj;
+        if (!Objects.equals(this.idRubro, other.idRubro)) {
+            return false;
+        }
+        if (!Objects.equals(this.codigo, other.codigo)) {
             return false;
         }
         return true;
@@ -109,7 +135,7 @@ public class Rubro implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.nex.entity.Rubro[ idRubro=" + idRubro + " ]";
+        return this.nombre;
     }
-    
+
 }

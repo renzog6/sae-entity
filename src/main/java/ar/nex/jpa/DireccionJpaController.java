@@ -11,7 +11,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ar.nex.entity.ubicacion.Localidad;
-import ar.nex.entity.Empresa;
+import ar.nex.entity.empresa.Empresa;
 import java.util.ArrayList;
 import java.util.List;
 import ar.nex.entity.ubicacion.Coordenada;

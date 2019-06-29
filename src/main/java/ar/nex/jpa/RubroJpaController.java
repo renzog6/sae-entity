@@ -10,11 +10,12 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.Empresa;
-import ar.nex.entity.Rubro;
-import ar.nex.jpa.exceptions.NonexistentEntityException;
+import ar.nex.entity.empresa.SubRubro;
 import java.util.ArrayList;
 import java.util.List;
+import ar.nex.entity.empresa.Empresa;
+import ar.nex.entity.empresa.Rubro;
+import ar.nex.jpa.exceptions.NonexistentEntityException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -34,6 +35,9 @@ public class RubroJpaController implements Serializable {
     }
 
     public void create(Rubro rubro) {
+        if (rubro.getSubRubroList() == null) {
+            rubro.setSubRubroList(new ArrayList<SubRubro>());
+        }
         if (rubro.getEmpresaList() == null) {
             rubro.setEmpresaList(new ArrayList<Empresa>());
         }
@@ -41,6 +45,12 @@ public class RubroJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            List<SubRubro> attachedSubRubroList = new ArrayList<SubRubro>();
+            for (SubRubro subRubroListSubRubroToAttach : rubro.getSubRubroList()) {
+                subRubroListSubRubroToAttach = em.getReference(subRubroListSubRubroToAttach.getClass(), subRubroListSubRubroToAttach.getIdSub());
+                attachedSubRubroList.add(subRubroListSubRubroToAttach);
+            }
+            rubro.setSubRubroList(attachedSubRubroList);
             List<Empresa> attachedEmpresaList = new ArrayList<Empresa>();
             for (Empresa empresaListEmpresaToAttach : rubro.getEmpresaList()) {
                 empresaListEmpresaToAttach = em.getReference(empresaListEmpresaToAttach.getClass(), empresaListEmpresaToAttach.getIdEmpresa());
@@ -48,6 +58,15 @@ public class RubroJpaController implements Serializable {
             }
             rubro.setEmpresaList(attachedEmpresaList);
             em.persist(rubro);
+            for (SubRubro subRubroListSubRubro : rubro.getSubRubroList()) {
+                Rubro oldRubroOfSubRubroListSubRubro = subRubroListSubRubro.getRubro();
+                subRubroListSubRubro.setRubro(rubro);
+                subRubroListSubRubro = em.merge(subRubroListSubRubro);
+                if (oldRubroOfSubRubroListSubRubro != null) {
+                    oldRubroOfSubRubroListSubRubro.getSubRubroList().remove(subRubroListSubRubro);
+                    oldRubroOfSubRubroListSubRubro = em.merge(oldRubroOfSubRubroListSubRubro);
+                }
+            }
             for (Empresa empresaListEmpresa : rubro.getEmpresaList()) {
                 empresaListEmpresa.getRubroList().add(rubro);
                 empresaListEmpresa = em.merge(empresaListEmpresa);
@@ -66,8 +85,17 @@ public class RubroJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Rubro persistentRubro = em.find(Rubro.class, rubro.getIdRubro());
+            List<SubRubro> subRubroListOld = persistentRubro.getSubRubroList();
+            List<SubRubro> subRubroListNew = rubro.getSubRubroList();
             List<Empresa> empresaListOld = persistentRubro.getEmpresaList();
             List<Empresa> empresaListNew = rubro.getEmpresaList();
+            List<SubRubro> attachedSubRubroListNew = new ArrayList<SubRubro>();
+            for (SubRubro subRubroListNewSubRubroToAttach : subRubroListNew) {
+                subRubroListNewSubRubroToAttach = em.getReference(subRubroListNewSubRubroToAttach.getClass(), subRubroListNewSubRubroToAttach.getIdSub());
+                attachedSubRubroListNew.add(subRubroListNewSubRubroToAttach);
+            }
+            subRubroListNew = attachedSubRubroListNew;
+            rubro.setSubRubroList(subRubroListNew);
             List<Empresa> attachedEmpresaListNew = new ArrayList<Empresa>();
             for (Empresa empresaListNewEmpresaToAttach : empresaListNew) {
                 empresaListNewEmpresaToAttach = em.getReference(empresaListNewEmpresaToAttach.getClass(), empresaListNewEmpresaToAttach.getIdEmpresa());
@@ -76,6 +104,23 @@ public class RubroJpaController implements Serializable {
             empresaListNew = attachedEmpresaListNew;
             rubro.setEmpresaList(empresaListNew);
             rubro = em.merge(rubro);
+            for (SubRubro subRubroListOldSubRubro : subRubroListOld) {
+                if (!subRubroListNew.contains(subRubroListOldSubRubro)) {
+                    subRubroListOldSubRubro.setRubro(null);
+                    subRubroListOldSubRubro = em.merge(subRubroListOldSubRubro);
+                }
+            }
+            for (SubRubro subRubroListNewSubRubro : subRubroListNew) {
+                if (!subRubroListOld.contains(subRubroListNewSubRubro)) {
+                    Rubro oldRubroOfSubRubroListNewSubRubro = subRubroListNewSubRubro.getRubro();
+                    subRubroListNewSubRubro.setRubro(rubro);
+                    subRubroListNewSubRubro = em.merge(subRubroListNewSubRubro);
+                    if (oldRubroOfSubRubroListNewSubRubro != null && !oldRubroOfSubRubroListNewSubRubro.equals(rubro)) {
+                        oldRubroOfSubRubroListNewSubRubro.getSubRubroList().remove(subRubroListNewSubRubro);
+                        oldRubroOfSubRubroListNewSubRubro = em.merge(oldRubroOfSubRubroListNewSubRubro);
+                    }
+                }
+            }
             for (Empresa empresaListOldEmpresa : empresaListOld) {
                 if (!empresaListNew.contains(empresaListOldEmpresa)) {
                     empresaListOldEmpresa.getRubroList().remove(rubro);
@@ -116,6 +161,11 @@ public class RubroJpaController implements Serializable {
                 rubro.getIdRubro();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The rubro with id " + id + " no longer exists.", enfe);
+            }
+            List<SubRubro> subRubroList = rubro.getSubRubroList();
+            for (SubRubro subRubroListSubRubro : subRubroList) {
+                subRubroListSubRubro.setRubro(null);
+                subRubroListSubRubro = em.merge(subRubroListSubRubro);
             }
             List<Empresa> empresaList = rubro.getEmpresaList();
             for (Empresa empresaListEmpresa : empresaList) {

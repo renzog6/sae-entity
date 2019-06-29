@@ -1,5 +1,6 @@
 package ar.nex.service;
 
+import ar.nex.jpa.ContactoJpaController;
 import ar.nex.jpa.DireccionJpaController;
 import ar.nex.jpa.EmpresaJpaController;
 import ar.nex.jpa.LocalidadJpaController;
@@ -84,5 +85,12 @@ public final class JpaService {
             getFactory();
         }
         return new DireccionJpaController(factory);
+    }
+
+    public ContactoJpaController getContacto() {
+        if (factory == null) {
+            getFactory();
+        }
+        return new ContactoJpaController(factory);
     }
 }

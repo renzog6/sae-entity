@@ -1,6 +1,6 @@
 package ar.nex.entity.ubicacion;
 
-import ar.nex.entity.Empresa;
+import ar.nex.entity.empresa.Empresa;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;

@@ -13,7 +13,7 @@ import javax.persistence.criteria.Root;
 import ar.nex.entity.Equipo;
 import java.util.ArrayList;
 import java.util.List;
-import ar.nex.entity.Empresa;
+import ar.nex.entity.empresa.Empresa;
 import ar.nex.entity.EquipoModelo;
 import ar.nex.entity.RepuestoStockDetalle;
 import ar.nex.entity.Pedido;

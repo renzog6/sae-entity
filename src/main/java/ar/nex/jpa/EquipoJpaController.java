@@ -5,6 +5,7 @@
  */
 package ar.nex.jpa;
 
+import ar.nex.entity.Equipo;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -12,8 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ar.nex.entity.EquipoCategoria;
 import ar.nex.entity.EquipoCompraVenta;
-import ar.nex.entity.Empresa;
-import ar.nex.entity.Equipo;
+import ar.nex.entity.empresa.Empresa;
 import ar.nex.entity.Marca;
 import ar.nex.entity.EquipoModelo;
 import ar.nex.entity.EquipoTipo;

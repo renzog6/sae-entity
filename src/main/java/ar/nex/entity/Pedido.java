@@ -1,5 +1,6 @@
 package ar.nex.entity;
 
+import ar.nex.entity.empresa.Empresa;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;

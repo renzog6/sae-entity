@@ -5,7 +5,6 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.Contacto;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -14,8 +13,9 @@ import javax.persistence.criteria.Root;
 import ar.nex.entity.Persona;
 import java.util.ArrayList;
 import java.util.List;
-import ar.nex.entity.Empresa;
+import ar.nex.entity.empresa.Empresa;
 import ar.nex.entity.Empleado;
+import ar.nex.entity.ubicacion.Contacto;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

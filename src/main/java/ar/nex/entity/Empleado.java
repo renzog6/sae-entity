@@ -5,6 +5,8 @@
  */
 package ar.nex.entity;
 
+import ar.nex.entity.empresa.Empresa;
+import ar.nex.entity.ubicacion.Contacto;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;

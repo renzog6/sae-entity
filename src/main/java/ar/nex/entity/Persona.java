@@ -5,6 +5,7 @@
  */
 package ar.nex.entity;
 
+import ar.nex.entity.ubicacion.Contacto;
 import ar.nex.entity.ubicacion.Direccion;
 import java.io.Serializable;
 import java.util.Date;
