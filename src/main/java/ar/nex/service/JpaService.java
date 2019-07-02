@@ -2,9 +2,17 @@ package ar.nex.service;
 
 import ar.nex.jpa.ContactoJpaController;
 import ar.nex.jpa.DireccionJpaController;
+import ar.nex.jpa.EmpleadoJpaController;
 import ar.nex.jpa.EmpresaJpaController;
+import ar.nex.jpa.EquipoCategoriaJpaController;
+import ar.nex.jpa.EquipoCompraVentaJpaController;
+import ar.nex.jpa.EquipoJpaController;
+import ar.nex.jpa.EquipoModeloJpaController;
+import ar.nex.jpa.EquipoTipoJpaController;
 import ar.nex.jpa.LocalidadJpaController;
+import ar.nex.jpa.MarcaJpaController;
 import ar.nex.jpa.PedidoJpaController;
+import ar.nex.jpa.PersonaJpaController;
 import ar.nex.jpa.ProvinciaJpaController;
 import ar.nex.jpa.RepuestoJpaController;
 import ar.nex.jpa.RubroJpaController;
@@ -40,65 +48,70 @@ public final class JpaService {
     }
 
     public EmpresaJpaController getEmpresa() {
-        if (factory == null) {
-            getFactory();
-        }
-        return new EmpresaJpaController(factory);
+        return new EmpresaJpaController(getFactory());
     }
 
-    public PedidoJpaController getPedido() {
-        if (factory == null) {
-            getFactory();
-        }
-        return new PedidoJpaController(factory);
+    public MarcaJpaController getMarca() {
+        return new MarcaJpaController(getFactory());
     }
 
-    public RepuestoJpaController getRepuesto() {
-        if (factory == null) {
-            getFactory();
-        }
-        return new RepuestoJpaController(factory);
+    public EquipoJpaController getEquipo() {        
+        return new EquipoJpaController(getFactory());
     }
 
-    public UsuarioJpaController getUsuario() {
-        if (factory == null) {
-            getFactory();
-        }
-        return new UsuarioJpaController(factory);
+    public EquipoCategoriaJpaController getEquipoCategoria() {
+        return new EquipoCategoriaJpaController(getFactory());
     }
 
-    public ProvinciaJpaController getProvincia() {
-        if (factory == null) {
-            getFactory();
-        }
-        return new ProvinciaJpaController(factory);
+    public EquipoModeloJpaController getEquipoModelo() {
+        return new EquipoModeloJpaController(getFactory());
     }
 
-    public LocalidadJpaController getLocalidad() {
-        if (factory == null) {
-            getFactory();
-        }
-        return new LocalidadJpaController(factory);
+    public EquipoTipoJpaController getEquipoTipo() {        
+        return new EquipoTipoJpaController(getFactory());
     }
 
-    public DireccionJpaController getDireccion() {
-        if (factory == null) {
-            getFactory();
-        }
-        return new DireccionJpaController(factory);
+    public EquipoCompraVentaJpaController getEquipoCompraVenta() {        
+        return new EquipoCompraVentaJpaController(getFactory());
     }
 
-    public ContactoJpaController getContacto() {
-        if (factory == null) {
-            getFactory();
-        }
-        return new ContactoJpaController(factory);
+    public PedidoJpaController getPedido() {        
+        return new PedidoJpaController(getFactory());
     }
-    
-        public RubroJpaController getRubro() {
-        if (factory == null) {
-            getFactory();
-        }
-        return new RubroJpaController(factory);
+
+    public RepuestoJpaController getRepuesto() {        
+        return new RepuestoJpaController(getFactory());
+    }
+
+    public UsuarioJpaController getUsuario() {        
+        return new UsuarioJpaController(getFactory());
+    }
+
+    public EmpleadoJpaController getEmpleado() {        
+        return new EmpleadoJpaController(getFactory());
+    }
+
+    public PersonaJpaController getPersona() {
+        return new PersonaJpaController(getFactory());
+    }
+
+    public ProvinciaJpaController getProvincia() {        
+        return new ProvinciaJpaController(getFactory());
+    }
+
+    public LocalidadJpaController getLocalidad() {        
+        return new LocalidadJpaController(getFactory());
+    }
+
+    public DireccionJpaController getDireccion() {        
+        return new DireccionJpaController(getFactory());
+    }
+
+    public ContactoJpaController getContacto() {        
+        return new ContactoJpaController(getFactory());
+    }
+
+    public RubroJpaController getRubro() {        
+        return new RubroJpaController(getFactory());
     }
 }
