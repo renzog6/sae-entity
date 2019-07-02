@@ -6,26 +6,11 @@
     <class>ar.nex.entity.CerEspecie</class>
     <class>ar.nex.entity.CerSilo</class>
     <class>ar.nex.entity.CerVariedad</class>
-    <class>ar.nex.entity.Empleado</class>
-    <class>ar.nex.entity.EquipoModelo</class>
-    <class>ar.nex.entity.EquipoCategoria</class>
-    <class>ar.nex.entity.EquipoTipo</class>
-    <class>ar.nex.entity.Equipo</class>
     <class>ar.nex.entity.CerStock</class>
     <class>ar.nex.entity.FleDestino</class>
     <class>ar.nex.entity.FleTarifa</class>
     <class>ar.nex.entity.Marca</class>
-    <class>ar.nex.entity.Persona</class>
-    <class>ar.nex.entity.RepuestoStockDetalle</class>
-    <class>ar.nex.entity.Pedido</class>
-    <class>ar.nex.entity.Repuesto</class>
-    <class>ar.nex.entity.RhCategoria</class>
-    <class>ar.nex.entity.RhPuesto</class>
-    <class>ar.nex.entity.EquipoCompraVenta</class>
-    <class>ar.nex.entity.Familia</class>
     <class>ar.nex.entity.Usuario</class>
-    <class>ar.nex.entity.CerMovimiento</class>
-    <class>ar.nex.test.Xtest</class>
     <class>ar.nex.entity.UsuarioMenu</class>
     <class>ar.nex.entity.UsuarioHistorial</class>
     <class>ar.nex.entity.UsuarioGrupo</class>
@@ -36,9 +21,21 @@
     <class>ar.nex.entity.ubicacion.Provincia</class>
     <class>ar.nex.entity.ubicacion.Contacto</class>
     <class>ar.nex.entity.empresa.Empresa</class>
-    <class>ar.nex.entity.empresa.Rubro</class>    
+    <class>ar.nex.entity.empresa.Rubro</class>
     <class>ar.nex.entity.empresa.SubRubro</class>
-    
+    <class>ar.nex.entity.empleado.Persona</class>
+    <class>ar.nex.entity.empleado.Empleado</class>
+    <class>ar.nex.entity.equipo.Repuesto</class>
+    <class>ar.nex.entity.equipo.EquipoCategoria</class>
+    <class>ar.nex.entity.equipo.EquipoModelo</class>
+    <class>ar.nex.entity.equipo.Pedido</class>
+    <class>ar.nex.entity.equipo.RepuestoStockDetalle</class>
+    <class>ar.nex.entity.equipo.EquipoCompraVenta</class>
+    <class>ar.nex.entity.equipo.EquipoTipo</class>
+    <class>ar.nex.entity.equipo.Equipo</class>
+    <class>ar.nex.entity.empleado.EmpleadoCategoria</class>
+    <class>ar.nex.entity.empleado.EmpleadoPuesto</class>
+    <class>ar.nex.entity.empleado.PersonaFamilia</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/sae_app?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="saedb"/>

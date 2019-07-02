@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ar.nex.entity;
+package ar.nex.entity.empleado;
 
+import ar.nex.entity.Usuario;
 import ar.nex.entity.ubicacion.Contacto;
 import ar.nex.entity.ubicacion.Direccion;
 import java.io.Serializable;
@@ -37,18 +33,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "rh_persona")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Persona.findAll", query = "SELECT p FROM Persona p"),
-    @NamedQuery(name = "Persona.findByIdPersona", query = "SELECT p FROM Persona p WHERE p.idPersona = :idPersona"),
-    @NamedQuery(name = "Persona.findByNombre", query = "SELECT p FROM Persona p WHERE p.nombre = :nombre"),
-    @NamedQuery(name = "Persona.findByApellido", query = "SELECT p FROM Persona p WHERE p.apellido = :apellido"),
-    @NamedQuery(name = "Persona.findByNacimiento", query = "SELECT p FROM Persona p WHERE p.nacimiento = :nacimiento"),
-    @NamedQuery(name = "Persona.findByDni", query = "SELECT p FROM Persona p WHERE p.dni = :dni"),
-    @NamedQuery(name = "Persona.findByCuil", query = "SELECT p FROM Persona p WHERE p.cuil = :cuil"),
-    @NamedQuery(name = "Persona.findBySexo", query = "SELECT p FROM Persona p WHERE p.sexo = :sexo"),
-    @NamedQuery(name = "Persona.findByEstado", query = "SELECT p FROM Persona p WHERE p.estado = :estado"),
-    @NamedQuery(name = "Persona.findByEstadoCivil", query = "SELECT p FROM Persona p WHERE p.estadoCivil = :estadoCivil"),
-    @NamedQuery(name = "Persona.findByInfo", query = "SELECT p FROM Persona p WHERE p.info = :info")})
 public class Persona implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -81,9 +65,9 @@ public class Persona implements Serializable {
     @ManyToMany(mappedBy = "personaList")
     private List<Contacto> contactoList;
     @OneToMany(mappedBy = "datos")
-    private List<Familia> familiaList;
+    private List<PersonaFamilia> familiaList;
     @OneToMany(mappedBy = "persona")
-    private List<Familia> familiaList1;
+    private List<PersonaFamilia> familiaList1;
     @JoinColumn(name = "domicilio", referencedColumnName = "id_direccion")
     @ManyToOne
     private Direccion domicilio;
@@ -195,20 +179,20 @@ public class Persona implements Serializable {
     }
 
     @XmlTransient
-    public List<Familia> getFamiliaList() {
+    public List<PersonaFamilia> getFamiliaList() {
         return familiaList;
     }
 
-    public void setFamiliaList(List<Familia> familiaList) {
+    public void setFamiliaList(List<PersonaFamilia> familiaList) {
         this.familiaList = familiaList;
     }
 
     @XmlTransient
-    public List<Familia> getFamiliaList1() {
+    public List<PersonaFamilia> getFamiliaList1() {
         return familiaList1;
     }
 
-    public void setFamiliaList1(List<Familia> familiaList1) {
+    public void setFamiliaList1(List<PersonaFamilia> familiaList1) {
         this.familiaList1 = familiaList1;
     }
 

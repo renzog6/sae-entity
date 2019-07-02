@@ -1,5 +1,6 @@
 package ar.nex.entity;
 
+import ar.nex.entity.empleado.Persona;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;

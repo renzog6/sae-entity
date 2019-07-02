@@ -48,6 +48,10 @@ public class Localidad implements Serializable {
     public Localidad() {
     }
 
+    public Localidad(String Nombre) {
+        this.nombre = nombre;
+    }
+
     public Localidad(Long idLocalidad) {
         this.idLocalidad = idLocalidad;
     }
@@ -124,7 +128,12 @@ public class Localidad implements Serializable {
 
     @Override
     public String toString() {
-        return nombre + " ( " + provincia.getCodigo() + codigoPostal + " ) " + provincia.getNombre();
+        if (this.provincia != null) {
+            return nombre + " ( " + provincia.getCodigo() + codigoPostal + " ) " + provincia.getNombre();
+        } else {
+            return "";
+        }
+
     }
 
 }

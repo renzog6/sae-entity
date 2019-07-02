@@ -1,8 +1,8 @@
 package ar.nex.entity.ubicacion;
 
-import ar.nex.entity.Empleado;
+import ar.nex.entity.empleado.Empleado;
 import ar.nex.entity.empresa.Empresa;
-import ar.nex.entity.Persona;
+import ar.nex.entity.empleado.Persona;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;

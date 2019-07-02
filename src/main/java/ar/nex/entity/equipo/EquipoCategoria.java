@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ar.nex.entity;
+package ar.nex.entity.equipo;
 
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -23,31 +20,32 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Renzo
  */
 @Entity
-@Table(name = "rh_categoria")
+@Table(name = "eq_categoria")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "RhCategoria.findAll", query = "SELECT r FROM RhCategoria r"),
-    @NamedQuery(name = "RhCategoria.findByIdCategoria", query = "SELECT r FROM RhCategoria r WHERE r.idCategoria = :idCategoria"),
-    @NamedQuery(name = "RhCategoria.findByNombre", query = "SELECT r FROM RhCategoria r WHERE r.nombre = :nombre"),
-    @NamedQuery(name = "RhCategoria.findByInfo", query = "SELECT r FROM RhCategoria r WHERE r.info = :info")})
-public class RhCategoria implements Serializable {
+public class EquipoCategoria implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_categoria")
     private Long idCategoria;
     @Column(name = "nombre")
     private String nombre;
-    @Column(name = "info")
-    private String info;
     @OneToMany(mappedBy = "categoria")
-    private List<Empleado> empleadoList;
+    private List<Equipo> equipoList;
+   
+    @OneToMany(mappedBy = "categoria")
+    private List<EquipoTipo> tipoList;
 
-    public RhCategoria() {
+    public EquipoCategoria() {
     }
 
-    public RhCategoria(Long idCategoria) {
+    public EquipoCategoria(String s) {
+        this.nombre = s;
+    }
+
+    public EquipoCategoria(Long idCategoria) {
         this.idCategoria = idCategoria;
     }
 
@@ -67,21 +65,22 @@ public class RhCategoria implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getInfo() {
-        return info;
+    @XmlTransient
+    public List<Equipo> getEquipoList() {
+        return equipoList;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
+    public void setEquipoList(List<Equipo> equipoList) {
+        this.equipoList = equipoList;
     }
 
     @XmlTransient
-    public List<Empleado> getEmpleadoList() {
-        return empleadoList;
+    public List<EquipoTipo> getEquipoTipoList() {
+        return tipoList;
     }
 
-    public void setEmpleadoList(List<Empleado> empleadoList) {
-        this.empleadoList = empleadoList;
+    public void setEquipoTipoList(List<EquipoTipo> tipoList) {
+        this.tipoList = tipoList;
     }
 
     @Override
@@ -94,10 +93,10 @@ public class RhCategoria implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof RhCategoria)) {
+        if (!(object instanceof EquipoCategoria)) {
             return false;
         }
-        RhCategoria other = (RhCategoria) object;
+        EquipoCategoria other = (EquipoCategoria) object;
         if ((this.idCategoria == null && other.idCategoria != null) || (this.idCategoria != null && !this.idCategoria.equals(other.idCategoria))) {
             return false;
         }
@@ -106,7 +105,7 @@ public class RhCategoria implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.nex.entity.RhCategoria[ idCategoria=" + idCategoria + " ]";
+        return this.nombre;
     }
-    
+
 }

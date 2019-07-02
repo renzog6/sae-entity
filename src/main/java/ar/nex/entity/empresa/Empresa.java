@@ -1,9 +1,9 @@
 package ar.nex.entity.empresa;
 
-import ar.nex.entity.Empleado;
-import ar.nex.entity.Equipo;
-import ar.nex.entity.Pedido;
-import ar.nex.entity.Repuesto;
+import ar.nex.entity.empleado.Empleado;
+import ar.nex.entity.equipo.Equipo;
+import ar.nex.entity.equipo.Pedido;
+import ar.nex.entity.equipo.Repuesto;
 import ar.nex.entity.ubicacion.Contacto;
 import ar.nex.entity.ubicacion.Direccion;
 import java.io.Serializable;

@@ -10,8 +10,8 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.Empleado;
-import ar.nex.entity.RhCategoria;
+import ar.nex.entity.empleado.Empleado;
+import ar.nex.entity.empleado.EmpleadoCategoria;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import ar.nex.jpa.exceptions.PreexistingEntityException;
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Renzo
  */
-public class RhCategoriaJpaController implements Serializable {
+public class EmpleadoCategoriaJpaController implements Serializable {
 
-    public RhCategoriaJpaController(EntityManagerFactory emf) {
+    public EmpleadoCategoriaJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -34,24 +34,24 @@ public class RhCategoriaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(RhCategoria rhCategoria) throws PreexistingEntityException, Exception {
-        if (rhCategoria.getEmpleadoList() == null) {
-            rhCategoria.setEmpleadoList(new ArrayList<Empleado>());
+    public void create(EmpleadoCategoria empleadoCategoria) throws PreexistingEntityException, Exception {
+        if (empleadoCategoria.getEmpleadoList() == null) {
+            empleadoCategoria.setEmpleadoList(new ArrayList<Empleado>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             List<Empleado> attachedEmpleadoList = new ArrayList<Empleado>();
-            for (Empleado empleadoListEmpleadoToAttach : rhCategoria.getEmpleadoList()) {
+            for (Empleado empleadoListEmpleadoToAttach : empleadoCategoria.getEmpleadoList()) {
                 empleadoListEmpleadoToAttach = em.getReference(empleadoListEmpleadoToAttach.getClass(), empleadoListEmpleadoToAttach.getIdEmpleado());
                 attachedEmpleadoList.add(empleadoListEmpleadoToAttach);
             }
-            rhCategoria.setEmpleadoList(attachedEmpleadoList);
-            em.persist(rhCategoria);
-            for (Empleado empleadoListEmpleado : rhCategoria.getEmpleadoList()) {
-                RhCategoria oldCategoriaOfEmpleadoListEmpleado = empleadoListEmpleado.getCategoria();
-                empleadoListEmpleado.setCategoria(rhCategoria);
+            empleadoCategoria.setEmpleadoList(attachedEmpleadoList);
+            em.persist(empleadoCategoria);
+            for (Empleado empleadoListEmpleado : empleadoCategoria.getEmpleadoList()) {
+                EmpleadoCategoria oldCategoriaOfEmpleadoListEmpleado = empleadoListEmpleado.getCategoria();
+                empleadoListEmpleado.setCategoria(empleadoCategoria);
                 empleadoListEmpleado = em.merge(empleadoListEmpleado);
                 if (oldCategoriaOfEmpleadoListEmpleado != null) {
                     oldCategoriaOfEmpleadoListEmpleado.getEmpleadoList().remove(empleadoListEmpleado);
@@ -60,8 +60,8 @@ public class RhCategoriaJpaController implements Serializable {
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
-            if (findRhCategoria(rhCategoria.getIdCategoria()) != null) {
-                throw new PreexistingEntityException("RhCategoria " + rhCategoria + " already exists.", ex);
+            if (findEmpleadoCategoria(empleadoCategoria.getIdCategoria()) != null) {
+                throw new PreexistingEntityException("EmpleadoCategoria " + empleadoCategoria + " already exists.", ex);
             }
             throw ex;
         } finally {
@@ -71,22 +71,22 @@ public class RhCategoriaJpaController implements Serializable {
         }
     }
 
-    public void edit(RhCategoria rhCategoria) throws NonexistentEntityException, Exception {
+    public void edit(EmpleadoCategoria empleadoCategoria) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            RhCategoria persistentRhCategoria = em.find(RhCategoria.class, rhCategoria.getIdCategoria());
-            List<Empleado> empleadoListOld = persistentRhCategoria.getEmpleadoList();
-            List<Empleado> empleadoListNew = rhCategoria.getEmpleadoList();
+            EmpleadoCategoria persistentEmpleadoCategoria = em.find(EmpleadoCategoria.class, empleadoCategoria.getIdCategoria());
+            List<Empleado> empleadoListOld = persistentEmpleadoCategoria.getEmpleadoList();
+            List<Empleado> empleadoListNew = empleadoCategoria.getEmpleadoList();
             List<Empleado> attachedEmpleadoListNew = new ArrayList<Empleado>();
             for (Empleado empleadoListNewEmpleadoToAttach : empleadoListNew) {
                 empleadoListNewEmpleadoToAttach = em.getReference(empleadoListNewEmpleadoToAttach.getClass(), empleadoListNewEmpleadoToAttach.getIdEmpleado());
                 attachedEmpleadoListNew.add(empleadoListNewEmpleadoToAttach);
             }
             empleadoListNew = attachedEmpleadoListNew;
-            rhCategoria.setEmpleadoList(empleadoListNew);
-            rhCategoria = em.merge(rhCategoria);
+            empleadoCategoria.setEmpleadoList(empleadoListNew);
+            empleadoCategoria = em.merge(empleadoCategoria);
             for (Empleado empleadoListOldEmpleado : empleadoListOld) {
                 if (!empleadoListNew.contains(empleadoListOldEmpleado)) {
                     empleadoListOldEmpleado.setCategoria(null);
@@ -95,10 +95,10 @@ public class RhCategoriaJpaController implements Serializable {
             }
             for (Empleado empleadoListNewEmpleado : empleadoListNew) {
                 if (!empleadoListOld.contains(empleadoListNewEmpleado)) {
-                    RhCategoria oldCategoriaOfEmpleadoListNewEmpleado = empleadoListNewEmpleado.getCategoria();
-                    empleadoListNewEmpleado.setCategoria(rhCategoria);
+                    EmpleadoCategoria oldCategoriaOfEmpleadoListNewEmpleado = empleadoListNewEmpleado.getCategoria();
+                    empleadoListNewEmpleado.setCategoria(empleadoCategoria);
                     empleadoListNewEmpleado = em.merge(empleadoListNewEmpleado);
-                    if (oldCategoriaOfEmpleadoListNewEmpleado != null && !oldCategoriaOfEmpleadoListNewEmpleado.equals(rhCategoria)) {
+                    if (oldCategoriaOfEmpleadoListNewEmpleado != null && !oldCategoriaOfEmpleadoListNewEmpleado.equals(empleadoCategoria)) {
                         oldCategoriaOfEmpleadoListNewEmpleado.getEmpleadoList().remove(empleadoListNewEmpleado);
                         oldCategoriaOfEmpleadoListNewEmpleado = em.merge(oldCategoriaOfEmpleadoListNewEmpleado);
                     }
@@ -108,9 +108,9 @@ public class RhCategoriaJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = rhCategoria.getIdCategoria();
-                if (findRhCategoria(id) == null) {
-                    throw new NonexistentEntityException("The rhCategoria with id " + id + " no longer exists.");
+                Long id = empleadoCategoria.getIdCategoria();
+                if (findEmpleadoCategoria(id) == null) {
+                    throw new NonexistentEntityException("The empleadoCategoria with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -126,19 +126,19 @@ public class RhCategoriaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            RhCategoria rhCategoria;
+            EmpleadoCategoria empleadoCategoria;
             try {
-                rhCategoria = em.getReference(RhCategoria.class, id);
-                rhCategoria.getIdCategoria();
+                empleadoCategoria = em.getReference(EmpleadoCategoria.class, id);
+                empleadoCategoria.getIdCategoria();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The rhCategoria with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The empleadoCategoria with id " + id + " no longer exists.", enfe);
             }
-            List<Empleado> empleadoList = rhCategoria.getEmpleadoList();
+            List<Empleado> empleadoList = empleadoCategoria.getEmpleadoList();
             for (Empleado empleadoListEmpleado : empleadoList) {
                 empleadoListEmpleado.setCategoria(null);
                 empleadoListEmpleado = em.merge(empleadoListEmpleado);
             }
-            em.remove(rhCategoria);
+            em.remove(empleadoCategoria);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -147,19 +147,19 @@ public class RhCategoriaJpaController implements Serializable {
         }
     }
 
-    public List<RhCategoria> findRhCategoriaEntities() {
-        return findRhCategoriaEntities(true, -1, -1);
+    public List<EmpleadoCategoria> findEmpleadoCategoriaEntities() {
+        return findEmpleadoCategoriaEntities(true, -1, -1);
     }
 
-    public List<RhCategoria> findRhCategoriaEntities(int maxResults, int firstResult) {
-        return findRhCategoriaEntities(false, maxResults, firstResult);
+    public List<EmpleadoCategoria> findEmpleadoCategoriaEntities(int maxResults, int firstResult) {
+        return findEmpleadoCategoriaEntities(false, maxResults, firstResult);
     }
 
-    private List<RhCategoria> findRhCategoriaEntities(boolean all, int maxResults, int firstResult) {
+    private List<EmpleadoCategoria> findEmpleadoCategoriaEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(RhCategoria.class));
+            cq.select(cq.from(EmpleadoCategoria.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -171,20 +171,20 @@ public class RhCategoriaJpaController implements Serializable {
         }
     }
 
-    public RhCategoria findRhCategoria(Long id) {
+    public EmpleadoCategoria findEmpleadoCategoria(Long id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(RhCategoria.class, id);
+            return em.find(EmpleadoCategoria.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getRhCategoriaCount() {
+    public int getEmpleadoCategoriaCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<RhCategoria> rt = cq.from(RhCategoria.class);
+            Root<EmpleadoCategoria> rt = cq.from(EmpleadoCategoria.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

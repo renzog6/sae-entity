@@ -5,22 +5,22 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.Equipo;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.EquipoCategoria;
-import ar.nex.entity.EquipoCompraVenta;
+import ar.nex.entity.equipo.EquipoCategoria;
+import ar.nex.entity.equipo.EquipoCompraVenta;
 import ar.nex.entity.empresa.Empresa;
 import ar.nex.entity.Marca;
-import ar.nex.entity.EquipoModelo;
-import ar.nex.entity.EquipoTipo;
-import ar.nex.entity.Repuesto;
+import ar.nex.entity.equipo.Equipo;
+import ar.nex.entity.equipo.EquipoModelo;
+import ar.nex.entity.equipo.EquipoTipo;
+import ar.nex.entity.equipo.Repuesto;
 import java.util.ArrayList;
 import java.util.List;
-import ar.nex.entity.RepuestoStockDetalle;
+import ar.nex.entity.equipo.RepuestoStockDetalle;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

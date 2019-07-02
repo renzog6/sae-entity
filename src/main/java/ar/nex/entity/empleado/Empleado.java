@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ar.nex.entity;
+package ar.nex.entity.empleado;
 
 import ar.nex.entity.empresa.Empresa;
 import ar.nex.entity.ubicacion.Contacto;
@@ -19,8 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -35,13 +28,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "rh_empleado")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Empleado.findAll", query = "SELECT e FROM Empleado e"),
-    @NamedQuery(name = "Empleado.findByIdEmpleado", query = "SELECT e FROM Empleado e WHERE e.idEmpleado = :idEmpleado"),
-    @NamedQuery(name = "Empleado.findByFechaAlta", query = "SELECT e FROM Empleado e WHERE e.fechaAlta = :fechaAlta"),
-    @NamedQuery(name = "Empleado.findByFechaBaja", query = "SELECT e FROM Empleado e WHERE e.fechaBaja = :fechaBaja"),
-    @NamedQuery(name = "Empleado.findByInfo", query = "SELECT e FROM Empleado e WHERE e.info = :info"),
-    @NamedQuery(name = "Empleado.findByEstado", query = "SELECT e FROM Empleado e WHERE e.estado = :estado")})
 public class Empleado implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -64,13 +50,13 @@ public class Empleado implements Serializable {
     private List<Contacto> contactoList;
     @JoinColumn(name = "categoria", referencedColumnName = "id_categoria")
     @ManyToOne
-    private RhCategoria categoria;
+    private EmpleadoCategoria categoria;
     @JoinColumn(name = "id_empleado", referencedColumnName = "id_persona", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Persona persona;
     @JoinColumn(name = "puesto", referencedColumnName = "id_puesto")
     @ManyToOne
-    private RhPuesto puesto;
+    private EmpleadoPuesto puesto;
     @JoinColumn(name = "empresa", referencedColumnName = "id_empresa")
     @ManyToOne
     private Empresa empresa;
@@ -131,11 +117,11 @@ public class Empleado implements Serializable {
         this.contactoList = contactoList;
     }
 
-    public RhCategoria getCategoria() {
+    public EmpleadoCategoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(RhCategoria categoria) {
+    public void setCategoria(EmpleadoCategoria categoria) {
         this.categoria = categoria;
     }
 
@@ -147,11 +133,11 @@ public class Empleado implements Serializable {
         this.persona = persona;
     }
 
-    public RhPuesto getPuesto() {
+    public EmpleadoPuesto getEmpleadoPuesto() {
         return puesto;
     }
 
-    public void setPuesto(RhPuesto puesto) {
+    public void setEmpleadoPuesto(EmpleadoPuesto puesto) {
         this.puesto = puesto;
     }
 

@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ar.nex.entity;
+package ar.nex.entity.empleado;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,8 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,12 +18,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "rh_puesto")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "RhPuesto.findAll", query = "SELECT r FROM RhPuesto r"),
-    @NamedQuery(name = "RhPuesto.findByIdPuesto", query = "SELECT r FROM RhPuesto r WHERE r.idPuesto = :idPuesto"),
-    @NamedQuery(name = "RhPuesto.findByNombre", query = "SELECT r FROM RhPuesto r WHERE r.nombre = :nombre"),
-    @NamedQuery(name = "RhPuesto.findByInfo", query = "SELECT r FROM RhPuesto r WHERE r.info = :info")})
-public class RhPuesto implements Serializable {
+public class EmpleadoPuesto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -44,10 +32,10 @@ public class RhPuesto implements Serializable {
     @OneToMany(mappedBy = "puesto")
     private List<Empleado> empleadoList;
 
-    public RhPuesto() {
+    public EmpleadoPuesto() {
     }
 
-    public RhPuesto(Long idPuesto) {
+    public EmpleadoPuesto(Long idPuesto) {
         this.idPuesto = idPuesto;
     }
 
@@ -94,10 +82,10 @@ public class RhPuesto implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof RhPuesto)) {
+        if (!(object instanceof EmpleadoPuesto)) {
             return false;
         }
-        RhPuesto other = (RhPuesto) object;
+        EmpleadoPuesto other = (EmpleadoPuesto) object;
         if ((this.idPuesto == null && other.idPuesto != null) || (this.idPuesto != null && !this.idPuesto.equals(other.idPuesto))) {
             return false;
         }
@@ -106,7 +94,7 @@ public class RhPuesto implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.nex.entity.RhPuesto[ idPuesto=" + idPuesto + " ]";
+        return this.nombre;
     }
     
 }

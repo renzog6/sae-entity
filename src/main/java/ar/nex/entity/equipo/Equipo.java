@@ -1,5 +1,6 @@
-package ar.nex.entity;
+package ar.nex.entity.equipo;
 
+import ar.nex.entity.Marca;
 import ar.nex.entity.empresa.Empresa;
 import java.io.Serializable;
 import java.util.List;

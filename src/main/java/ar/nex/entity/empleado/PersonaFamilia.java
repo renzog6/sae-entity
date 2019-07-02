@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package ar.nex.entity;
+package ar.nex.entity.empleado;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -14,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -26,11 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "rh_familia")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Familia.findAll", query = "SELECT f FROM Familia f"),
-    @NamedQuery(name = "Familia.findByIdFamilia", query = "SELECT f FROM Familia f WHERE f.idFamilia = :idFamilia"),
-    @NamedQuery(name = "Familia.findByRelacion", query = "SELECT f FROM Familia f WHERE f.relacion = :relacion")})
-public class Familia implements Serializable {
+public class PersonaFamilia implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,10 +36,10 @@ public class Familia implements Serializable {
     @ManyToOne
     private Persona persona;
 
-    public Familia() {
+    public PersonaFamilia() {
     }
 
-    public Familia(Long idFamilia) {
+    public PersonaFamilia(Long idFamilia) {
         this.idFamilia = idFamilia;
     }
 
@@ -96,10 +85,10 @@ public class Familia implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Familia)) {
+        if (!(object instanceof PersonaFamilia)) {
             return false;
         }
-        Familia other = (Familia) object;
+        PersonaFamilia other = (PersonaFamilia) object;
         if ((this.idFamilia == null && other.idFamilia != null) || (this.idFamilia != null && !this.idFamilia.equals(other.idFamilia))) {
             return false;
         }

@@ -1,4 +1,4 @@
-package ar.nex.entity;
+package ar.nex.entity.equipo;
 
 import java.io.Serializable;
 import java.util.Date;

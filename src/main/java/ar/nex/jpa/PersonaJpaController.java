@@ -10,13 +10,13 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.Empleado;
+import ar.nex.entity.empleado.Empleado;
 import ar.nex.entity.Usuario;
+import ar.nex.entity.empleado.Persona;
 import ar.nex.entity.ubicacion.Contacto;
 import java.util.ArrayList;
 import java.util.List;
-import ar.nex.entity.Familia;
-import ar.nex.entity.Persona;
+import ar.nex.entity.empleado.PersonaFamilia;
 import ar.nex.jpa.exceptions.IllegalOrphanException;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import javax.persistence.EntityManager;
@@ -42,10 +42,10 @@ public class PersonaJpaController implements Serializable {
             persona.setContactoList(new ArrayList<Contacto>());
         }
         if (persona.getFamiliaList() == null) {
-            persona.setFamiliaList(new ArrayList<Familia>());
+            persona.setFamiliaList(new ArrayList<PersonaFamilia>());
         }
         if (persona.getFamiliaList1() == null) {
-            persona.setFamiliaList1(new ArrayList<Familia>());
+            persona.setFamiliaList1(new ArrayList<PersonaFamilia>());
         }
         EntityManager em = null;
         try {
@@ -67,16 +67,16 @@ public class PersonaJpaController implements Serializable {
                 attachedContactoList.add(contactoListContactoToAttach);
             }
             persona.setContactoList(attachedContactoList);
-            List<Familia> attachedFamiliaList = new ArrayList<Familia>();
-            for (Familia familiaListFamiliaToAttach : persona.getFamiliaList()) {
-                familiaListFamiliaToAttach = em.getReference(familiaListFamiliaToAttach.getClass(), familiaListFamiliaToAttach.getIdFamilia());
-                attachedFamiliaList.add(familiaListFamiliaToAttach);
+            List<PersonaFamilia> attachedFamiliaList = new ArrayList<PersonaFamilia>();
+            for (PersonaFamilia familiaListPersonaFamiliaToAttach : persona.getFamiliaList()) {
+                familiaListPersonaFamiliaToAttach = em.getReference(familiaListPersonaFamiliaToAttach.getClass(), familiaListPersonaFamiliaToAttach.getIdFamilia());
+                attachedFamiliaList.add(familiaListPersonaFamiliaToAttach);
             }
             persona.setFamiliaList(attachedFamiliaList);
-            List<Familia> attachedFamiliaList1 = new ArrayList<Familia>();
-            for (Familia familiaList1FamiliaToAttach : persona.getFamiliaList1()) {
-                familiaList1FamiliaToAttach = em.getReference(familiaList1FamiliaToAttach.getClass(), familiaList1FamiliaToAttach.getIdFamilia());
-                attachedFamiliaList1.add(familiaList1FamiliaToAttach);
+            List<PersonaFamilia> attachedFamiliaList1 = new ArrayList<PersonaFamilia>();
+            for (PersonaFamilia familiaList1PersonaFamiliaToAttach : persona.getFamiliaList1()) {
+                familiaList1PersonaFamiliaToAttach = em.getReference(familiaList1PersonaFamiliaToAttach.getClass(), familiaList1PersonaFamiliaToAttach.getIdFamilia());
+                attachedFamiliaList1.add(familiaList1PersonaFamiliaToAttach);
             }
             persona.setFamiliaList1(attachedFamiliaList1);
             em.persist(persona);
@@ -102,22 +102,22 @@ public class PersonaJpaController implements Serializable {
                 contactoListContacto.getPersonaList().add(persona);
                 contactoListContacto = em.merge(contactoListContacto);
             }
-            for (Familia familiaListFamilia : persona.getFamiliaList()) {
-                Persona oldDatosOfFamiliaListFamilia = familiaListFamilia.getDatos();
-                familiaListFamilia.setDatos(persona);
-                familiaListFamilia = em.merge(familiaListFamilia);
-                if (oldDatosOfFamiliaListFamilia != null) {
-                    oldDatosOfFamiliaListFamilia.getFamiliaList().remove(familiaListFamilia);
-                    oldDatosOfFamiliaListFamilia = em.merge(oldDatosOfFamiliaListFamilia);
+            for (PersonaFamilia familiaListPersonaFamilia : persona.getFamiliaList()) {
+                Persona oldDatosOfFamiliaListPersonaFamilia = familiaListPersonaFamilia.getDatos();
+                familiaListPersonaFamilia.setDatos(persona);
+                familiaListPersonaFamilia = em.merge(familiaListPersonaFamilia);
+                if (oldDatosOfFamiliaListPersonaFamilia != null) {
+                    oldDatosOfFamiliaListPersonaFamilia.getFamiliaList().remove(familiaListPersonaFamilia);
+                    oldDatosOfFamiliaListPersonaFamilia = em.merge(oldDatosOfFamiliaListPersonaFamilia);
                 }
             }
-            for (Familia familiaList1Familia : persona.getFamiliaList1()) {
-                Persona oldPersonaOfFamiliaList1Familia = familiaList1Familia.getPersona();
-                familiaList1Familia.setPersona(persona);
-                familiaList1Familia = em.merge(familiaList1Familia);
-                if (oldPersonaOfFamiliaList1Familia != null) {
-                    oldPersonaOfFamiliaList1Familia.getFamiliaList1().remove(familiaList1Familia);
-                    oldPersonaOfFamiliaList1Familia = em.merge(oldPersonaOfFamiliaList1Familia);
+            for (PersonaFamilia familiaList1PersonaFamilia : persona.getFamiliaList1()) {
+                Persona oldPersonaOfFamiliaList1PersonaFamilia = familiaList1PersonaFamilia.getPersona();
+                familiaList1PersonaFamilia.setPersona(persona);
+                familiaList1PersonaFamilia = em.merge(familiaList1PersonaFamilia);
+                if (oldPersonaOfFamiliaList1PersonaFamilia != null) {
+                    oldPersonaOfFamiliaList1PersonaFamilia.getFamiliaList1().remove(familiaList1PersonaFamilia);
+                    oldPersonaOfFamiliaList1PersonaFamilia = em.merge(oldPersonaOfFamiliaList1PersonaFamilia);
                 }
             }
             em.getTransaction().commit();
@@ -140,10 +140,10 @@ public class PersonaJpaController implements Serializable {
             Usuario usuarioNew = persona.getUsuario();
             List<Contacto> contactoListOld = persistentPersona.getContactoList();
             List<Contacto> contactoListNew = persona.getContactoList();
-            List<Familia> familiaListOld = persistentPersona.getFamiliaList();
-            List<Familia> familiaListNew = persona.getFamiliaList();
-            List<Familia> familiaList1Old = persistentPersona.getFamiliaList1();
-            List<Familia> familiaList1New = persona.getFamiliaList1();
+            List<PersonaFamilia> familiaListOld = persistentPersona.getFamiliaList();
+            List<PersonaFamilia> familiaListNew = persona.getFamiliaList();
+            List<PersonaFamilia> familiaList1Old = persistentPersona.getFamiliaList1();
+            List<PersonaFamilia> familiaList1New = persona.getFamiliaList1();
             List<String> illegalOrphanMessages = null;
             if (empleadoOld != null && !empleadoOld.equals(empleadoNew)) {
                 if (illegalOrphanMessages == null) {
@@ -175,17 +175,17 @@ public class PersonaJpaController implements Serializable {
             }
             contactoListNew = attachedContactoListNew;
             persona.setContactoList(contactoListNew);
-            List<Familia> attachedFamiliaListNew = new ArrayList<Familia>();
-            for (Familia familiaListNewFamiliaToAttach : familiaListNew) {
-                familiaListNewFamiliaToAttach = em.getReference(familiaListNewFamiliaToAttach.getClass(), familiaListNewFamiliaToAttach.getIdFamilia());
-                attachedFamiliaListNew.add(familiaListNewFamiliaToAttach);
+            List<PersonaFamilia> attachedFamiliaListNew = new ArrayList<PersonaFamilia>();
+            for (PersonaFamilia familiaListNewPersonaFamiliaToAttach : familiaListNew) {
+                familiaListNewPersonaFamiliaToAttach = em.getReference(familiaListNewPersonaFamiliaToAttach.getClass(), familiaListNewPersonaFamiliaToAttach.getIdFamilia());
+                attachedFamiliaListNew.add(familiaListNewPersonaFamiliaToAttach);
             }
             familiaListNew = attachedFamiliaListNew;
             persona.setFamiliaList(familiaListNew);
-            List<Familia> attachedFamiliaList1New = new ArrayList<Familia>();
-            for (Familia familiaList1NewFamiliaToAttach : familiaList1New) {
-                familiaList1NewFamiliaToAttach = em.getReference(familiaList1NewFamiliaToAttach.getClass(), familiaList1NewFamiliaToAttach.getIdFamilia());
-                attachedFamiliaList1New.add(familiaList1NewFamiliaToAttach);
+            List<PersonaFamilia> attachedFamiliaList1New = new ArrayList<PersonaFamilia>();
+            for (PersonaFamilia familiaList1NewPersonaFamiliaToAttach : familiaList1New) {
+                familiaList1NewPersonaFamiliaToAttach = em.getReference(familiaList1NewPersonaFamiliaToAttach.getClass(), familiaList1NewPersonaFamiliaToAttach.getIdFamilia());
+                attachedFamiliaList1New.add(familiaList1NewPersonaFamiliaToAttach);
             }
             familiaList1New = attachedFamiliaList1New;
             persona.setFamiliaList1(familiaList1New);
@@ -220,37 +220,37 @@ public class PersonaJpaController implements Serializable {
                     contactoListNewContacto = em.merge(contactoListNewContacto);
                 }
             }
-            for (Familia familiaListOldFamilia : familiaListOld) {
-                if (!familiaListNew.contains(familiaListOldFamilia)) {
-                    familiaListOldFamilia.setDatos(null);
-                    familiaListOldFamilia = em.merge(familiaListOldFamilia);
+            for (PersonaFamilia familiaListOldPersonaFamilia : familiaListOld) {
+                if (!familiaListNew.contains(familiaListOldPersonaFamilia)) {
+                    familiaListOldPersonaFamilia.setDatos(null);
+                    familiaListOldPersonaFamilia = em.merge(familiaListOldPersonaFamilia);
                 }
             }
-            for (Familia familiaListNewFamilia : familiaListNew) {
-                if (!familiaListOld.contains(familiaListNewFamilia)) {
-                    Persona oldDatosOfFamiliaListNewFamilia = familiaListNewFamilia.getDatos();
-                    familiaListNewFamilia.setDatos(persona);
-                    familiaListNewFamilia = em.merge(familiaListNewFamilia);
-                    if (oldDatosOfFamiliaListNewFamilia != null && !oldDatosOfFamiliaListNewFamilia.equals(persona)) {
-                        oldDatosOfFamiliaListNewFamilia.getFamiliaList().remove(familiaListNewFamilia);
-                        oldDatosOfFamiliaListNewFamilia = em.merge(oldDatosOfFamiliaListNewFamilia);
+            for (PersonaFamilia familiaListNewPersonaFamilia : familiaListNew) {
+                if (!familiaListOld.contains(familiaListNewPersonaFamilia)) {
+                    Persona oldDatosOfFamiliaListNewPersonaFamilia = familiaListNewPersonaFamilia.getDatos();
+                    familiaListNewPersonaFamilia.setDatos(persona);
+                    familiaListNewPersonaFamilia = em.merge(familiaListNewPersonaFamilia);
+                    if (oldDatosOfFamiliaListNewPersonaFamilia != null && !oldDatosOfFamiliaListNewPersonaFamilia.equals(persona)) {
+                        oldDatosOfFamiliaListNewPersonaFamilia.getFamiliaList().remove(familiaListNewPersonaFamilia);
+                        oldDatosOfFamiliaListNewPersonaFamilia = em.merge(oldDatosOfFamiliaListNewPersonaFamilia);
                     }
                 }
             }
-            for (Familia familiaList1OldFamilia : familiaList1Old) {
-                if (!familiaList1New.contains(familiaList1OldFamilia)) {
-                    familiaList1OldFamilia.setPersona(null);
-                    familiaList1OldFamilia = em.merge(familiaList1OldFamilia);
+            for (PersonaFamilia familiaList1OldPersonaFamilia : familiaList1Old) {
+                if (!familiaList1New.contains(familiaList1OldPersonaFamilia)) {
+                    familiaList1OldPersonaFamilia.setPersona(null);
+                    familiaList1OldPersonaFamilia = em.merge(familiaList1OldPersonaFamilia);
                 }
             }
-            for (Familia familiaList1NewFamilia : familiaList1New) {
-                if (!familiaList1Old.contains(familiaList1NewFamilia)) {
-                    Persona oldPersonaOfFamiliaList1NewFamilia = familiaList1NewFamilia.getPersona();
-                    familiaList1NewFamilia.setPersona(persona);
-                    familiaList1NewFamilia = em.merge(familiaList1NewFamilia);
-                    if (oldPersonaOfFamiliaList1NewFamilia != null && !oldPersonaOfFamiliaList1NewFamilia.equals(persona)) {
-                        oldPersonaOfFamiliaList1NewFamilia.getFamiliaList1().remove(familiaList1NewFamilia);
-                        oldPersonaOfFamiliaList1NewFamilia = em.merge(oldPersonaOfFamiliaList1NewFamilia);
+            for (PersonaFamilia familiaList1NewPersonaFamilia : familiaList1New) {
+                if (!familiaList1Old.contains(familiaList1NewPersonaFamilia)) {
+                    Persona oldPersonaOfFamiliaList1NewPersonaFamilia = familiaList1NewPersonaFamilia.getPersona();
+                    familiaList1NewPersonaFamilia.setPersona(persona);
+                    familiaList1NewPersonaFamilia = em.merge(familiaList1NewPersonaFamilia);
+                    if (oldPersonaOfFamiliaList1NewPersonaFamilia != null && !oldPersonaOfFamiliaList1NewPersonaFamilia.equals(persona)) {
+                        oldPersonaOfFamiliaList1NewPersonaFamilia.getFamiliaList1().remove(familiaList1NewPersonaFamilia);
+                        oldPersonaOfFamiliaList1NewPersonaFamilia = em.merge(oldPersonaOfFamiliaList1NewPersonaFamilia);
                     }
                 }
             }
@@ -306,15 +306,15 @@ public class PersonaJpaController implements Serializable {
                 contactoListContacto.getPersonaList().remove(persona);
                 contactoListContacto = em.merge(contactoListContacto);
             }
-            List<Familia> familiaList = persona.getFamiliaList();
-            for (Familia familiaListFamilia : familiaList) {
-                familiaListFamilia.setDatos(null);
-                familiaListFamilia = em.merge(familiaListFamilia);
+            List<PersonaFamilia> familiaList = persona.getFamiliaList();
+            for (PersonaFamilia familiaListPersonaFamilia : familiaList) {
+                familiaListPersonaFamilia.setDatos(null);
+                familiaListPersonaFamilia = em.merge(familiaListPersonaFamilia);
             }
-            List<Familia> familiaList1 = persona.getFamiliaList1();
-            for (Familia familiaList1Familia : familiaList1) {
-                familiaList1Familia.setPersona(null);
-                familiaList1Familia = em.merge(familiaList1Familia);
+            List<PersonaFamilia> familiaList1 = persona.getFamiliaList1();
+            for (PersonaFamilia familiaList1PersonaFamilia : familiaList1) {
+                familiaList1PersonaFamilia.setPersona(null);
+                familiaList1PersonaFamilia = em.merge(familiaList1PersonaFamilia);
             }
             em.remove(persona);
             em.getTransaction().commit();

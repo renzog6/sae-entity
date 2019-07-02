@@ -7,6 +7,7 @@ import ar.nex.jpa.LocalidadJpaController;
 import ar.nex.jpa.PedidoJpaController;
 import ar.nex.jpa.ProvinciaJpaController;
 import ar.nex.jpa.RepuestoJpaController;
+import ar.nex.jpa.RubroJpaController;
 import ar.nex.jpa.UsuarioJpaController;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -92,5 +93,12 @@ public final class JpaService {
             getFactory();
         }
         return new ContactoJpaController(factory);
+    }
+    
+        public RubroJpaController getRubro() {
+        if (factory == null) {
+            getFactory();
+        }
+        return new RubroJpaController(factory);
     }
 }

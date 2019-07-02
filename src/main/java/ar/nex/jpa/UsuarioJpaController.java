@@ -5,14 +5,14 @@
  */
 package ar.nex.jpa;
 
+import ar.nex.entity.Usuario;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ar.nex.entity.UsuarioGrupo;
-import ar.nex.entity.Persona;
-import ar.nex.entity.Usuario;
+import ar.nex.entity.empleado.Persona;
 import ar.nex.entity.UsuarioMenu;
 import java.util.ArrayList;
 import java.util.List;

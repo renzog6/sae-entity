@@ -5,15 +5,14 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.Empleado;
+import ar.nex.entity.empleado.Empleado;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.RhCategoria;
-import ar.nex.entity.Persona;
-import ar.nex.entity.RhPuesto;
+import ar.nex.entity.empleado.EmpleadoCategoria;
+import ar.nex.entity.empleado.Persona;
 import ar.nex.entity.empresa.Empresa;
 import ar.nex.entity.ubicacion.Contacto;
 import ar.nex.jpa.exceptions.IllegalOrphanException;
@@ -60,7 +59,7 @@ public class EmpleadoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            RhCategoria categoria = empleado.getCategoria();
+            EmpleadoCategoria categoria = empleado.getCategoria();
             if (categoria != null) {
                 categoria = em.getReference(categoria.getClass(), categoria.getIdCategoria());
                 empleado.setCategoria(categoria);
@@ -69,11 +68,6 @@ public class EmpleadoJpaController implements Serializable {
             if (persona != null) {
                 persona = em.getReference(persona.getClass(), persona.getIdPersona());
                 empleado.setPersona(persona);
-            }
-            RhPuesto puesto = empleado.getPuesto();
-            if (puesto != null) {
-                puesto = em.getReference(puesto.getClass(), puesto.getIdPuesto());
-                empleado.setPuesto(puesto);
             }
             Empresa empresa = empleado.getEmpresa();
             if (empresa != null) {
@@ -94,10 +88,6 @@ public class EmpleadoJpaController implements Serializable {
             if (persona != null) {
                 persona.setEmpleado(empleado);
                 persona = em.merge(persona);
-            }
-            if (puesto != null) {
-                puesto.getEmpleadoList().add(empleado);
-                puesto = em.merge(puesto);
             }
             if (empresa != null) {
                 empresa.getEmpleadoList().add(empleado);
@@ -121,12 +111,10 @@ public class EmpleadoJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Empleado persistentEmpleado = em.find(Empleado.class, empleado.getIdEmpleado());
-            RhCategoria categoriaOld = persistentEmpleado.getCategoria();
-            RhCategoria categoriaNew = empleado.getCategoria();
+            EmpleadoCategoria categoriaOld = persistentEmpleado.getCategoria();
+            EmpleadoCategoria categoriaNew = empleado.getCategoria();
             Persona personaOld = persistentEmpleado.getPersona();
             Persona personaNew = empleado.getPersona();
-            RhPuesto puestoOld = persistentEmpleado.getPuesto();
-            RhPuesto puestoNew = empleado.getPuesto();
             Empresa empresaOld = persistentEmpleado.getEmpresa();
             Empresa empresaNew = empleado.getEmpresa();
             List<Contacto> contactoListOld = persistentEmpleado.getContactoList();
@@ -151,10 +139,6 @@ public class EmpleadoJpaController implements Serializable {
             if (personaNew != null) {
                 personaNew = em.getReference(personaNew.getClass(), personaNew.getIdPersona());
                 empleado.setPersona(personaNew);
-            }
-            if (puestoNew != null) {
-                puestoNew = em.getReference(puestoNew.getClass(), puestoNew.getIdPuesto());
-                empleado.setPuesto(puestoNew);
             }
             if (empresaNew != null) {
                 empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getIdEmpresa());
@@ -183,14 +167,6 @@ public class EmpleadoJpaController implements Serializable {
             if (personaNew != null && !personaNew.equals(personaOld)) {
                 personaNew.setEmpleado(empleado);
                 personaNew = em.merge(personaNew);
-            }
-            if (puestoOld != null && !puestoOld.equals(puestoNew)) {
-                puestoOld.getEmpleadoList().remove(empleado);
-                puestoOld = em.merge(puestoOld);
-            }
-            if (puestoNew != null && !puestoNew.equals(puestoOld)) {
-                puestoNew.getEmpleadoList().add(empleado);
-                puestoNew = em.merge(puestoNew);
             }
             if (empresaOld != null && !empresaOld.equals(empresaNew)) {
                 empresaOld.getEmpleadoList().remove(empleado);
@@ -241,7 +217,7 @@ public class EmpleadoJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The empleado with id " + id + " no longer exists.", enfe);
             }
-            RhCategoria categoria = empleado.getCategoria();
+            EmpleadoCategoria categoria = empleado.getCategoria();
             if (categoria != null) {
                 categoria.getEmpleadoList().remove(empleado);
                 categoria = em.merge(categoria);
@@ -250,11 +226,6 @@ public class EmpleadoJpaController implements Serializable {
             if (persona != null) {
                 persona.setEmpleado(null);
                 persona = em.merge(persona);
-            }
-            RhPuesto puesto = empleado.getPuesto();
-            if (puesto != null) {
-                puesto.getEmpleadoList().remove(empleado);
-                puesto = em.merge(puesto);
             }
             Empresa empresa = empleado.getEmpresa();
             if (empresa != null) {

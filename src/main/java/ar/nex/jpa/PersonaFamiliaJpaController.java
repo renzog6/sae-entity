@@ -5,13 +5,13 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.Familia;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.Persona;
+import ar.nex.entity.empleado.Persona;
+import ar.nex.entity.empleado.PersonaFamilia;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -21,9 +21,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Renzo
  */
-public class FamiliaJpaController implements Serializable {
+public class PersonaFamiliaJpaController implements Serializable {
 
-    public FamiliaJpaController(EntityManagerFactory emf) {
+    public PersonaFamiliaJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -32,28 +32,28 @@ public class FamiliaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Familia familia) {
+    public void create(PersonaFamilia personaFamilia) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Persona datos = familia.getDatos();
+            Persona datos = personaFamilia.getDatos();
             if (datos != null) {
                 datos = em.getReference(datos.getClass(), datos.getIdPersona());
-                familia.setDatos(datos);
+                personaFamilia.setDatos(datos);
             }
-            Persona persona = familia.getPersona();
+            Persona persona = personaFamilia.getPersona();
             if (persona != null) {
                 persona = em.getReference(persona.getClass(), persona.getIdPersona());
-                familia.setPersona(persona);
+                personaFamilia.setPersona(persona);
             }
-            em.persist(familia);
+            em.persist(personaFamilia);
             if (datos != null) {
-                datos.getFamiliaList().add(familia);
+                datos.getFamiliaList().add(personaFamilia);
                 datos = em.merge(datos);
             }
             if (persona != null) {
-                persona.getFamiliaList().add(familia);
+                persona.getFamiliaList().add(personaFamilia);
                 persona = em.merge(persona);
             }
             em.getTransaction().commit();
@@ -64,48 +64,48 @@ public class FamiliaJpaController implements Serializable {
         }
     }
 
-    public void edit(Familia familia) throws NonexistentEntityException, Exception {
+    public void edit(PersonaFamilia personaFamilia) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Familia persistentFamilia = em.find(Familia.class, familia.getIdFamilia());
-            Persona datosOld = persistentFamilia.getDatos();
-            Persona datosNew = familia.getDatos();
-            Persona personaOld = persistentFamilia.getPersona();
-            Persona personaNew = familia.getPersona();
+            PersonaFamilia persistentPersonaFamilia = em.find(PersonaFamilia.class, personaFamilia.getIdFamilia());
+            Persona datosOld = persistentPersonaFamilia.getDatos();
+            Persona datosNew = personaFamilia.getDatos();
+            Persona personaOld = persistentPersonaFamilia.getPersona();
+            Persona personaNew = personaFamilia.getPersona();
             if (datosNew != null) {
                 datosNew = em.getReference(datosNew.getClass(), datosNew.getIdPersona());
-                familia.setDatos(datosNew);
+                personaFamilia.setDatos(datosNew);
             }
             if (personaNew != null) {
                 personaNew = em.getReference(personaNew.getClass(), personaNew.getIdPersona());
-                familia.setPersona(personaNew);
+                personaFamilia.setPersona(personaNew);
             }
-            familia = em.merge(familia);
+            personaFamilia = em.merge(personaFamilia);
             if (datosOld != null && !datosOld.equals(datosNew)) {
-                datosOld.getFamiliaList().remove(familia);
+                datosOld.getFamiliaList().remove(personaFamilia);
                 datosOld = em.merge(datosOld);
             }
             if (datosNew != null && !datosNew.equals(datosOld)) {
-                datosNew.getFamiliaList().add(familia);
+                datosNew.getFamiliaList().add(personaFamilia);
                 datosNew = em.merge(datosNew);
             }
             if (personaOld != null && !personaOld.equals(personaNew)) {
-                personaOld.getFamiliaList().remove(familia);
+                personaOld.getFamiliaList().remove(personaFamilia);
                 personaOld = em.merge(personaOld);
             }
             if (personaNew != null && !personaNew.equals(personaOld)) {
-                personaNew.getFamiliaList().add(familia);
+                personaNew.getFamiliaList().add(personaFamilia);
                 personaNew = em.merge(personaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = familia.getIdFamilia();
-                if (findFamilia(id) == null) {
-                    throw new NonexistentEntityException("The familia with id " + id + " no longer exists.");
+                Long id = personaFamilia.getIdFamilia();
+                if (findPersonaFamilia(id) == null) {
+                    throw new NonexistentEntityException("The personaFamilia with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -121,24 +121,24 @@ public class FamiliaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Familia familia;
+            PersonaFamilia personaFamilia;
             try {
-                familia = em.getReference(Familia.class, id);
-                familia.getIdFamilia();
+                personaFamilia = em.getReference(PersonaFamilia.class, id);
+                personaFamilia.getIdFamilia();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The familia with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The personaFamilia with id " + id + " no longer exists.", enfe);
             }
-            Persona datos = familia.getDatos();
+            Persona datos = personaFamilia.getDatos();
             if (datos != null) {
-                datos.getFamiliaList().remove(familia);
+                datos.getFamiliaList().remove(personaFamilia);
                 datos = em.merge(datos);
             }
-            Persona persona = familia.getPersona();
+            Persona persona = personaFamilia.getPersona();
             if (persona != null) {
-                persona.getFamiliaList().remove(familia);
+                persona.getFamiliaList().remove(personaFamilia);
                 persona = em.merge(persona);
             }
-            em.remove(familia);
+            em.remove(personaFamilia);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -147,19 +147,19 @@ public class FamiliaJpaController implements Serializable {
         }
     }
 
-    public List<Familia> findFamiliaEntities() {
-        return findFamiliaEntities(true, -1, -1);
+    public List<PersonaFamilia> findPersonaFamiliaEntities() {
+        return findPersonaFamiliaEntities(true, -1, -1);
     }
 
-    public List<Familia> findFamiliaEntities(int maxResults, int firstResult) {
-        return findFamiliaEntities(false, maxResults, firstResult);
+    public List<PersonaFamilia> findPersonaFamiliaEntities(int maxResults, int firstResult) {
+        return findPersonaFamiliaEntities(false, maxResults, firstResult);
     }
 
-    private List<Familia> findFamiliaEntities(boolean all, int maxResults, int firstResult) {
+    private List<PersonaFamilia> findPersonaFamiliaEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Familia.class));
+            cq.select(cq.from(PersonaFamilia.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -171,20 +171,20 @@ public class FamiliaJpaController implements Serializable {
         }
     }
 
-    public Familia findFamilia(Long id) {
+    public PersonaFamilia findPersonaFamilia(Long id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Familia.class, id);
+            return em.find(PersonaFamilia.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getFamiliaCount() {
+    public int getPersonaFamiliaCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Familia> rt = cq.from(Familia.class);
+            Root<PersonaFamilia> rt = cq.from(PersonaFamilia.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

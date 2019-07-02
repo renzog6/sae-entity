@@ -1,15 +1,11 @@
-package ar.nex.entity;
+package ar.nex.entity.empleado;
 
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -20,32 +16,26 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Renzo
  */
 @Entity
-@Table(name = "eq_categoria")
+@Table(name = "rh_categoria")
 @XmlRootElement
-public class EquipoCategoria implements Serializable {
+public class EmpleadoCategoria implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_categoria")
     private Long idCategoria;
     @Column(name = "nombre")
     private String nombre;
+    @Column(name = "info")
+    private String info;
     @OneToMany(mappedBy = "categoria")
-    private List<Equipo> equipoList;
-   
-    @OneToMany(mappedBy = "categoria")
-    private List<EquipoTipo> tipoList;
+    private List<Empleado> empleadoList;
 
-    public EquipoCategoria() {
+    public EmpleadoCategoria() {
     }
 
-    public EquipoCategoria(String s) {
-        this.nombre = s;
-    }
-
-    public EquipoCategoria(Long idCategoria) {
+    public EmpleadoCategoria(Long idCategoria) {
         this.idCategoria = idCategoria;
     }
 
@@ -65,22 +55,21 @@ public class EquipoCategoria implements Serializable {
         this.nombre = nombre;
     }
 
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
     @XmlTransient
-    public List<Equipo> getEquipoList() {
-        return equipoList;
+    public List<Empleado> getEmpleadoList() {
+        return empleadoList;
     }
 
-    public void setEquipoList(List<Equipo> equipoList) {
-        this.equipoList = equipoList;
-    }
-
-    @XmlTransient
-    public List<EquipoTipo> getEquipoTipoList() {
-        return tipoList;
-    }
-
-    public void setEquipoTipoList(List<EquipoTipo> tipoList) {
-        this.tipoList = tipoList;
+    public void setEmpleadoList(List<Empleado> empleadoList) {
+        this.empleadoList = empleadoList;
     }
 
     @Override
@@ -93,10 +82,10 @@ public class EquipoCategoria implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof EquipoCategoria)) {
+        if (!(object instanceof EmpleadoCategoria)) {
             return false;
         }
-        EquipoCategoria other = (EquipoCategoria) object;
+        EmpleadoCategoria other = (EmpleadoCategoria) object;
         if ((this.idCategoria == null && other.idCategoria != null) || (this.idCategoria != null && !this.idCategoria.equals(other.idCategoria))) {
             return false;
         }
@@ -107,5 +96,5 @@ public class EquipoCategoria implements Serializable {
     public String toString() {
         return this.nombre;
     }
-
+    
 }
