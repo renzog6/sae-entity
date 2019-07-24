@@ -1,5 +1,6 @@
 package ar.nex.entity.equipo;
 
+import ar.nex.entity.Marca;
 import ar.nex.entity.empresa.Empresa;
 import java.io.Serializable;
 import java.util.List;
@@ -37,8 +38,13 @@ public class Repuesto implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "stock")
     private Double stock;
+    
     @Column(name = "marca")
     private String marca;
+    
+    @ManyToMany(mappedBy = "repuestoList")
+    private List<Marca> marcaList;
+    
     @Column(name = "info")
     private String info;
     @Column(name = "parte")

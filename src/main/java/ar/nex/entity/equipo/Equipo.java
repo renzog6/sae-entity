@@ -60,22 +60,30 @@ public class Equipo implements Serializable {
     @JoinColumn(name = "categoria", referencedColumnName = "id_categoria")
     @ManyToOne
     private EquipoCategoria categoria;
+   
     @JoinColumn(name = "compra_venta", referencedColumnName = "id_compra_venta")
     @ManyToOne
     private EquipoCompraVenta compraVenta;
+    
     @JoinColumn(name = "empresa", referencedColumnName = "id_empresa")
     @ManyToOne(optional = false)
     private Empresa empresa;
+    
     @JoinColumn(name = "marca", referencedColumnName = "id_marca")
     @ManyToOne
     private Marca marca;
+    
     @JoinColumn(name = "modelo", referencedColumnName = "id_modelo")
     @ManyToOne
     private EquipoModelo modelo;
+    
     @JoinColumn(name = "tipo", referencedColumnName = "id_tipo")
     @ManyToOne
     private EquipoTipo tipo;
 
+     @Column(name = "gasoil")
+    private Boolean gasoil;
+    
     public Equipo() {
     }
 
@@ -211,6 +219,14 @@ public class Equipo implements Serializable {
 
     public void setTipo(EquipoTipo tipo) {
         this.tipo = tipo;
+    }
+
+    public Boolean getGasoil() {
+        return gasoil;
+    }
+
+    public void setGasoil(Boolean gasoil) {
+        this.gasoil = gasoil;
     }
 
     @Override

@@ -32,6 +32,7 @@ public class Provincia implements Serializable {
     private String nombre;
     @Column(name = "codigo")
     private String codigo;
+    
     @OneToMany(mappedBy = "provincia")
     private List<Localidad> localidadList;
 

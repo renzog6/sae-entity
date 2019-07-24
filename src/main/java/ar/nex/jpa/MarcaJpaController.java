@@ -5,17 +5,16 @@
  */
 package ar.nex.jpa;
 
+import ar.nex.entity.Marca;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.AuxItem;
-import ar.nex.entity.Marca;
-import java.util.ArrayList;
-import java.util.List;
 import ar.nex.entity.equipo.Equipo;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -35,9 +34,6 @@ public class MarcaJpaController implements Serializable {
     }
 
     public void create(Marca marca) {
-        if (marca.getAuxItemList() == null) {
-            marca.setAuxItemList(new ArrayList<AuxItem>());
-        }
         if (marca.getEquipoList() == null) {
             marca.setEquipoList(new ArrayList<Equipo>());
         }
@@ -45,12 +41,6 @@ public class MarcaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            List<AuxItem> attachedAuxItemList = new ArrayList<AuxItem>();
-            for (AuxItem auxItemListAuxItemToAttach : marca.getAuxItemList()) {
-                auxItemListAuxItemToAttach = em.getReference(auxItemListAuxItemToAttach.getClass(), auxItemListAuxItemToAttach.getIdItem());
-                attachedAuxItemList.add(auxItemListAuxItemToAttach);
-            }
-            marca.setAuxItemList(attachedAuxItemList);
             List<Equipo> attachedEquipoList = new ArrayList<Equipo>();
             for (Equipo equipoListEquipoToAttach : marca.getEquipoList()) {
                 equipoListEquipoToAttach = em.getReference(equipoListEquipoToAttach.getClass(), equipoListEquipoToAttach.getIdEquipo());
@@ -58,10 +48,6 @@ public class MarcaJpaController implements Serializable {
             }
             marca.setEquipoList(attachedEquipoList);
             em.persist(marca);
-            for (AuxItem auxItemListAuxItem : marca.getAuxItemList()) {
-                auxItemListAuxItem.getMarcaList().add(marca);
-                auxItemListAuxItem = em.merge(auxItemListAuxItem);
-            }
             for (Equipo equipoListEquipo : marca.getEquipoList()) {
                 Marca oldMarcaOfEquipoListEquipo = equipoListEquipo.getMarca();
                 equipoListEquipo.setMarca(marca);
@@ -85,17 +71,8 @@ public class MarcaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Marca persistentMarca = em.find(Marca.class, marca.getIdMarca());
-            List<AuxItem> auxItemListOld = persistentMarca.getAuxItemList();
-            List<AuxItem> auxItemListNew = marca.getAuxItemList();
             List<Equipo> equipoListOld = persistentMarca.getEquipoList();
             List<Equipo> equipoListNew = marca.getEquipoList();
-            List<AuxItem> attachedAuxItemListNew = new ArrayList<AuxItem>();
-            for (AuxItem auxItemListNewAuxItemToAttach : auxItemListNew) {
-                auxItemListNewAuxItemToAttach = em.getReference(auxItemListNewAuxItemToAttach.getClass(), auxItemListNewAuxItemToAttach.getIdItem());
-                attachedAuxItemListNew.add(auxItemListNewAuxItemToAttach);
-            }
-            auxItemListNew = attachedAuxItemListNew;
-            marca.setAuxItemList(auxItemListNew);
             List<Equipo> attachedEquipoListNew = new ArrayList<Equipo>();
             for (Equipo equipoListNewEquipoToAttach : equipoListNew) {
                 equipoListNewEquipoToAttach = em.getReference(equipoListNewEquipoToAttach.getClass(), equipoListNewEquipoToAttach.getIdEquipo());
@@ -104,18 +81,6 @@ public class MarcaJpaController implements Serializable {
             equipoListNew = attachedEquipoListNew;
             marca.setEquipoList(equipoListNew);
             marca = em.merge(marca);
-            for (AuxItem auxItemListOldAuxItem : auxItemListOld) {
-                if (!auxItemListNew.contains(auxItemListOldAuxItem)) {
-                    auxItemListOldAuxItem.getMarcaList().remove(marca);
-                    auxItemListOldAuxItem = em.merge(auxItemListOldAuxItem);
-                }
-            }
-            for (AuxItem auxItemListNewAuxItem : auxItemListNew) {
-                if (!auxItemListOld.contains(auxItemListNewAuxItem)) {
-                    auxItemListNewAuxItem.getMarcaList().add(marca);
-                    auxItemListNewAuxItem = em.merge(auxItemListNewAuxItem);
-                }
-            }
             for (Equipo equipoListOldEquipo : equipoListOld) {
                 if (!equipoListNew.contains(equipoListOldEquipo)) {
                     equipoListOldEquipo.setMarca(null);
@@ -161,11 +126,6 @@ public class MarcaJpaController implements Serializable {
                 marca.getIdMarca();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The marca with id " + id + " no longer exists.", enfe);
-            }
-            List<AuxItem> auxItemList = marca.getAuxItemList();
-            for (AuxItem auxItemListAuxItem : auxItemList) {
-                auxItemListAuxItem.getMarcaList().remove(marca);
-                auxItemListAuxItem = em.merge(auxItemListAuxItem);
             }
             List<Equipo> equipoList = marca.getEquipoList();
             for (Equipo equipoListEquipo : equipoList) {

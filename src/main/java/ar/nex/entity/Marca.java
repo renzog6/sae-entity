@@ -1,8 +1,10 @@
 package ar.nex.entity;
 
 import ar.nex.entity.equipo.Equipo;
+import ar.nex.entity.equipo.Repuesto;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,11 +28,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "aux_marca")
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Marca.findAll", query = "SELECT m FROM Marca m"),
-    @NamedQuery(name = "Marca.findByIdMarca", query = "SELECT m FROM Marca m WHERE m.idMarca = :idMarca"),
-    @NamedQuery(name = "Marca.findByNombre", query = "SELECT m FROM Marca m WHERE m.nombre = :nombre"),
-    @NamedQuery(name = "Marca.findByDescripcion", query = "SELECT m FROM Marca m WHERE m.descripcion = :descripcion")})
 public class Marca implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,14 +40,17 @@ public class Marca implements Serializable {
     private String nombre;
     @Column(name = "descripcion")
     private String descripcion;
-    @JoinTable(name = "aux_item_marca", joinColumns = {
-        @JoinColumn(name = "id_marca", referencedColumnName = "id_marca")}, inverseJoinColumns = {
-        @JoinColumn(name = "id_item", referencedColumnName = "id_item")})
-    @ManyToMany
-    private List<AuxItem> auxItemList;
+
     @OneToMany(mappedBy = "marca")
     private List<Equipo> equipoList;
-
+    
+   @JoinTable(name = "ped_repuesto_marca", joinColumns = {
+        @JoinColumn(name = "id_marca", referencedColumnName = "id_marca")}, inverseJoinColumns = {
+        @JoinColumn(name = "id_repuesto", referencedColumnName = "id_repuesto")})
+    @ManyToMany
+    private List<Repuesto> repuestoList;
+    
+    
     public Marca() {
     }
 
@@ -87,15 +87,6 @@ public class Marca implements Serializable {
     }
 
     @XmlTransient
-    public List<AuxItem> getAuxItemList() {
-        return auxItemList;
-    }
-
-    public void setAuxItemList(List<AuxItem> auxItemList) {
-        this.auxItemList = auxItemList;
-    }
-
-    @XmlTransient
     public List<Equipo> getEquipoList() {
         return equipoList;
     }
@@ -104,21 +95,35 @@ public class Marca implements Serializable {
         this.equipoList = equipoList;
     }
 
+    @XmlTransient
+    public List<Repuesto> getRepuestoList() {
+        return repuestoList;
+    }
+
+    public void setRepuestoList(List<Repuesto> repuestoList) {
+        this.repuestoList = repuestoList;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (idMarca != null ? idMarca.hashCode() : 0);
+        int hash = 3;
+        hash = 47 * hash + Objects.hashCode(this.nombre);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Marca)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        Marca other = (Marca) object;
-        if ((this.idMarca == null && other.idMarca != null) || (this.idMarca != null && !this.idMarca.equals(other.idMarca))) {
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Marca other = (Marca) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
             return false;
         }
         return true;

@@ -9,6 +9,7 @@ import ar.nex.jpa.EquipoCompraVentaJpaController;
 import ar.nex.jpa.EquipoJpaController;
 import ar.nex.jpa.EquipoModeloJpaController;
 import ar.nex.jpa.EquipoTipoJpaController;
+import ar.nex.jpa.GasoilJpaController;
 import ar.nex.jpa.LocalidadJpaController;
 import ar.nex.jpa.MarcaJpaController;
 import ar.nex.jpa.PedidoJpaController;
@@ -55,7 +56,7 @@ public final class JpaService {
         return new MarcaJpaController(getFactory());
     }
 
-    public EquipoJpaController getEquipo() {        
+    public EquipoJpaController getEquipo() {
         return new EquipoJpaController(getFactory());
     }
 
@@ -67,27 +68,31 @@ public final class JpaService {
         return new EquipoModeloJpaController(getFactory());
     }
 
-    public EquipoTipoJpaController getEquipoTipo() {        
+    public EquipoTipoJpaController getEquipoTipo() {
         return new EquipoTipoJpaController(getFactory());
     }
 
-    public EquipoCompraVentaJpaController getEquipoCompraVenta() {        
+    public EquipoCompraVentaJpaController getEquipoCompraVenta() {
         return new EquipoCompraVentaJpaController(getFactory());
     }
 
-    public PedidoJpaController getPedido() {        
+    public GasoilJpaController getGasoil() {
+        return new GasoilJpaController(getFactory());
+    }
+
+    public PedidoJpaController getPedido() {
         return new PedidoJpaController(getFactory());
     }
 
-    public RepuestoJpaController getRepuesto() {        
+    public RepuestoJpaController getRepuesto() {
         return new RepuestoJpaController(getFactory());
     }
 
-    public UsuarioJpaController getUsuario() {        
+    public UsuarioJpaController getUsuario() {
         return new UsuarioJpaController(getFactory());
     }
 
-    public EmpleadoJpaController getEmpleado() {        
+    public EmpleadoJpaController getEmpleado() {
         return new EmpleadoJpaController(getFactory());
     }
 
@@ -95,23 +100,23 @@ public final class JpaService {
         return new PersonaJpaController(getFactory());
     }
 
-    public ProvinciaJpaController getProvincia() {        
+    public ProvinciaJpaController getProvincia() {
         return new ProvinciaJpaController(getFactory());
     }
 
-    public LocalidadJpaController getLocalidad() {        
+    public LocalidadJpaController getLocalidad() {
         return new LocalidadJpaController(getFactory());
     }
 
-    public DireccionJpaController getDireccion() {        
+    public DireccionJpaController getDireccion() {
         return new DireccionJpaController(getFactory());
     }
 
-    public ContactoJpaController getContacto() {        
+    public ContactoJpaController getContacto() {
         return new ContactoJpaController(getFactory());
     }
 
-    public RubroJpaController getRubro() {        
+    public RubroJpaController getRubro() {
         return new RubroJpaController(getFactory());
     }
 }
