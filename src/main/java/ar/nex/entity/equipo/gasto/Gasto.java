@@ -47,7 +47,7 @@ public class Gasto implements Serializable {
     private String info;
 
     @Column(name = "kms")
-    private double kms;
+    private Double kms;
 
     @JoinColumn(name = "equipo", referencedColumnName = "id_equipo")
     @ManyToOne
@@ -62,7 +62,7 @@ public class Gasto implements Serializable {
         this.codigo = codigo;
     }
 
-    public Gasto(String codigo, int kms) {
+    public Gasto(String codigo, Double kms) {
         super();
         this.codigo = codigo;
         this.kms = kms;
@@ -104,11 +104,11 @@ public class Gasto implements Serializable {
         this.dtype = dtype;
     }
 
-    public double getKms() {
+    public Double getKms() {
         return kms;
     }
-
-    public void setKms(double kms) {
+    
+    public void setKms(Double kms) {
         this.kms = kms;
     }
 
@@ -161,10 +161,10 @@ public class Gasto implements Serializable {
         return true;
     }
 
-
     @Override
     public String toString() {
         return "ar.nex.entity.equipo.gasto.Gasto[ idGasto=" + idGasto + " ]";
     }
+ 
 
 }

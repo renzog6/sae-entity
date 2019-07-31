@@ -23,6 +23,8 @@ public class Gasoil extends Gasto {
     private Double precio;
     @Column(name = "stock")
     private Double stock;
+    @Column(name = "stock_update")
+    private boolean stockUpdate;
 
     public Gasoil() {
         super();
@@ -46,6 +48,14 @@ public class Gasoil extends Gasto {
 
     public void setPrecio(Double precio) {
         this.precio = precio;
+    }
+
+    public boolean isStockUpdate() {
+        return stockUpdate;
+    }
+
+    public void setStockUpdate(boolean stockUpdate) {
+        this.stockUpdate = stockUpdate;
     }
 
     @Override
