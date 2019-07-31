@@ -5,7 +5,7 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.equipo.gasto.Gasoil;
+import ar.nex.entity.equipo.gasto.GastoNeumatico;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import java.util.List;
@@ -20,9 +20,9 @@ import javax.persistence.criteria.Root;
  *
  * @author Renzo
  */
-public class GasoilJpaController implements Serializable {
+public class GastoNeumaticoJpaController implements Serializable {
 
-    public GasoilJpaController(EntityManagerFactory emf) {
+    public GastoNeumaticoJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -31,12 +31,12 @@ public class GasoilJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Gasoil gasoil) {
+    public void create(GastoNeumatico gastoNeumatico) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(gasoil);
+            em.persist(gastoNeumatico);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -45,19 +45,19 @@ public class GasoilJpaController implements Serializable {
         }
     }
 
-    public void edit(Gasoil gasoil) throws NonexistentEntityException, Exception {
+    public void edit(GastoNeumatico gastoNeumatico) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            gasoil = em.merge(gasoil);
+            gastoNeumatico = em.merge(gastoNeumatico);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = gasoil.getIdGasto();
-                if (findGasoil(id) == null) {
-                    throw new NonexistentEntityException("The gasoil with id " + id + " no longer exists.");
+                Long id = gastoNeumatico.getIdGasto();
+                if (findGastoNeumatico(id) == null) {
+                    throw new NonexistentEntityException("The gastoNeumatico with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -73,14 +73,14 @@ public class GasoilJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Gasoil gasoil;
+            GastoNeumatico gastoNeumatico;
             try {
-                gasoil = em.getReference(Gasoil.class, id);
-                gasoil.getIdGasto();
+                gastoNeumatico = em.getReference(GastoNeumatico.class, id);
+                gastoNeumatico.getIdGasto();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The gasoil with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The gastoNeumatico with id " + id + " no longer exists.", enfe);
             }
-            em.remove(gasoil);
+            em.remove(gastoNeumatico);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -89,19 +89,19 @@ public class GasoilJpaController implements Serializable {
         }
     }
 
-    public List<Gasoil> findGasoilEntities() {
-        return findGasoilEntities(true, -1, -1);
+    public List<GastoNeumatico> findGastoNeumaticoEntities() {
+        return findGastoNeumaticoEntities(true, -1, -1);
     }
 
-    public List<Gasoil> findGasoilEntities(int maxResults, int firstResult) {
-        return findGasoilEntities(false, maxResults, firstResult);
+    public List<GastoNeumatico> findGastoNeumaticoEntities(int maxResults, int firstResult) {
+        return findGastoNeumaticoEntities(false, maxResults, firstResult);
     }
 
-    private List<Gasoil> findGasoilEntities(boolean all, int maxResults, int firstResult) {
+    private List<GastoNeumatico> findGastoNeumaticoEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Gasoil.class));
+            cq.select(cq.from(GastoNeumatico.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -113,20 +113,20 @@ public class GasoilJpaController implements Serializable {
         }
     }
 
-    public Gasoil findGasoil(Long id) {
+    public GastoNeumatico findGastoNeumatico(Long id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Gasoil.class, id);
+            return em.find(GastoNeumatico.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getGasoilCount() {
+    public int getGastoNeumaticoCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Gasoil> rt = cq.from(Gasoil.class);
+            Root<GastoNeumatico> rt = cq.from(GastoNeumatico.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

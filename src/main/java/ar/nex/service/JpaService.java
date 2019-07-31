@@ -10,6 +10,7 @@ import ar.nex.jpa.EquipoJpaController;
 import ar.nex.jpa.EquipoModeloJpaController;
 import ar.nex.jpa.EquipoTipoJpaController;
 import ar.nex.jpa.GasoilJpaController;
+
 import ar.nex.jpa.LocalidadJpaController;
 import ar.nex.jpa.MarcaJpaController;
 import ar.nex.jpa.PedidoJpaController;
