@@ -45,8 +45,8 @@ public class Equipo implements Serializable {
     private String color;
     @Column(name = "nombre")
     private String nombre;
-    @Column(name = "otro")
-    private String otro;
+    @Column(name = "info")
+    private String info;
 
     @JoinTable(name = "ped_repuesto_equipo", joinColumns = {
         @JoinColumn(name = "id_equipo", referencedColumnName = "id_equipo")}, inverseJoinColumns = {
@@ -82,13 +82,12 @@ public class Equipo implements Serializable {
     private EquipoTipo tipo;
 
     @Column(name = "gasoil")
-    private Boolean gasoil;
-
+    private Boolean usaGasoil;
+    
+    @Column(name = "estado")
+    private Boolean estado;
+    
     public Equipo() {
-    }
-
-    public Equipo(Long idEquipo) {
-        this.idEquipo = idEquipo;
     }
 
     public Long getIdEquipo() {
@@ -148,11 +147,11 @@ public class Equipo implements Serializable {
     }
 
     public String getOtro() {
-        return otro;
+        return info;
     }
 
     public void setOtro(String otro) {
-        this.otro = otro;
+        this.info = otro;
     }
 
     @XmlTransient
@@ -221,12 +220,20 @@ public class Equipo implements Serializable {
         this.tipo = tipo;
     }
 
-    public Boolean getGasoil() {
-        return gasoil;
+    public Boolean getUsaGasoil() {
+        return usaGasoil;
     }
 
-    public void setGasoil(Boolean gasoil) {
-        this.gasoil = gasoil;
+    public void setUsaGasoil(Boolean usaGasoil) {
+        this.usaGasoil = usaGasoil;
+    }
+
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
     }
 
     @Override
