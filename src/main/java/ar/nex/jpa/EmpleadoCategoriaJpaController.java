@@ -44,7 +44,7 @@ public class EmpleadoCategoriaJpaController implements Serializable {
             em.getTransaction().begin();
             List<Empleado> attachedEmpleadoList = new ArrayList<Empleado>();
             for (Empleado empleadoListEmpleadoToAttach : empleadoCategoria.getEmpleadoList()) {
-                empleadoListEmpleadoToAttach = em.getReference(empleadoListEmpleadoToAttach.getClass(), empleadoListEmpleadoToAttach.getIdEmpleado());
+                empleadoListEmpleadoToAttach = em.getReference(empleadoListEmpleadoToAttach.getClass(), empleadoListEmpleadoToAttach.getIdPersona());
                 attachedEmpleadoList.add(empleadoListEmpleadoToAttach);
             }
             empleadoCategoria.setEmpleadoList(attachedEmpleadoList);
@@ -81,7 +81,7 @@ public class EmpleadoCategoriaJpaController implements Serializable {
             List<Empleado> empleadoListNew = empleadoCategoria.getEmpleadoList();
             List<Empleado> attachedEmpleadoListNew = new ArrayList<Empleado>();
             for (Empleado empleadoListNewEmpleadoToAttach : empleadoListNew) {
-                empleadoListNewEmpleadoToAttach = em.getReference(empleadoListNewEmpleadoToAttach.getClass(), empleadoListNewEmpleadoToAttach.getIdEmpleado());
+                empleadoListNewEmpleadoToAttach = em.getReference(empleadoListNewEmpleadoToAttach.getClass(), empleadoListNewEmpleadoToAttach.getIdPersona());
                 attachedEmpleadoListNew.add(empleadoListNewEmpleadoToAttach);
             }
             empleadoListNew = attachedEmpleadoListNew;

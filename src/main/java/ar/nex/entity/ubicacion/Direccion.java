@@ -1,5 +1,6 @@
 package ar.nex.entity.ubicacion;
 
+import ar.nex.entity.empleado.Persona;
 import ar.nex.entity.empresa.Empresa;
 import java.io.Serializable;
 import java.util.List;
@@ -26,6 +27,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "ubi_direccion")
 @XmlRootElement
 public class Direccion implements Serializable {
+
+    @OneToMany(mappedBy = "domicilio")
+    private List<Persona> personaList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -178,6 +182,15 @@ public class Direccion implements Serializable {
     @Override
     public String toString() {
         return this.nombre + ": " + this.calle + "  " + this.numero + " - " + getLocalidad().getNombre() + " (" + getLocalidad().getCodigoPostal() + ") - " + getLocalidad().getProvincia();
+    }
+
+    @XmlTransient
+    public List<Persona> getPersonaList() {
+        return personaList;
+    }
+
+    public void setPersonaList(List<Persona> personaList) {
+        this.personaList = personaList;
     }
 
 }

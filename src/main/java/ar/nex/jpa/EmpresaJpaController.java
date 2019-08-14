@@ -10,7 +10,6 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.ubicacion.Direccion;
 import ar.nex.entity.empresa.Rubro;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +19,7 @@ import ar.nex.entity.empleado.Empleado;
 import ar.nex.entity.empresa.Empresa;
 import ar.nex.entity.equipo.Pedido;
 import ar.nex.entity.equipo.Equipo;
+import ar.nex.entity.ubicacion.Direccion;
 import ar.nex.jpa.exceptions.IllegalOrphanException;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import javax.persistence.EntityManager;
@@ -66,11 +66,6 @@ public class EmpresaJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Direccion domicilio = empresa.getDomicilio();
-            if (domicilio != null) {
-                domicilio = em.getReference(domicilio.getClass(), domicilio.getIdDireccion());
-                empresa.setDomicilio(domicilio);
-            }
             List<Rubro> attachedRubroList = new ArrayList<Rubro>();
             for (Rubro rubroListRubroToAttach : empresa.getRubroList()) {
                 rubroListRubroToAttach = em.getReference(rubroListRubroToAttach.getClass(), rubroListRubroToAttach.getIdRubro());
@@ -91,7 +86,7 @@ public class EmpresaJpaController implements Serializable {
             empresa.setRepuestoList(attachedRepuestoList);
             List<Empleado> attachedEmpleadoList = new ArrayList<Empleado>();
             for (Empleado empleadoListEmpleadoToAttach : empresa.getEmpleadoList()) {
-                empleadoListEmpleadoToAttach = em.getReference(empleadoListEmpleadoToAttach.getClass(), empleadoListEmpleadoToAttach.getIdEmpleado());
+                empleadoListEmpleadoToAttach = em.getReference(empleadoListEmpleadoToAttach.getClass(), empleadoListEmpleadoToAttach.getIdPersona());
                 attachedEmpleadoList.add(empleadoListEmpleadoToAttach);
             }
             empresa.setEmpleadoList(attachedEmpleadoList);
@@ -114,10 +109,6 @@ public class EmpresaJpaController implements Serializable {
             }
             empresa.setDireccionList(attachedDireccionList);
             em.persist(empresa);
-            if (domicilio != null) {
-                domicilio.getEmpresaList().add(empresa);
-                domicilio = em.merge(domicilio);
-            }
             for (Rubro rubroListRubro : empresa.getRubroList()) {
                 rubroListRubro.getEmpresaList().add(empresa);
                 rubroListRubro = em.merge(rubroListRubro);
@@ -175,8 +166,6 @@ public class EmpresaJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Empresa persistentEmpresa = em.find(Empresa.class, empresa.getIdEmpresa());
-            Direccion domicilioOld = persistentEmpresa.getDomicilio();
-            Direccion domicilioNew = empresa.getDomicilio();
             List<Rubro> rubroListOld = persistentEmpresa.getRubroList();
             List<Rubro> rubroListNew = empresa.getRubroList();
             List<Contacto> contactoListOld = persistentEmpresa.getContactoList();
@@ -203,10 +192,6 @@ public class EmpresaJpaController implements Serializable {
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            if (domicilioNew != null) {
-                domicilioNew = em.getReference(domicilioNew.getClass(), domicilioNew.getIdDireccion());
-                empresa.setDomicilio(domicilioNew);
-            }
             List<Rubro> attachedRubroListNew = new ArrayList<Rubro>();
             for (Rubro rubroListNewRubroToAttach : rubroListNew) {
                 rubroListNewRubroToAttach = em.getReference(rubroListNewRubroToAttach.getClass(), rubroListNewRubroToAttach.getIdRubro());
@@ -230,7 +215,7 @@ public class EmpresaJpaController implements Serializable {
             empresa.setRepuestoList(repuestoListNew);
             List<Empleado> attachedEmpleadoListNew = new ArrayList<Empleado>();
             for (Empleado empleadoListNewEmpleadoToAttach : empleadoListNew) {
-                empleadoListNewEmpleadoToAttach = em.getReference(empleadoListNewEmpleadoToAttach.getClass(), empleadoListNewEmpleadoToAttach.getIdEmpleado());
+                empleadoListNewEmpleadoToAttach = em.getReference(empleadoListNewEmpleadoToAttach.getClass(), empleadoListNewEmpleadoToAttach.getIdPersona());
                 attachedEmpleadoListNew.add(empleadoListNewEmpleadoToAttach);
             }
             empleadoListNew = attachedEmpleadoListNew;
@@ -257,14 +242,6 @@ public class EmpresaJpaController implements Serializable {
             direccionListNew = attachedDireccionListNew;
             empresa.setDireccionList(direccionListNew);
             empresa = em.merge(empresa);
-            if (domicilioOld != null && !domicilioOld.equals(domicilioNew)) {
-                domicilioOld.getEmpresaList().remove(empresa);
-                domicilioOld = em.merge(domicilioOld);
-            }
-            if (domicilioNew != null && !domicilioNew.equals(domicilioOld)) {
-                domicilioNew.getEmpresaList().add(empresa);
-                domicilioNew = em.merge(domicilioNew);
-            }
             for (Rubro rubroListOldRubro : rubroListOld) {
                 if (!rubroListNew.contains(rubroListOldRubro)) {
                     rubroListOldRubro.getEmpresaList().remove(empresa);
@@ -397,11 +374,6 @@ public class EmpresaJpaController implements Serializable {
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Direccion domicilio = empresa.getDomicilio();
-            if (domicilio != null) {
-                domicilio.getEmpresaList().remove(empresa);
-                domicilio = em.merge(domicilio);
             }
             List<Rubro> rubroList = empresa.getRubroList();
             for (Rubro rubroListRubro : rubroList) {

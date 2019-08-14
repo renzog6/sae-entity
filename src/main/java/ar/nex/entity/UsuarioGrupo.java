@@ -34,6 +34,7 @@ public class UsuarioGrupo implements Serializable {
     private Integer code;
     @Column(name = "info")
     private String info;
+    
     @OneToMany(mappedBy = "grupo")
     private List<Usuario> usuarioList;
 

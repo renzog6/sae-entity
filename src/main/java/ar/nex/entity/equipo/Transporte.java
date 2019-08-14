@@ -1,47 +1,51 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ar.nex.entity.equipo;
 
+import ar.nex.entity.empleado.Empleado;
 import java.io.Serializable;
-import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Renzo
  */
 @Entity
-@Table(name = "transporte")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Transporte.findAll", query = "SELECT t FROM Transporte t"),
-    @NamedQuery(name = "Transporte.findByIdTransporte", query = "SELECT t FROM Transporte t WHERE t.idTransporte = :idTransporte"),
-    @NamedQuery(name = "Transporte.findByIdChofer", query = "SELECT t FROM Transporte t WHERE t.idChofer = :idChofer"),
-    @NamedQuery(name = "Transporte.findByNombre", query = "SELECT t FROM Transporte t WHERE t.nombre = :nombre"),
-    @NamedQuery(name = "Transporte.findByGasoil", query = "SELECT t FROM Transporte t WHERE t.gasoil = :gasoil")})
+@Table(name = "eq_transporte")
 public class Transporte implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id_transporte")
     private Long idTransporte;
-    @Column(name = "id_chofer")
-    private BigInteger idChofer;
+
     @Column(name = "nombre")
     private String nombre;
-    @Column(name = "gasoil")
-    private Boolean gasoil;
+    @Column(name = "info")
+    private String info;
+    @Column(name = "estado")
+    private Boolean estado;
+
+    @JoinColumn(name = "id_acopaldo", referencedColumnName = "id_equipo")
+    @OneToOne
+    private Equipo acoplado;
+
+    @JoinColumn(name = "id_camion", referencedColumnName = "id_equipo")
+    @OneToOne
+    private Equipo camion;
+
+    @JoinColumn(name = "id_chofer", referencedColumnName = "id_empleado")
+    @OneToOne
+    private Empleado chofer;
 
     public Transporte() {
     }
@@ -58,14 +62,6 @@ public class Transporte implements Serializable {
         this.idTransporte = idTransporte;
     }
 
-    public BigInteger getIdChofer() {
-        return idChofer;
-    }
-
-    public void setIdChofer(BigInteger idChofer) {
-        this.idChofer = idChofer;
-    }
-
     public String getNombre() {
         return nombre;
     }
@@ -74,12 +70,44 @@ public class Transporte implements Serializable {
         this.nombre = nombre;
     }
 
-    public Boolean getGasoil() {
-        return gasoil;
+    public String getInfo() {
+        return info;
     }
 
-    public void setGasoil(Boolean gasoil) {
-        this.gasoil = gasoil;
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public Boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Boolean estado) {
+        this.estado = estado;
+    }
+
+    public Equipo getAcoplado() {
+        return acoplado;
+    }
+
+    public void setAcoplado(Equipo acoplado) {
+        this.acoplado = acoplado;
+    }
+
+    public Equipo getCamion() {
+        return camion;
+    }
+
+    public void setCamion(Equipo camion) {
+        this.camion = camion;
+    }
+
+    public Empleado getChofer() {
+        return chofer;
+    }
+
+    public void setChofer(Empleado chofer) {
+        this.chofer = chofer;
     }
 
     @Override
@@ -106,5 +134,5 @@ public class Transporte implements Serializable {
     public String toString() {
         return "ar.nex.entity.equipo.Transporte[ idTransporte=" + idTransporte + " ]";
     }
-    
+
 }

@@ -2,14 +2,18 @@ package ar.nex.service;
 
 import ar.nex.jpa.ContactoJpaController;
 import ar.nex.jpa.DireccionJpaController;
+import ar.nex.jpa.EmpleadoCategoriaJpaController;
 import ar.nex.jpa.EmpleadoJpaController;
+import ar.nex.jpa.EmpleadoPuestoJpaController;
 import ar.nex.jpa.EmpresaJpaController;
 import ar.nex.jpa.EquipoCategoriaJpaController;
 import ar.nex.jpa.EquipoCompraVentaJpaController;
 import ar.nex.jpa.EquipoJpaController;
 import ar.nex.jpa.EquipoModeloJpaController;
 import ar.nex.jpa.EquipoTipoJpaController;
+import ar.nex.jpa.FamiliaJpaController;
 import ar.nex.jpa.GasoilJpaController;
+import ar.nex.jpa.GastoJpaController;
 
 import ar.nex.jpa.LocalidadJpaController;
 import ar.nex.jpa.MarcaJpaController;
@@ -18,6 +22,7 @@ import ar.nex.jpa.PersonaJpaController;
 import ar.nex.jpa.ProvinciaJpaController;
 import ar.nex.jpa.RepuestoJpaController;
 import ar.nex.jpa.RubroJpaController;
+import ar.nex.jpa.TransporteJpaController;
 import ar.nex.jpa.UsuarioJpaController;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -97,8 +102,20 @@ public final class JpaService {
         return new EmpleadoJpaController(getFactory());
     }
 
+    public EmpleadoCategoriaJpaController getEmpleadoCategoria() {
+        return new EmpleadoCategoriaJpaController(getFactory());
+    }
+
+    public EmpleadoPuestoJpaController getEmpleadoPuesto() {
+        return new EmpleadoPuestoJpaController(getFactory());
+    }
+
     public PersonaJpaController getPersona() {
         return new PersonaJpaController(getFactory());
+    }
+
+    public FamiliaJpaController getFamilia() {
+        return new FamiliaJpaController(getFactory());
     }
 
     public ProvinciaJpaController getProvincia() {
@@ -119,5 +136,13 @@ public final class JpaService {
 
     public RubroJpaController getRubro() {
         return new RubroJpaController(getFactory());
+    }
+
+    public TransporteJpaController getTransporte() {
+        return new TransporteJpaController(getFactory());
+    }
+
+    public GastoJpaController getGasto() {
+        return new GastoJpaController(getFactory());
     }
 }

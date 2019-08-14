@@ -7,7 +7,6 @@ package ar.nex.jpa;
 
 import ar.nex.entity.equipo.Transporte;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
-import ar.nex.jpa.exceptions.PreexistingEntityException;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -32,18 +31,13 @@ public class TransporteJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Transporte transporte) throws PreexistingEntityException, Exception {
+    public void create(Transporte transporte) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             em.persist(transporte);
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findTransporte(transporte.getIdTransporte()) != null) {
-                throw new PreexistingEntityException("Transporte " + transporte + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

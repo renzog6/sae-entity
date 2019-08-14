@@ -63,7 +63,7 @@ public class ContactoJpaController implements Serializable {
             contacto.setEmpresaList(attachedEmpresaList);
             List<Empleado> attachedEmpleadoList = new ArrayList<Empleado>();
             for (Empleado empleadoListEmpleadoToAttach : contacto.getEmpleadoList()) {
-                empleadoListEmpleadoToAttach = em.getReference(empleadoListEmpleadoToAttach.getClass(), empleadoListEmpleadoToAttach.getIdEmpleado());
+                empleadoListEmpleadoToAttach = em.getReference(empleadoListEmpleadoToAttach.getClass(), empleadoListEmpleadoToAttach.getIdPersona());
                 attachedEmpleadoList.add(empleadoListEmpleadoToAttach);
             }
             contacto.setEmpleadoList(attachedEmpleadoList);
@@ -116,7 +116,7 @@ public class ContactoJpaController implements Serializable {
             contacto.setEmpresaList(empresaListNew);
             List<Empleado> attachedEmpleadoListNew = new ArrayList<Empleado>();
             for (Empleado empleadoListNewEmpleadoToAttach : empleadoListNew) {
-                empleadoListNewEmpleadoToAttach = em.getReference(empleadoListNewEmpleadoToAttach.getClass(), empleadoListNewEmpleadoToAttach.getIdEmpleado());
+                empleadoListNewEmpleadoToAttach = em.getReference(empleadoListNewEmpleadoToAttach.getClass(), empleadoListNewEmpleadoToAttach.getIdPersona());
                 attachedEmpleadoListNew.add(empleadoListNewEmpleadoToAttach);
             }
             empleadoListNew = attachedEmpleadoListNew;

@@ -5,14 +5,12 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.empleado.Empleado;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import ar.nex.entity.empleado.EmpleadoCategoria;
-import ar.nex.entity.empresa.Empresa;
+import ar.nex.entity.empleado.Persona;
 import ar.nex.entity.ubicacion.Direccion;
 import ar.nex.entity.ubicacion.Contacto;
 import java.util.ArrayList;
@@ -26,9 +24,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author Renzo
  */
-public class EmpleadoJpaController implements Serializable {
+public class FamiliaJpaController implements Serializable {
 
-    public EmpleadoJpaController(EntityManagerFactory emf) {
+    public FamiliaJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -37,64 +35,55 @@ public class EmpleadoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Empleado empleado) {
-        if (empleado.getContactoList() == null) {
-            empleado.setContactoList(new ArrayList<Contacto>());
+    public void create(Familia familia) {
+        if (familia.getContactoList() == null) {
+            familia.setContactoList(new ArrayList<Contacto>());
         }
-        if (empleado.getFamiliaList() == null) {
-            empleado.setFamiliaList(new ArrayList<Familia>());
+        if (familia.getFamiliaList() == null) {
+            familia.setFamiliaList(new ArrayList<Familia>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            EmpleadoCategoria categoria = empleado.getCategoria();
-            if (categoria != null) {
-                categoria = em.getReference(categoria.getClass(), categoria.getIdCategoria());
-                empleado.setCategoria(categoria);
+            Persona pariente = familia.getPariente();
+            if (pariente != null) {
+                pariente = em.getReference(pariente.getClass(), pariente.getIdPersona());
+                familia.setPariente(pariente);
             }
-            Empresa empresa = empleado.getEmpresa();
-            if (empresa != null) {
-                empresa = em.getReference(empresa.getClass(), empresa.getIdEmpresa());
-                empleado.setEmpresa(empresa);
-            }
-            Direccion domicilio = empleado.getDomicilio();
+            Direccion domicilio = familia.getDomicilio();
             if (domicilio != null) {
                 domicilio = em.getReference(domicilio.getClass(), domicilio.getIdDireccion());
-                empleado.setDomicilio(domicilio);
+                familia.setDomicilio(domicilio);
             }
             List<Contacto> attachedContactoList = new ArrayList<Contacto>();
-            for (Contacto contactoListContactoToAttach : empleado.getContactoList()) {
+            for (Contacto contactoListContactoToAttach : familia.getContactoList()) {
                 contactoListContactoToAttach = em.getReference(contactoListContactoToAttach.getClass(), contactoListContactoToAttach.getIdContacto());
                 attachedContactoList.add(contactoListContactoToAttach);
             }
-            empleado.setContactoList(attachedContactoList);
+            familia.setContactoList(attachedContactoList);
             List<Familia> attachedFamiliaList = new ArrayList<Familia>();
-            for (Familia familiaListFamiliaToAttach : empleado.getFamiliaList()) {
+            for (Familia familiaListFamiliaToAttach : familia.getFamiliaList()) {
                 familiaListFamiliaToAttach = em.getReference(familiaListFamiliaToAttach.getClass(), familiaListFamiliaToAttach.getIdPersona());
                 attachedFamiliaList.add(familiaListFamiliaToAttach);
             }
-            empleado.setFamiliaList(attachedFamiliaList);
-            em.persist(empleado);
-            if (categoria != null) {
-                categoria.getEmpleadoList().add(empleado);
-                categoria = em.merge(categoria);
-            }
-            if (empresa != null) {
-                empresa.getEmpleadoList().add(empleado);
-                empresa = em.merge(empresa);
+            familia.setFamiliaList(attachedFamiliaList);
+            em.persist(familia);
+            if (pariente != null) {
+                pariente.getFamiliaList().add(familia);
+                pariente = em.merge(pariente);
             }
             if (domicilio != null) {
-                domicilio.getPersonaList().add(empleado);
+                domicilio.getPersonaList().add(familia);
                 domicilio = em.merge(domicilio);
             }
-            for (Contacto contactoListContacto : empleado.getContactoList()) {
-                contactoListContacto.getPersonaList().add(empleado);
+            for (Contacto contactoListContacto : familia.getContactoList()) {
+                contactoListContacto.getPersonaList().add(familia);
                 contactoListContacto = em.merge(contactoListContacto);
             }
-            for (Familia familiaListFamilia : empleado.getFamiliaList()) {
+            for (Familia familiaListFamilia : familia.getFamiliaList()) {
                 ar.nex.entity.empleado.Persona oldParienteOfFamiliaListFamilia = familiaListFamilia.getPariente();
-                familiaListFamilia.setPariente(empleado);
+                familiaListFamilia.setPariente(familia);
                 familiaListFamilia = em.merge(familiaListFamilia);
                 if (oldParienteOfFamiliaListFamilia != null) {
                     oldParienteOfFamiliaListFamilia.getFamiliaList().remove(familiaListFamilia);
@@ -109,33 +98,27 @@ public class EmpleadoJpaController implements Serializable {
         }
     }
 
-    public void edit(Empleado empleado) throws NonexistentEntityException, Exception {
+    public void edit(Familia familia) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Empleado persistentEmpleado = em.find(Empleado.class, empleado.getIdPersona());
-            EmpleadoCategoria categoriaOld = persistentEmpleado.getCategoria();
-            EmpleadoCategoria categoriaNew = empleado.getCategoria();
-            Empresa empresaOld = persistentEmpleado.getEmpresa();
-            Empresa empresaNew = empleado.getEmpresa();
-            Direccion domicilioOld = persistentEmpleado.getDomicilio();
-            Direccion domicilioNew = empleado.getDomicilio();
-            List<Contacto> contactoListOld = persistentEmpleado.getContactoList();
-            List<Contacto> contactoListNew = empleado.getContactoList();
-            List<Familia> familiaListOld = persistentEmpleado.getFamiliaList();
-            List<Familia> familiaListNew = empleado.getFamiliaList();
-            if (categoriaNew != null) {
-                categoriaNew = em.getReference(categoriaNew.getClass(), categoriaNew.getIdCategoria());
-                empleado.setCategoria(categoriaNew);
-            }
-            if (empresaNew != null) {
-                empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getIdEmpresa());
-                empleado.setEmpresa(empresaNew);
+            Familia persistentFamilia = em.find(Familia.class, familia.getIdPersona());
+            Persona parienteOld = persistentFamilia.getPariente();
+            Persona parienteNew = familia.getPariente();
+            Direccion domicilioOld = persistentFamilia.getDomicilio();
+            Direccion domicilioNew = familia.getDomicilio();
+            List<Contacto> contactoListOld = persistentFamilia.getContactoList();
+            List<Contacto> contactoListNew = familia.getContactoList();
+            List<Familia> familiaListOld = persistentFamilia.getFamiliaList();
+            List<Familia> familiaListNew = familia.getFamiliaList();
+            if (parienteNew != null) {
+                parienteNew = em.getReference(parienteNew.getClass(), parienteNew.getIdPersona());
+                familia.setPariente(parienteNew);
             }
             if (domicilioNew != null) {
                 domicilioNew = em.getReference(domicilioNew.getClass(), domicilioNew.getIdDireccion());
-                empleado.setDomicilio(domicilioNew);
+                familia.setDomicilio(domicilioNew);
             }
             List<Contacto> attachedContactoListNew = new ArrayList<Contacto>();
             for (Contacto contactoListNewContactoToAttach : contactoListNew) {
@@ -143,48 +126,40 @@ public class EmpleadoJpaController implements Serializable {
                 attachedContactoListNew.add(contactoListNewContactoToAttach);
             }
             contactoListNew = attachedContactoListNew;
-            empleado.setContactoList(contactoListNew);
+            familia.setContactoList(contactoListNew);
             List<Familia> attachedFamiliaListNew = new ArrayList<Familia>();
             for (Familia familiaListNewFamiliaToAttach : familiaListNew) {
                 familiaListNewFamiliaToAttach = em.getReference(familiaListNewFamiliaToAttach.getClass(), familiaListNewFamiliaToAttach.getIdPersona());
                 attachedFamiliaListNew.add(familiaListNewFamiliaToAttach);
             }
             familiaListNew = attachedFamiliaListNew;
-            empleado.setFamiliaList(familiaListNew);
-            empleado = em.merge(empleado);
-            if (categoriaOld != null && !categoriaOld.equals(categoriaNew)) {
-                categoriaOld.getEmpleadoList().remove(empleado);
-                categoriaOld = em.merge(categoriaOld);
+            familia.setFamiliaList(familiaListNew);
+            familia = em.merge(familia);
+            if (parienteOld != null && !parienteOld.equals(parienteNew)) {
+                parienteOld.getFamiliaList().remove(familia);
+                parienteOld = em.merge(parienteOld);
             }
-            if (categoriaNew != null && !categoriaNew.equals(categoriaOld)) {
-                categoriaNew.getEmpleadoList().add(empleado);
-                categoriaNew = em.merge(categoriaNew);
-            }
-            if (empresaOld != null && !empresaOld.equals(empresaNew)) {
-                empresaOld.getEmpleadoList().remove(empleado);
-                empresaOld = em.merge(empresaOld);
-            }
-            if (empresaNew != null && !empresaNew.equals(empresaOld)) {
-                empresaNew.getEmpleadoList().add(empleado);
-                empresaNew = em.merge(empresaNew);
+            if (parienteNew != null && !parienteNew.equals(parienteOld)) {
+                parienteNew.getFamiliaList().add(familia);
+                parienteNew = em.merge(parienteNew);
             }
             if (domicilioOld != null && !domicilioOld.equals(domicilioNew)) {
-                domicilioOld.getPersonaList().remove(empleado);
+                domicilioOld.getPersonaList().remove(familia);
                 domicilioOld = em.merge(domicilioOld);
             }
             if (domicilioNew != null && !domicilioNew.equals(domicilioOld)) {
-                domicilioNew.getPersonaList().add(empleado);
+                domicilioNew.getPersonaList().add(familia);
                 domicilioNew = em.merge(domicilioNew);
             }
             for (Contacto contactoListOldContacto : contactoListOld) {
                 if (!contactoListNew.contains(contactoListOldContacto)) {
-                    contactoListOldContacto.getPersonaList().remove(empleado);
+                    contactoListOldContacto.getPersonaList().remove(familia);
                     contactoListOldContacto = em.merge(contactoListOldContacto);
                 }
             }
             for (Contacto contactoListNewContacto : contactoListNew) {
                 if (!contactoListOld.contains(contactoListNewContacto)) {
-                    contactoListNewContacto.getPersonaList().add(empleado);
+                    contactoListNewContacto.getPersonaList().add(familia);
                     contactoListNewContacto = em.merge(contactoListNewContacto);
                 }
             }
@@ -194,14 +169,14 @@ public class EmpleadoJpaController implements Serializable {
                     familiaListOldFamilia = em.merge(familiaListOldFamilia);
                 }
             }
-
+            
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = empleado.getIdPersona();
-                if (findEmpleado(id) == null) {
-                    throw new NonexistentEntityException("The empleado with id " + id + " no longer exists.");
+                Long id = familia.getIdPersona();
+                if (findFamilia(id) == null) {
+                    throw new NonexistentEntityException("The familia with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -217,39 +192,34 @@ public class EmpleadoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Empleado empleado;
+            Familia familia;
             try {
-                empleado = em.getReference(Empleado.class, id);
-                empleado.getIdPersona();
+                familia = em.getReference(Familia.class, id);
+                familia.getIdPersona();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The empleado with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The familia with id " + id + " no longer exists.", enfe);
             }
-            EmpleadoCategoria categoria = empleado.getCategoria();
-            if (categoria != null) {
-                categoria.getEmpleadoList().remove(empleado);
-                categoria = em.merge(categoria);
+            Persona pariente = familia.getPariente();
+            if (pariente != null) {
+                pariente.getFamiliaList().remove(familia);
+                pariente = em.merge(pariente);
             }
-            Empresa empresa = empleado.getEmpresa();
-            if (empresa != null) {
-                empresa.getEmpleadoList().remove(empleado);
-                empresa = em.merge(empresa);
-            }
-            Direccion domicilio = empleado.getDomicilio();
+            Direccion domicilio = familia.getDomicilio();
             if (domicilio != null) {
-                domicilio.getPersonaList().remove(empleado);
+                domicilio.getPersonaList().remove(familia);
                 domicilio = em.merge(domicilio);
             }
-            List<Contacto> contactoList = empleado.getContactoList();
+            List<Contacto> contactoList = familia.getContactoList();
             for (Contacto contactoListContacto : contactoList) {
-                contactoListContacto.getPersonaList().remove(empleado);
+                contactoListContacto.getPersonaList().remove(familia);
                 contactoListContacto = em.merge(contactoListContacto);
             }
-            List<Familia> familiaList = empleado.getFamiliaList();
+            List<Familia> familiaList = familia.getFamiliaList();
             for (Familia familiaListFamilia : familiaList) {
                 familiaListFamilia.setPariente(null);
                 familiaListFamilia = em.merge(familiaListFamilia);
             }
-            em.remove(empleado);
+            em.remove(familia);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -258,19 +228,19 @@ public class EmpleadoJpaController implements Serializable {
         }
     }
 
-    public List<Empleado> findEmpleadoEntities() {
-        return findEmpleadoEntities(true, -1, -1);
+    public List<Familia> findFamiliaEntities() {
+        return findFamiliaEntities(true, -1, -1);
     }
 
-    public List<Empleado> findEmpleadoEntities(int maxResults, int firstResult) {
-        return findEmpleadoEntities(false, maxResults, firstResult);
+    public List<Familia> findFamiliaEntities(int maxResults, int firstResult) {
+        return findFamiliaEntities(false, maxResults, firstResult);
     }
 
-    private List<Empleado> findEmpleadoEntities(boolean all, int maxResults, int firstResult) {
+    private List<Familia> findFamiliaEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Empleado.class));
+            cq.select(cq.from(Familia.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -282,20 +252,20 @@ public class EmpleadoJpaController implements Serializable {
         }
     }
 
-    public Empleado findEmpleado(Long id) {
+    public Familia findFamilia(Long id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Empleado.class, id);
+            return em.find(Familia.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getEmpleadoCount() {
+    public int getFamiliaCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Empleado> rt = cq.from(Empleado.class);
+            Root<Familia> rt = cq.from(Familia.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

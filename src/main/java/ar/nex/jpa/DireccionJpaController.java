@@ -15,6 +15,7 @@ import ar.nex.entity.empresa.Empresa;
 import java.util.ArrayList;
 import java.util.List;
 import ar.nex.entity.ubicacion.Coordenada;
+import ar.nex.entity.empleado.Persona;
 import ar.nex.entity.ubicacion.Direccion;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import javax.persistence.EntityManager;
@@ -42,6 +43,9 @@ public class DireccionJpaController implements Serializable {
         if (direccion.getCoordenadaList() == null) {
             direccion.setCoordenadaList(new ArrayList<Coordenada>());
         }
+        if (direccion.getPersonaList() == null) {
+            direccion.setPersonaList(new ArrayList<Persona>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -63,6 +67,12 @@ public class DireccionJpaController implements Serializable {
                 attachedCoordenadaList.add(coordenadaListCoordenadaToAttach);
             }
             direccion.setCoordenadaList(attachedCoordenadaList);
+            List<Persona> attachedPersonaList = new ArrayList<Persona>();
+            for (Persona personaListPersonaToAttach : direccion.getPersonaList()) {
+                personaListPersonaToAttach = em.getReference(personaListPersonaToAttach.getClass(), personaListPersonaToAttach.getIdPersona());
+                attachedPersonaList.add(personaListPersonaToAttach);
+            }
+            direccion.setPersonaList(attachedPersonaList);
             em.persist(direccion);
             if (localidad != null) {
                 localidad.getDireccionList().add(direccion);
@@ -79,6 +89,15 @@ public class DireccionJpaController implements Serializable {
                 if (oldDireccionOfCoordenadaListCoordenada != null) {
                     oldDireccionOfCoordenadaListCoordenada.getCoordenadaList().remove(coordenadaListCoordenada);
                     oldDireccionOfCoordenadaListCoordenada = em.merge(oldDireccionOfCoordenadaListCoordenada);
+                }
+            }
+            for (Persona personaListPersona : direccion.getPersonaList()) {
+                Direccion oldDomicilioOfPersonaListPersona = personaListPersona.getDomicilio();
+                personaListPersona.setDomicilio(direccion);
+                personaListPersona = em.merge(personaListPersona);
+                if (oldDomicilioOfPersonaListPersona != null) {
+                    oldDomicilioOfPersonaListPersona.getPersonaList().remove(personaListPersona);
+                    oldDomicilioOfPersonaListPersona = em.merge(oldDomicilioOfPersonaListPersona);
                 }
             }
             em.getTransaction().commit();
@@ -101,6 +120,8 @@ public class DireccionJpaController implements Serializable {
             List<Empresa> empresaListNew = direccion.getEmpresaList();
             List<Coordenada> coordenadaListOld = persistentDireccion.getCoordenadaList();
             List<Coordenada> coordenadaListNew = direccion.getCoordenadaList();
+            List<Persona> personaListOld = persistentDireccion.getPersonaList();
+            List<Persona> personaListNew = direccion.getPersonaList();
             if (localidadNew != null) {
                 localidadNew = em.getReference(localidadNew.getClass(), localidadNew.getIdLocalidad());
                 direccion.setLocalidad(localidadNew);
@@ -119,6 +140,13 @@ public class DireccionJpaController implements Serializable {
             }
             coordenadaListNew = attachedCoordenadaListNew;
             direccion.setCoordenadaList(coordenadaListNew);
+            List<Persona> attachedPersonaListNew = new ArrayList<Persona>();
+            for (Persona personaListNewPersonaToAttach : personaListNew) {
+                personaListNewPersonaToAttach = em.getReference(personaListNewPersonaToAttach.getClass(), personaListNewPersonaToAttach.getIdPersona());
+                attachedPersonaListNew.add(personaListNewPersonaToAttach);
+            }
+            personaListNew = attachedPersonaListNew;
+            direccion.setPersonaList(personaListNew);
             direccion = em.merge(direccion);
             if (localidadOld != null && !localidadOld.equals(localidadNew)) {
                 localidadOld.getDireccionList().remove(direccion);
@@ -154,6 +182,23 @@ public class DireccionJpaController implements Serializable {
                     if (oldDireccionOfCoordenadaListNewCoordenada != null && !oldDireccionOfCoordenadaListNewCoordenada.equals(direccion)) {
                         oldDireccionOfCoordenadaListNewCoordenada.getCoordenadaList().remove(coordenadaListNewCoordenada);
                         oldDireccionOfCoordenadaListNewCoordenada = em.merge(oldDireccionOfCoordenadaListNewCoordenada);
+                    }
+                }
+            }
+            for (Persona personaListOldPersona : personaListOld) {
+                if (!personaListNew.contains(personaListOldPersona)) {
+                    personaListOldPersona.setDomicilio(null);
+                    personaListOldPersona = em.merge(personaListOldPersona);
+                }
+            }
+            for (Persona personaListNewPersona : personaListNew) {
+                if (!personaListOld.contains(personaListNewPersona)) {
+                    Direccion oldDomicilioOfPersonaListNewPersona = personaListNewPersona.getDomicilio();
+                    personaListNewPersona.setDomicilio(direccion);
+                    personaListNewPersona = em.merge(personaListNewPersona);
+                    if (oldDomicilioOfPersonaListNewPersona != null && !oldDomicilioOfPersonaListNewPersona.equals(direccion)) {
+                        oldDomicilioOfPersonaListNewPersona.getPersonaList().remove(personaListNewPersona);
+                        oldDomicilioOfPersonaListNewPersona = em.merge(oldDomicilioOfPersonaListNewPersona);
                     }
                 }
             }
@@ -200,6 +245,11 @@ public class DireccionJpaController implements Serializable {
             for (Coordenada coordenadaListCoordenada : coordenadaList) {
                 coordenadaListCoordenada.setDireccion(null);
                 coordenadaListCoordenada = em.merge(coordenadaListCoordenada);
+            }
+            List<Persona> personaList = direccion.getPersonaList();
+            for (Persona personaListPersona : personaList) {
+                personaListPersona.setDomicilio(null);
+                personaListPersona = em.merge(personaListPersona);
             }
             em.remove(direccion);
             em.getTransaction().commit();

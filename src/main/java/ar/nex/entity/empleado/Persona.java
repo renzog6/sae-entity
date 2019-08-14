@@ -1,29 +1,25 @@
 package ar.nex.entity.empleado;
 
-import ar.nex.entity.Usuario;
 import ar.nex.entity.ubicacion.Contacto;
 import ar.nex.entity.ubicacion.Direccion;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -32,8 +28,8 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "rh_persona")
-@XmlRootElement
-public class Persona implements Serializable {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Persona implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -41,6 +37,15 @@ public class Persona implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_persona")
     private Long idPersona;
+
+   @OneToMany(mappedBy = "pariente")
+    private List<Familia> familiaList;
+
+    @Column(name = "dtype")
+    private String dtype;
+    @Column(name = "hijo")
+    private Integer hijo;
+
     @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
@@ -62,19 +67,13 @@ public class Persona implements Serializable {
     private String estadoCivil;
     @Column(name = "info")
     private String info;
+
     @ManyToMany(mappedBy = "personaList")
     private List<Contacto> contactoList;
-    @OneToMany(mappedBy = "datos")
-    private List<PersonaFamilia> familiaList;
-    @OneToMany(mappedBy = "persona")
-    private List<PersonaFamilia> familiaList1;
+
     @JoinColumn(name = "domicilio", referencedColumnName = "id_direccion")
     @ManyToOne
     private Direccion domicilio;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "persona")
-    private Empleado empleado;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "persona")
-    private Usuario usuario;
 
     public Persona() {
     }
@@ -179,21 +178,12 @@ public class Persona implements Serializable {
     }
 
     @XmlTransient
-    public List<PersonaFamilia> getFamiliaList() {
+    public List<Familia> getFamiliaList() {
         return familiaList;
     }
 
-    public void setFamiliaList(List<PersonaFamilia> familiaList) {
+    public void setFamiliaList(List<Familia> familiaList) {
         this.familiaList = familiaList;
-    }
-
-    @XmlTransient
-    public List<PersonaFamilia> getFamiliaList1() {
-        return familiaList1;
-    }
-
-    public void setFamiliaList1(List<PersonaFamilia> familiaList1) {
-        this.familiaList1 = familiaList1;
     }
 
     public Direccion getDomicilio() {
@@ -202,22 +192,6 @@ public class Persona implements Serializable {
 
     public void setDomicilio(Direccion domicilio) {
         this.domicilio = domicilio;
-    }
-
-    public Empleado getEmpleado() {
-        return empleado;
-    }
-
-    public void setEmpleado(Empleado empleado) {
-        this.empleado = empleado;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
     }
 
     @Override
@@ -242,7 +216,26 @@ public class Persona implements Serializable {
 
     @Override
     public String toString() {
-        return "ar.nex.entity.Persona[ idPersona=" + idPersona + " ]";
+        return getNombreCompleto();
     }
-    
+
+    public String getNombreCompleto() {
+        return String.join(" ", this.nombre, this.apellido);
+    }
+
+    public String getDtype() {
+        return dtype;
+    }
+
+    public void setDtype(String dtype) {
+        this.dtype = dtype;
+    }
+
+    public Integer getHijo() {
+        return hijo;
+    }
+
+    public void setHijo(Integer hijo) {
+        this.hijo = hijo;
+    }
 }

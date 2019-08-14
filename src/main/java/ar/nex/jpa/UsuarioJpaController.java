@@ -12,12 +12,10 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ar.nex.entity.UsuarioGrupo;
-import ar.nex.entity.empleado.Persona;
 import ar.nex.entity.UsuarioMenu;
 import java.util.ArrayList;
 import java.util.List;
 import ar.nex.entity.UsuarioHistorial;
-import ar.nex.jpa.exceptions.IllegalOrphanException;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -37,26 +35,12 @@ public class UsuarioJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Usuario usuario) throws IllegalOrphanException {
+    public void create(Usuario usuario) {
         if (usuario.getUsrMenuList() == null) {
             usuario.setUsrMenuList(new ArrayList<UsuarioMenu>());
         }
         if (usuario.getUsuarioHistorialList() == null) {
             usuario.setUsuarioHistorialList(new ArrayList<UsuarioHistorial>());
-        }
-        List<String> illegalOrphanMessages = null;
-        Persona personaOrphanCheck = usuario.getPersona();
-        if (personaOrphanCheck != null) {
-            Usuario oldUsuarioOfPersona = personaOrphanCheck.getUsuario();
-            if (oldUsuarioOfPersona != null) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("The Persona " + personaOrphanCheck + " already has an item of type Usuario whose persona column cannot be null. Please make another selection for the persona field.");
-            }
-        }
-        if (illegalOrphanMessages != null) {
-            throw new IllegalOrphanException(illegalOrphanMessages);
         }
         EntityManager em = null;
         try {
@@ -66,11 +50,6 @@ public class UsuarioJpaController implements Serializable {
             if (grupo != null) {
                 grupo = em.getReference(grupo.getClass(), grupo.getIdGrupo());
                 usuario.setGrupo(grupo);
-            }
-            Persona persona = usuario.getPersona();
-            if (persona != null) {
-                persona = em.getReference(persona.getClass(), persona.getIdPersona());
-                usuario.setPersona(persona);
             }
             List<UsuarioMenu> attachedUsrMenuList = new ArrayList<UsuarioMenu>();
             for (UsuarioMenu usrMenuListUsuarioMenuToAttach : usuario.getUsrMenuList()) {
@@ -88,10 +67,6 @@ public class UsuarioJpaController implements Serializable {
             if (grupo != null) {
                 grupo.getUsuarioList().add(usuario);
                 grupo = em.merge(grupo);
-            }
-            if (persona != null) {
-                persona.setUsuario(usuario);
-                persona = em.merge(persona);
             }
             for (UsuarioMenu usrMenuListUsuarioMenu : usuario.getUsrMenuList()) {
                 usrMenuListUsuarioMenu.getUsuarioList().add(usuario);
@@ -114,7 +89,7 @@ public class UsuarioJpaController implements Serializable {
         }
     }
 
-    public void edit(Usuario usuario) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Usuario usuario) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -122,32 +97,13 @@ public class UsuarioJpaController implements Serializable {
             Usuario persistentUsuario = em.find(Usuario.class, usuario.getIdUsuario());
             UsuarioGrupo grupoOld = persistentUsuario.getGrupo();
             UsuarioGrupo grupoNew = usuario.getGrupo();
-            Persona personaOld = persistentUsuario.getPersona();
-            Persona personaNew = usuario.getPersona();
             List<UsuarioMenu> usrMenuListOld = persistentUsuario.getUsrMenuList();
             List<UsuarioMenu> usrMenuListNew = usuario.getUsrMenuList();
             List<UsuarioHistorial> usuarioHistorialListOld = persistentUsuario.getUsuarioHistorialList();
             List<UsuarioHistorial> usuarioHistorialListNew = usuario.getUsuarioHistorialList();
-            List<String> illegalOrphanMessages = null;
-            if (personaNew != null && !personaNew.equals(personaOld)) {
-                Usuario oldUsuarioOfPersona = personaNew.getUsuario();
-                if (oldUsuarioOfPersona != null) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("The Persona " + personaNew + " already has an item of type Usuario whose persona column cannot be null. Please make another selection for the persona field.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
             if (grupoNew != null) {
                 grupoNew = em.getReference(grupoNew.getClass(), grupoNew.getIdGrupo());
                 usuario.setGrupo(grupoNew);
-            }
-            if (personaNew != null) {
-                personaNew = em.getReference(personaNew.getClass(), personaNew.getIdPersona());
-                usuario.setPersona(personaNew);
             }
             List<UsuarioMenu> attachedUsrMenuListNew = new ArrayList<UsuarioMenu>();
             for (UsuarioMenu usrMenuListNewUsuarioMenuToAttach : usrMenuListNew) {
@@ -171,14 +127,6 @@ public class UsuarioJpaController implements Serializable {
             if (grupoNew != null && !grupoNew.equals(grupoOld)) {
                 grupoNew.getUsuarioList().add(usuario);
                 grupoNew = em.merge(grupoNew);
-            }
-            if (personaOld != null && !personaOld.equals(personaNew)) {
-                personaOld.setUsuario(null);
-                personaOld = em.merge(personaOld);
-            }
-            if (personaNew != null && !personaNew.equals(personaOld)) {
-                personaNew.setUsuario(usuario);
-                personaNew = em.merge(personaNew);
             }
             for (UsuarioMenu usrMenuListOldUsuarioMenu : usrMenuListOld) {
                 if (!usrMenuListNew.contains(usrMenuListOldUsuarioMenu)) {
@@ -242,11 +190,6 @@ public class UsuarioJpaController implements Serializable {
             if (grupo != null) {
                 grupo.getUsuarioList().remove(usuario);
                 grupo = em.merge(grupo);
-            }
-            Persona persona = usuario.getPersona();
-            if (persona != null) {
-                persona.setUsuario(null);
-                persona = em.merge(persona);
             }
             List<UsuarioMenu> usrMenuList = usuario.getUsrMenuList();
             for (UsuarioMenu usrMenuListUsuarioMenu : usrMenuList) {
