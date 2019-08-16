@@ -43,7 +43,7 @@ public class Transporte implements Serializable {
     @OneToOne
     private Equipo camion;
 
-    @JoinColumn(name = "id_chofer", referencedColumnName = "id_empleado")
+    @JoinColumn(name = "id_chofer", referencedColumnName = "id_persona")
     @OneToOne
     private Empleado chofer;
 

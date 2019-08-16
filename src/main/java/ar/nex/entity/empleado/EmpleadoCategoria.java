@@ -94,7 +94,7 @@ public class EmpleadoCategoria implements Serializable {
 
     @Override
     public String toString() {
-        return this.nombre;
+        return this.nombre + " ( " + this.info + " )";
     }
-    
+
 }

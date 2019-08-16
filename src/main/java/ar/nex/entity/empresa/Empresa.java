@@ -72,10 +72,6 @@ public class Empresa implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "empresa")
     private List<Equipo> equipoList;
 
-//    @JoinColumn(name = "domicilio", referencedColumnName = "id_direccion")
-//    @OneToOne(optional = false)
-//    private Direccion domicilio;
-
     @JoinTable(name = "empresa_direccion", joinColumns = {
         @JoinColumn(name = "id_empresa", referencedColumnName = "id_empresa")}, inverseJoinColumns = {
         @JoinColumn(name = "id_direccion", referencedColumnName = "id_direccion")})
@@ -182,14 +178,6 @@ public class Empresa implements Serializable {
     public void setEquipoList(List<Equipo> equipoList) {
         this.equipoList = equipoList;
     }
-
-//    public Direccion getDomicilio() {
-//        return domicilio;
-//    }
-//
-//    public void setDomicilio(Direccion domicilio) {
-//        this.domicilio = domicilio;
-//    }
 
     @XmlTransient
     public List<Direccion> getDireccionList() {

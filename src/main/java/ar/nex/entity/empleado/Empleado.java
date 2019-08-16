@@ -66,11 +66,11 @@ public class Empleado extends Persona {
         this.categoria = categoria;
     }
 
-    public EmpleadoPuesto getEmpleadoPuesto() {
+    public EmpleadoPuesto getPuesto() {
         return puesto;
     }
 
-    public void setEmpleadoPuesto(EmpleadoPuesto puesto) {
+    public void setPuesto(EmpleadoPuesto puesto) {
         this.puesto = puesto;
     }
 
