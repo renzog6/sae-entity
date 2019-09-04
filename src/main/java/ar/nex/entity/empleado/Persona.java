@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,7 +40,7 @@ public abstract class Persona implements Serializable {
     @Column(name = "id_persona")
     private Long idPersona;
 
-   @OneToMany(mappedBy = "pariente")
+    @OneToMany(mappedBy = "pariente")
     private List<Familia> familiaList;
 
     @Column(name = "dtype")
@@ -59,12 +61,19 @@ public abstract class Persona implements Serializable {
     private String dni;
     @Column(name = "cuil")
     private String cuil;
-    @Column(name = "sexo")
-    private String sexo;
+
+    @Enumerated(EnumType.ORDINAL)    
+    @Column(name = "genero")
+    private PersonaGenero genero;
+
+    @Enumerated(EnumType.ORDINAL) 
     @Column(name = "estado")
-    private String estado;
+    private PersonaEstado estado;
+    
+    @Enumerated(EnumType.ORDINAL) 
     @Column(name = "estado_civil")
-    private String estadoCivil;
+    private EstadoCivil estadoCivil;
+    
     @Column(name = "info")
     private String info;
 
@@ -136,27 +145,27 @@ public abstract class Persona implements Serializable {
         this.cuil = cuil;
     }
 
-    public String getSexo() {
-        return sexo;
+    public PersonaGenero getGenero() {
+        return genero;
     }
 
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
+    public void setGenero(PersonaGenero genero) {
+        this.genero = genero;
     }
 
-    public String getEstado() {
+    public PersonaEstado getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(PersonaEstado estado) {
         this.estado = estado;
     }
 
-    public String getEstadoCivil() {
+    public EstadoCivil getEstadoCivil() {
         return estadoCivil;
     }
 
-    public void setEstadoCivil(String estadoCivil) {
+    public void setEstadoCivil(EstadoCivil estadoCivil) {
         this.estadoCivil = estadoCivil;
     }
 

@@ -1,6 +1,8 @@
 package ar.nex.entity.equipo;
 
 import ar.nex.entity.Marca;
+import ar.nex.entity.Seguro;
+import ar.nex.entity.empleado.Empleado;
 import ar.nex.entity.empresa.Empresa;
 import java.io.Serializable;
 import java.util.List;
@@ -15,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -25,6 +28,18 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "eq_equipo")
 public class Equipo implements Serializable {
+
+    @JoinColumn(name = "documentacion", referencedColumnName = "id_doc")
+    @OneToOne
+    private EquipoDocumentacion documentacion;
+
+    @JoinColumn(name = "seguro", referencedColumnName = "id_seguro")
+    @ManyToOne
+    private Seguro seguro;
+    
+    @JoinColumn(name = "chofer", referencedColumnName = "id_persona")
+    @OneToOne
+    private Empleado chofer;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -83,10 +98,10 @@ public class Equipo implements Serializable {
 
     @Column(name = "gasoil")
     private Boolean usaGasoil;
-    
+
     @Column(name = "estado")
     private Boolean estado;
-    
+
     public Equipo() {
     }
 
@@ -236,6 +251,30 @@ public class Equipo implements Serializable {
         this.estado = estado;
     }
 
+    public Seguro getSeguro() {
+        return seguro;
+    }
+
+    public void setSeguro(Seguro seguro) {
+        this.seguro = seguro;
+    }
+
+    public Empleado getChofer() {
+        return chofer;
+    }
+
+    public void setChofer(Empleado chofer) {
+        this.chofer = chofer;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -258,10 +297,18 @@ public class Equipo implements Serializable {
 
     @Override
     public String toString() {
-        String str = tipo != null ? tipo.getNombre() : "";        
+        String str = tipo != null ? tipo.getNombre() : "";
         str += " " + (nombre != null ? nombre : "");
         str += " " + (patente != null ? patente : "");
         return str;
+    }
+
+    public EquipoDocumentacion getDocumentacion() {
+        return documentacion;
+    }
+
+    public void setDocumentacion(EquipoDocumentacion documentacion) {
+        this.documentacion = documentacion;
     }
 
 }

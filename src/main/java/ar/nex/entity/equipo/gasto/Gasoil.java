@@ -17,6 +17,7 @@ public class Gasoil extends Gasto {
 
     @Column(name = "movimineto")
     private int movimineto;
+    
     @Column(name = "litros")
     private Double litros;
     @Column(name = "precio")

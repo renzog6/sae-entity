@@ -1,5 +1,6 @@
 package ar.nex.service;
 
+import ar.nex.jpa.AdminEmpresaJpaController;
 import ar.nex.jpa.ContactoJpaController;
 import ar.nex.jpa.DireccionJpaController;
 import ar.nex.jpa.EmpleadoCategoriaJpaController;
@@ -8,6 +9,7 @@ import ar.nex.jpa.EmpleadoPuestoJpaController;
 import ar.nex.jpa.EmpresaJpaController;
 import ar.nex.jpa.EquipoCategoriaJpaController;
 import ar.nex.jpa.EquipoCompraVentaJpaController;
+import ar.nex.jpa.EquipoDocumentacionJpaController;
 import ar.nex.jpa.EquipoJpaController;
 import ar.nex.jpa.EquipoModeloJpaController;
 import ar.nex.jpa.EquipoTipoJpaController;
@@ -22,6 +24,7 @@ import ar.nex.jpa.PersonaJpaController;
 import ar.nex.jpa.ProvinciaJpaController;
 import ar.nex.jpa.RepuestoJpaController;
 import ar.nex.jpa.RubroJpaController;
+import ar.nex.jpa.SeguroJpaController;
 import ar.nex.jpa.TransporteJpaController;
 import ar.nex.jpa.UsuarioJpaController;
 import javax.persistence.EntityManagerFactory;
@@ -54,6 +57,10 @@ public final class JpaService {
         return factory;
     }
 
+    public AdminEmpresaJpaController getAdminEmpresa() {
+        return new AdminEmpresaJpaController(getFactory());
+    }
+
     public EmpresaJpaController getEmpresa() {
         return new EmpresaJpaController(getFactory());
     }
@@ -64,6 +71,10 @@ public final class JpaService {
 
     public EquipoJpaController getEquipo() {
         return new EquipoJpaController(getFactory());
+    }
+
+    public EquipoDocumentacionJpaController getEquipoDocumentacion() {
+        return new EquipoDocumentacionJpaController(getFactory());
     }
 
     public EquipoCategoriaJpaController getEquipoCategoria() {
@@ -144,5 +155,9 @@ public final class JpaService {
 
     public GastoJpaController getGasto() {
         return new GastoJpaController(getFactory());
+    }
+
+    public SeguroJpaController getSeguro() {
+        return new SeguroJpaController(getFactory());
     }
 }

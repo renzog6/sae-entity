@@ -1,5 +1,6 @@
 package ar.nex.entity.empleado;
 
+import ar.nex.entity.Seguro;
 import ar.nex.entity.empresa.Empresa;
 import java.util.Date;
 import java.util.Objects;
@@ -37,6 +38,10 @@ public class Empleado extends Persona {
     @JoinColumn(name = "empresa", referencedColumnName = "id_empresa")
     @ManyToOne
     private Empresa empresa;
+
+    @JoinColumn(name = "seguro", referencedColumnName = "id_seguro")
+    @ManyToOne
+    private Seguro seguro;
 
     public Empleado() {
         super();
@@ -80,6 +85,14 @@ public class Empleado extends Persona {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
+    }
+
+    public Seguro getSeguro() {
+        return seguro;
+    }
+
+    public void setSeguro(Seguro seguro) {
+        this.seguro = seguro;
     }
 
     @Override

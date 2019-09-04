@@ -5,14 +5,16 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.empleado.Empleado;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ar.nex.entity.empleado.EmpleadoCategoria;
+import ar.nex.entity.empleado.EmpleadoPuesto;
 import ar.nex.entity.empresa.Empresa;
+import ar.nex.entity.Seguro;
+import ar.nex.entity.empleado.Empleado;
 import ar.nex.entity.ubicacion.Direccion;
 import ar.nex.entity.ubicacion.Contacto;
 import java.util.ArrayList;
@@ -53,10 +55,20 @@ public class EmpleadoJpaController implements Serializable {
                 categoria = em.getReference(categoria.getClass(), categoria.getIdCategoria());
                 empleado.setCategoria(categoria);
             }
+            EmpleadoPuesto puesto = empleado.getPuesto();
+            if (puesto != null) {
+                puesto = em.getReference(puesto.getClass(), puesto.getIdPuesto());
+                empleado.setPuesto(puesto);
+            }
             Empresa empresa = empleado.getEmpresa();
             if (empresa != null) {
                 empresa = em.getReference(empresa.getClass(), empresa.getIdEmpresa());
                 empleado.setEmpresa(empresa);
+            }
+            Seguro seguro = empleado.getSeguro();
+            if (seguro != null) {
+                seguro = em.getReference(seguro.getClass(), seguro.getIdSeguro());
+                empleado.setSeguro(seguro);
             }
             Direccion domicilio = empleado.getDomicilio();
             if (domicilio != null) {
@@ -80,9 +92,17 @@ public class EmpleadoJpaController implements Serializable {
                 categoria.getEmpleadoList().add(empleado);
                 categoria = em.merge(categoria);
             }
+            if (puesto != null) {
+                puesto.getEmpleadoList().add(empleado);
+                puesto = em.merge(puesto);
+            }
             if (empresa != null) {
                 empresa.getEmpleadoList().add(empleado);
                 empresa = em.merge(empresa);
+            }
+            if (seguro != null) {
+                seguro.getEmpleadoList().add(empleado);
+                seguro = em.merge(seguro);
             }
             if (domicilio != null) {
                 domicilio.getPersonaList().add(empleado);
@@ -117,8 +137,12 @@ public class EmpleadoJpaController implements Serializable {
             Empleado persistentEmpleado = em.find(Empleado.class, empleado.getIdPersona());
             EmpleadoCategoria categoriaOld = persistentEmpleado.getCategoria();
             EmpleadoCategoria categoriaNew = empleado.getCategoria();
+            EmpleadoPuesto puestoOld = persistentEmpleado.getPuesto();
+            EmpleadoPuesto puestoNew = empleado.getPuesto();
             Empresa empresaOld = persistentEmpleado.getEmpresa();
             Empresa empresaNew = empleado.getEmpresa();
+            Seguro seguroOld = persistentEmpleado.getSeguro();
+            Seguro seguroNew = empleado.getSeguro();
             Direccion domicilioOld = persistentEmpleado.getDomicilio();
             Direccion domicilioNew = empleado.getDomicilio();
             List<Contacto> contactoListOld = persistentEmpleado.getContactoList();
@@ -129,9 +153,17 @@ public class EmpleadoJpaController implements Serializable {
                 categoriaNew = em.getReference(categoriaNew.getClass(), categoriaNew.getIdCategoria());
                 empleado.setCategoria(categoriaNew);
             }
+            if (puestoNew != null) {
+                puestoNew = em.getReference(puestoNew.getClass(), puestoNew.getIdPuesto());
+                empleado.setPuesto(puestoNew);
+            }
             if (empresaNew != null) {
                 empresaNew = em.getReference(empresaNew.getClass(), empresaNew.getIdEmpresa());
                 empleado.setEmpresa(empresaNew);
+            }
+            if (seguroNew != null) {
+                seguroNew = em.getReference(seguroNew.getClass(), seguroNew.getIdSeguro());
+                empleado.setSeguro(seguroNew);
             }
             if (domicilioNew != null) {
                 domicilioNew = em.getReference(domicilioNew.getClass(), domicilioNew.getIdDireccion());
@@ -160,6 +192,14 @@ public class EmpleadoJpaController implements Serializable {
                 categoriaNew.getEmpleadoList().add(empleado);
                 categoriaNew = em.merge(categoriaNew);
             }
+            if (puestoOld != null && !puestoOld.equals(puestoNew)) {
+                puestoOld.getEmpleadoList().remove(empleado);
+                puestoOld = em.merge(puestoOld);
+            }
+            if (puestoNew != null && !puestoNew.equals(puestoOld)) {
+                puestoNew.getEmpleadoList().add(empleado);
+                puestoNew = em.merge(puestoNew);
+            }
             if (empresaOld != null && !empresaOld.equals(empresaNew)) {
                 empresaOld.getEmpleadoList().remove(empleado);
                 empresaOld = em.merge(empresaOld);
@@ -167,6 +207,14 @@ public class EmpleadoJpaController implements Serializable {
             if (empresaNew != null && !empresaNew.equals(empresaOld)) {
                 empresaNew.getEmpleadoList().add(empleado);
                 empresaNew = em.merge(empresaNew);
+            }
+            if (seguroOld != null && !seguroOld.equals(seguroNew)) {
+                seguroOld.getEmpleadoList().remove(empleado);
+                seguroOld = em.merge(seguroOld);
+            }
+            if (seguroNew != null && !seguroNew.equals(seguroOld)) {
+                seguroNew.getEmpleadoList().add(empleado);
+                seguroNew = em.merge(seguroNew);
             }
             if (domicilioOld != null && !domicilioOld.equals(domicilioNew)) {
                 domicilioOld.getPersonaList().remove(empleado);
@@ -194,7 +242,6 @@ public class EmpleadoJpaController implements Serializable {
                     familiaListOldFamilia = em.merge(familiaListOldFamilia);
                 }
             }
-
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -229,10 +276,20 @@ public class EmpleadoJpaController implements Serializable {
                 categoria.getEmpleadoList().remove(empleado);
                 categoria = em.merge(categoria);
             }
+            EmpleadoPuesto puesto = empleado.getPuesto();
+            if (puesto != null) {
+                puesto.getEmpleadoList().remove(empleado);
+                puesto = em.merge(puesto);
+            }
             Empresa empresa = empleado.getEmpresa();
             if (empresa != null) {
                 empresa.getEmpleadoList().remove(empleado);
                 empresa = em.merge(empresa);
+            }
+            Seguro seguro = empleado.getSeguro();
+            if (seguro != null) {
+                seguro.getEmpleadoList().remove(empleado);
+                seguro = em.merge(seguro);
             }
             Direccion domicilio = empleado.getDomicilio();
             if (domicilio != null) {

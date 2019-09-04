@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package ar.nex.jpa;
 
 import ar.nex.entity.equipo.gasto.GastoNeumatico;
@@ -134,5 +135,5 @@ public class GastoNeumaticoJpaController implements Serializable {
             em.close();
         }
     }
-    
+
 }

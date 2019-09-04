@@ -14,9 +14,11 @@ import ar.nex.entity.equipo.EquipoCategoria;
 import ar.nex.entity.equipo.EquipoCompraVenta;
 import ar.nex.entity.empresa.Empresa;
 import ar.nex.entity.Marca;
-import ar.nex.entity.equipo.Equipo;
 import ar.nex.entity.equipo.EquipoModelo;
 import ar.nex.entity.equipo.EquipoTipo;
+import ar.nex.entity.Seguro;
+import ar.nex.entity.equipo.Equipo;
+import ar.nex.entity.equipo.EquipoDocumentacion;
 import ar.nex.entity.equipo.Repuesto;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +83,16 @@ public class EquipoJpaController implements Serializable {
                 tipo = em.getReference(tipo.getClass(), tipo.getIdTipo());
                 equipo.setTipo(tipo);
             }
+            Seguro seguro = equipo.getSeguro();
+            if (seguro != null) {
+                seguro = em.getReference(seguro.getClass(), seguro.getIdSeguro());
+                equipo.setSeguro(seguro);
+            }
+            EquipoDocumentacion documentacion = equipo.getDocumentacion();
+            if (documentacion != null) {
+                documentacion = em.getReference(documentacion.getClass(), documentacion.getIdDoc());
+                equipo.setDocumentacion(documentacion);
+            }
             List<Repuesto> attachedRepuestoList = new ArrayList<Repuesto>();
             for (Repuesto repuestoListRepuestoToAttach : equipo.getRepuestoList()) {
                 repuestoListRepuestoToAttach = em.getReference(repuestoListRepuestoToAttach.getClass(), repuestoListRepuestoToAttach.getIdRepuesto());
@@ -117,6 +129,19 @@ public class EquipoJpaController implements Serializable {
             if (tipo != null) {
                 tipo.getEquipoList().add(equipo);
                 tipo = em.merge(tipo);
+            }
+            if (seguro != null) {
+                seguro.getEquipoList().add(equipo);
+                seguro = em.merge(seguro);
+            }
+            if (documentacion != null) {
+                Equipo oldEquipoOfDocumentacion = documentacion.getEquipo();
+                if (oldEquipoOfDocumentacion != null) {
+                    oldEquipoOfDocumentacion.setDocumentacion(null);
+                    oldEquipoOfDocumentacion = em.merge(oldEquipoOfDocumentacion);
+                }
+                documentacion.setEquipo(equipo);
+                documentacion = em.merge(documentacion);
             }
             for (Repuesto repuestoListRepuesto : equipo.getRepuestoList()) {
                 repuestoListRepuesto.getEquipoList().add(equipo);
@@ -157,6 +182,10 @@ public class EquipoJpaController implements Serializable {
             EquipoModelo modeloNew = equipo.getModelo();
             EquipoTipo tipoOld = persistentEquipo.getTipo();
             EquipoTipo tipoNew = equipo.getTipo();
+            Seguro seguroOld = persistentEquipo.getSeguro();
+            Seguro seguroNew = equipo.getSeguro();
+            EquipoDocumentacion documentacionOld = persistentEquipo.getDocumentacion();
+            EquipoDocumentacion documentacionNew = equipo.getDocumentacion();
             List<Repuesto> repuestoListOld = persistentEquipo.getRepuestoList();
             List<Repuesto> repuestoListNew = equipo.getRepuestoList();
             List<RepuestoStockDetalle> repuestoStockDetalleListOld = persistentEquipo.getRepuestoStockDetalleList();
@@ -184,6 +213,14 @@ public class EquipoJpaController implements Serializable {
             if (tipoNew != null) {
                 tipoNew = em.getReference(tipoNew.getClass(), tipoNew.getIdTipo());
                 equipo.setTipo(tipoNew);
+            }
+            if (seguroNew != null) {
+                seguroNew = em.getReference(seguroNew.getClass(), seguroNew.getIdSeguro());
+                equipo.setSeguro(seguroNew);
+            }
+            if (documentacionNew != null) {
+                documentacionNew = em.getReference(documentacionNew.getClass(), documentacionNew.getIdDoc());
+                equipo.setDocumentacion(documentacionNew);
             }
             List<Repuesto> attachedRepuestoListNew = new ArrayList<Repuesto>();
             for (Repuesto repuestoListNewRepuestoToAttach : repuestoListNew) {
@@ -247,6 +284,27 @@ public class EquipoJpaController implements Serializable {
             if (tipoNew != null && !tipoNew.equals(tipoOld)) {
                 tipoNew.getEquipoList().add(equipo);
                 tipoNew = em.merge(tipoNew);
+            }
+            if (seguroOld != null && !seguroOld.equals(seguroNew)) {
+                seguroOld.getEquipoList().remove(equipo);
+                seguroOld = em.merge(seguroOld);
+            }
+            if (seguroNew != null && !seguroNew.equals(seguroOld)) {
+                seguroNew.getEquipoList().add(equipo);
+                seguroNew = em.merge(seguroNew);
+            }
+            if (documentacionOld != null && !documentacionOld.equals(documentacionNew)) {
+                documentacionOld.setEquipo(null);
+                documentacionOld = em.merge(documentacionOld);
+            }
+            if (documentacionNew != null && !documentacionNew.equals(documentacionOld)) {
+                Equipo oldEquipoOfDocumentacion = documentacionNew.getEquipo();
+                if (oldEquipoOfDocumentacion != null) {
+                    oldEquipoOfDocumentacion.setDocumentacion(null);
+                    oldEquipoOfDocumentacion = em.merge(oldEquipoOfDocumentacion);
+                }
+                documentacionNew.setEquipo(equipo);
+                documentacionNew = em.merge(documentacionNew);
             }
             for (Repuesto repuestoListOldRepuesto : repuestoListOld) {
                 if (!repuestoListNew.contains(repuestoListOldRepuesto)) {
@@ -335,6 +393,16 @@ public class EquipoJpaController implements Serializable {
             if (tipo != null) {
                 tipo.getEquipoList().remove(equipo);
                 tipo = em.merge(tipo);
+            }
+            Seguro seguro = equipo.getSeguro();
+            if (seguro != null) {
+                seguro.getEquipoList().remove(equipo);
+                seguro = em.merge(seguro);
+            }
+            EquipoDocumentacion documentacion = equipo.getDocumentacion();
+            if (documentacion != null) {
+                documentacion.setEquipo(null);
+                documentacion = em.merge(documentacion);
             }
             List<Repuesto> repuestoList = equipo.getRepuestoList();
             for (Repuesto repuestoListRepuesto : repuestoList) {

@@ -169,7 +169,6 @@ public class FamiliaJpaController implements Serializable {
                     familiaListOldFamilia = em.merge(familiaListOldFamilia);
                 }
             }
-            
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();

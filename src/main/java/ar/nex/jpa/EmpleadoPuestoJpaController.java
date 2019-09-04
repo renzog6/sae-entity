@@ -5,17 +5,19 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.empleado.EmpleadoPuesto;
-import ar.nex.jpa.exceptions.NonexistentEntityException;
-import ar.nex.jpa.exceptions.PreexistingEntityException;
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import ar.nex.entity.empleado.Empleado;
+import ar.nex.entity.empleado.EmpleadoPuesto;
+import ar.nex.jpa.exceptions.NonexistentEntityException;
+import ar.nex.jpa.exceptions.PreexistingEntityException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  *
@@ -33,11 +35,29 @@ public class EmpleadoPuestoJpaController implements Serializable {
     }
 
     public void create(EmpleadoPuesto empleadoPuesto) throws PreexistingEntityException, Exception {
+        if (empleadoPuesto.getEmpleadoList() == null) {
+            empleadoPuesto.setEmpleadoList(new ArrayList<Empleado>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            List<Empleado> attachedEmpleadoList = new ArrayList<Empleado>();
+            for (Empleado empleadoListEmpleadoToAttach : empleadoPuesto.getEmpleadoList()) {
+                empleadoListEmpleadoToAttach = em.getReference(empleadoListEmpleadoToAttach.getClass(), empleadoListEmpleadoToAttach.getIdPersona());
+                attachedEmpleadoList.add(empleadoListEmpleadoToAttach);
+            }
+            empleadoPuesto.setEmpleadoList(attachedEmpleadoList);
             em.persist(empleadoPuesto);
+            for (Empleado empleadoListEmpleado : empleadoPuesto.getEmpleadoList()) {
+                EmpleadoPuesto oldPuestoOfEmpleadoListEmpleado = empleadoListEmpleado.getPuesto();
+                empleadoListEmpleado.setPuesto(empleadoPuesto);
+                empleadoListEmpleado = em.merge(empleadoListEmpleado);
+                if (oldPuestoOfEmpleadoListEmpleado != null) {
+                    oldPuestoOfEmpleadoListEmpleado.getEmpleadoList().remove(empleadoListEmpleado);
+                    oldPuestoOfEmpleadoListEmpleado = em.merge(oldPuestoOfEmpleadoListEmpleado);
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findEmpleadoPuesto(empleadoPuesto.getIdPuesto()) != null) {
@@ -56,7 +76,34 @@ public class EmpleadoPuestoJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            EmpleadoPuesto persistentEmpleadoPuesto = em.find(EmpleadoPuesto.class, empleadoPuesto.getIdPuesto());
+            List<Empleado> empleadoListOld = persistentEmpleadoPuesto.getEmpleadoList();
+            List<Empleado> empleadoListNew = empleadoPuesto.getEmpleadoList();
+            List<Empleado> attachedEmpleadoListNew = new ArrayList<Empleado>();
+            for (Empleado empleadoListNewEmpleadoToAttach : empleadoListNew) {
+                empleadoListNewEmpleadoToAttach = em.getReference(empleadoListNewEmpleadoToAttach.getClass(), empleadoListNewEmpleadoToAttach.getIdPersona());
+                attachedEmpleadoListNew.add(empleadoListNewEmpleadoToAttach);
+            }
+            empleadoListNew = attachedEmpleadoListNew;
+            empleadoPuesto.setEmpleadoList(empleadoListNew);
             empleadoPuesto = em.merge(empleadoPuesto);
+            for (Empleado empleadoListOldEmpleado : empleadoListOld) {
+                if (!empleadoListNew.contains(empleadoListOldEmpleado)) {
+                    empleadoListOldEmpleado.setPuesto(null);
+                    empleadoListOldEmpleado = em.merge(empleadoListOldEmpleado);
+                }
+            }
+            for (Empleado empleadoListNewEmpleado : empleadoListNew) {
+                if (!empleadoListOld.contains(empleadoListNewEmpleado)) {
+                    EmpleadoPuesto oldPuestoOfEmpleadoListNewEmpleado = empleadoListNewEmpleado.getPuesto();
+                    empleadoListNewEmpleado.setPuesto(empleadoPuesto);
+                    empleadoListNewEmpleado = em.merge(empleadoListNewEmpleado);
+                    if (oldPuestoOfEmpleadoListNewEmpleado != null && !oldPuestoOfEmpleadoListNewEmpleado.equals(empleadoPuesto)) {
+                        oldPuestoOfEmpleadoListNewEmpleado.getEmpleadoList().remove(empleadoListNewEmpleado);
+                        oldPuestoOfEmpleadoListNewEmpleado = em.merge(oldPuestoOfEmpleadoListNewEmpleado);
+                    }
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -85,6 +132,11 @@ public class EmpleadoPuestoJpaController implements Serializable {
                 empleadoPuesto.getIdPuesto();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The empleadoPuesto with id " + id + " no longer exists.", enfe);
+            }
+            List<Empleado> empleadoList = empleadoPuesto.getEmpleadoList();
+            for (Empleado empleadoListEmpleado : empleadoList) {
+                empleadoListEmpleado.setPuesto(null);
+                empleadoListEmpleado = em.merge(empleadoListEmpleado);
             }
             em.remove(empleadoPuesto);
             em.getTransaction().commit();

@@ -5,7 +5,7 @@
  */
 package ar.nex.jpa;
 
-import ar.nex.entity.CerSilo;
+import ar.nex.entity.AdminEmpresa;
 import ar.nex.jpa.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import java.util.List;
@@ -20,9 +20,9 @@ import javax.persistence.criteria.Root;
  *
  * @author Renzo
  */
-public class CerSiloJpaController implements Serializable {
+public class AdminEmpresaJpaController implements Serializable {
 
-    public CerSiloJpaController(EntityManagerFactory emf) {
+    public AdminEmpresaJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -31,12 +31,12 @@ public class CerSiloJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(CerSilo cerSilo) {
+    public void create(AdminEmpresa adminEmpresa) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(cerSilo);
+            em.persist(adminEmpresa);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -45,19 +45,19 @@ public class CerSiloJpaController implements Serializable {
         }
     }
 
-    public void edit(CerSilo cerSilo) throws NonexistentEntityException, Exception {
+    public void edit(AdminEmpresa adminEmpresa) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            cerSilo = em.merge(cerSilo);
+            adminEmpresa = em.merge(adminEmpresa);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Long id = cerSilo.getIdSilo();
-                if (findCerSilo(id) == null) {
-                    throw new NonexistentEntityException("The cerSilo with id " + id + " no longer exists.");
+                Long id = adminEmpresa.getIdAdmin();
+                if (findAdminEmpresa(id) == null) {
+                    throw new NonexistentEntityException("The adminEmpresa with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -73,14 +73,14 @@ public class CerSiloJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            CerSilo cerSilo;
+            AdminEmpresa adminEmpresa;
             try {
-                cerSilo = em.getReference(CerSilo.class, id);
-                cerSilo.getIdSilo();
+                adminEmpresa = em.getReference(AdminEmpresa.class, id);
+                adminEmpresa.getIdAdmin();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The cerSilo with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The adminEmpresa with id " + id + " no longer exists.", enfe);
             }
-            em.remove(cerSilo);
+            em.remove(adminEmpresa);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -89,19 +89,19 @@ public class CerSiloJpaController implements Serializable {
         }
     }
 
-    public List<CerSilo> findCerSiloEntities() {
-        return findCerSiloEntities(true, -1, -1);
+    public List<AdminEmpresa> findAdminEmpresaEntities() {
+        return findAdminEmpresaEntities(true, -1, -1);
     }
 
-    public List<CerSilo> findCerSiloEntities(int maxResults, int firstResult) {
-        return findCerSiloEntities(false, maxResults, firstResult);
+    public List<AdminEmpresa> findAdminEmpresaEntities(int maxResults, int firstResult) {
+        return findAdminEmpresaEntities(false, maxResults, firstResult);
     }
 
-    private List<CerSilo> findCerSiloEntities(boolean all, int maxResults, int firstResult) {
+    private List<AdminEmpresa> findAdminEmpresaEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(CerSilo.class));
+            cq.select(cq.from(AdminEmpresa.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -113,20 +113,20 @@ public class CerSiloJpaController implements Serializable {
         }
     }
 
-    public CerSilo findCerSilo(Long id) {
+    public AdminEmpresa findAdminEmpresa(Long id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(CerSilo.class, id);
+            return em.find(AdminEmpresa.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getCerSiloCount() {
+    public int getAdminEmpresaCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<CerSilo> rt = cq.from(CerSilo.class);
+            Root<AdminEmpresa> rt = cq.from(AdminEmpresa.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

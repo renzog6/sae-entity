@@ -181,7 +181,19 @@ public class Direccion implements Serializable {
 
     @Override
     public String toString() {
-        return this.nombre + ": " + this.calle + "  " + this.numero + " - " + getLocalidad().getNombre() + " (" + getLocalidad().getCodigoPostal() + ") - " + getLocalidad().getProvincia();
+        try {
+            return this.nombre + ": " + this.calle + "  " + this.numero + " - " + getLocalidadProvincia();
+        } catch (Exception e) {
+            return "error!!!";
+        }
+    }
+
+    public String getLocalidadProvincia() {
+        try {
+            return getLocalidad().getNombre() + " (" + getLocalidad().getCodigoPostal() + ") - " + getLocalidad().getProvincia();
+        } catch (Exception e) {
+            return "LP errror!!!";
+        }
     }
 
     @XmlTransient

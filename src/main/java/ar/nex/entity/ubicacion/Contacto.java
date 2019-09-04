@@ -56,7 +56,7 @@ public class Contacto implements Serializable {
     private List<Empresa> empresaList;
     @JoinTable(name = "rh_empleado_contacto", joinColumns = {
         @JoinColumn(name = "id_contacto", referencedColumnName = "id_contacto")}, inverseJoinColumns = {
-        @JoinColumn(name = "id_empleado", referencedColumnName = "id_empleado")})
+        @JoinColumn(name = "id_empleado", referencedColumnName = "id_persona")})
     @ManyToMany
     private List<Empleado> empleadoList;
 

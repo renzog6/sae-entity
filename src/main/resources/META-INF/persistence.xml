@@ -22,7 +22,6 @@
     <class>ar.nex.entity.empresa.Empresa</class>
     <class>ar.nex.entity.empresa.Rubro</class>
     <class>ar.nex.entity.empresa.SubRubro</class>
-    
     <class>ar.nex.entity.equipo.Equipo</class>
     <class>ar.nex.entity.equipo.Repuesto</class>
     <class>ar.nex.entity.equipo.EquipoCategoria</class>
@@ -31,18 +30,18 @@
     <class>ar.nex.entity.equipo.RepuestoStockDetalle</class>
     <class>ar.nex.entity.equipo.EquipoCompraVenta</class>
     <class>ar.nex.entity.equipo.EquipoTipo</class>
-    
     <class>ar.nex.entity.empleado.Persona</class>
     <class>ar.nex.entity.empleado.Empleado</class>
     <class>ar.nex.entity.empleado.EmpleadoCategoria</class>
     <class>ar.nex.entity.empleado.EmpleadoPuesto</class>
     <class>ar.nex.entity.empleado.Familia</class>
-    
     <class>ar.nex.entity.equipo.Transporte</class>
     <class>ar.nex.entity.equipo.gasto.GastoNeumatico</class>
     <class>ar.nex.entity.equipo.gasto.Gasoil</class>
     <class>ar.nex.entity.equipo.gasto.Gasto</class>
-    
+    <class>ar.nex.entity.AdminEmpresa</class>
+    <class>ar.nex.entity.equipo.EquipoDocumentacion</class>
+    <class>ar.nex.entity.Seguro</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/sae_app?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="saedb"/>
