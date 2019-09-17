@@ -14,8 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -27,7 +25,6 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "aux_marca")
-@XmlRootElement
 public class Marca implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,6 +33,7 @@ public class Marca implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_marca")
     private Long idMarca;
+    
     @Column(name = "nombre")
     private String nombre;
     @Column(name = "descripcion")

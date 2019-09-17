@@ -1,5 +1,6 @@
 package ar.nex.service;
 
+import ar.nex.entity.Seguro;
 import ar.nex.jpa.AdminEmpresaJpaController;
 import ar.nex.jpa.ContactoJpaController;
 import ar.nex.jpa.DireccionJpaController;
@@ -29,6 +30,7 @@ import ar.nex.jpa.TransporteJpaController;
 import ar.nex.jpa.UsuarioJpaController;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,10 +48,18 @@ public final class JpaService {
         LOGGER.info("JpaService init()");
     }
 
+    /**
+     * 
+     * Constructor de JPA Services.
+     */
     public JpaService() {
         this.factory = getFactory();
     }
 
+    /**
+     * 
+     * @return factory = Persistence.createEntityManagerFactory("SaeFxPU");
+     */
     public EntityManagerFactory getFactory() {
         if (factory == null) {
             this.factory = Persistence.createEntityManagerFactory("SaeFxPU");
@@ -157,6 +167,10 @@ public final class JpaService {
         return new GastoJpaController(getFactory());
     }
 
+    /**
+     * 
+     * @return Seguro Jpa Controller
+     */
     public SeguroJpaController getSeguro() {
         return new SeguroJpaController(getFactory());
     }

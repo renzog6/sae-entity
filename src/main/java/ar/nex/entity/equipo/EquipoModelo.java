@@ -156,4 +156,7 @@ public class EquipoModelo implements Serializable {
         return this.nombre;
     }
 
+    public String getStringTipoModelo() {
+        return String.join(" ", this.tipo.getNombre(), this.nombre);
+    }
 }

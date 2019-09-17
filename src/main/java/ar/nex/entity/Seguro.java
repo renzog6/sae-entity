@@ -57,7 +57,7 @@ public class Seguro implements Serializable {
     @Column(name = "monto")
     private Double monto;
     @Column(name = "tipo")
-    private Integer tipo;
+    private SeguroTipo tipo;
     @Column(name = "info")
     private String info;
 
@@ -72,6 +72,16 @@ public class Seguro implements Serializable {
 
     public Seguro(Long idSeguro) {
         this.idSeguro = idSeguro;
+    }
+    
+    /**
+     * Constructor()
+     * 
+     * Se usa para los nuevos seguros: Equiupos, Empleado, etc...
+     * @param tipo 
+     */
+    public Seguro(SeguroTipo tipo) {
+        this.tipo = tipo;
     }
 
     public Long getIdSeguro() {
@@ -146,11 +156,11 @@ public class Seguro implements Serializable {
         this.monto = monto;
     }
 
-    public Integer getTipo() {
+    public SeguroTipo getTipo() {
         return tipo;
     }
 
-    public void setTipo(Integer tipo) {
+    public void setTipo(SeguroTipo tipo) {
         this.tipo = tipo;
     }
 

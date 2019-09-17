@@ -16,7 +16,7 @@ import javax.persistence.Table;
 public class Gasoil extends Gasto {
 
     @Column(name = "movimineto")
-    private int movimineto;
+    private GasoilMovimiento movimineto;
     
     @Column(name = "litros")
     private Double litros;
@@ -67,11 +67,11 @@ public class Gasoil extends Gasto {
         return hash;
     }
 
-    public int getMovimineto() {
+    public GasoilMovimiento getMovimineto() {
         return movimineto;
     }
 
-    public void setMovimineto(int movimineto) {
+    public void setMovimineto(GasoilMovimiento movimineto) {
         this.movimineto = movimineto;
     }
 

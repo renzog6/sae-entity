@@ -229,7 +229,7 @@ public abstract class Persona implements Serializable {
     }
 
     public String getNombreCompleto() {
-        return String.join(" ", this.nombre, this.apellido);
+        return String.join(" ", this.apellido, this.nombre);
     }
 
     public String getDtype() {
